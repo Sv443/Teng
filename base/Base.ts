@@ -215,7 +215,19 @@ export function isColor(val: any): val is Color
 //#MARKER logging
 
 /** Describes the log level */
-export type LogLevel = "success" | "info" | "warning" | "error" | "fatal";
+export enum LogLevel
+{
+    /** Success */
+    Success,
+    /** Information */
+    Info,
+    /** Warning */
+    Warning,
+    /** Something errored, but the process can keep running */
+    Error,
+    /** Something vital errored, so the process has to exit */
+    Fatal
+}
 
 /**
  * Logs a debug message to the console
@@ -223,7 +235,7 @@ export type LogLevel = "success" | "info" | "warning" | "error" | "fatal";
  * @param message
  * @param color
  */
-export function dbg(section: string, message: string, level: LogLevel = "info")
+export function dbg(section: string, message: string, level: LogLevel = LogLevel.Info)
 {
     if(generalSettings.debug.verboseLogging)
     {
@@ -232,23 +244,23 @@ export function dbg(section: string, message: string, level: LogLevel = "info")
 
         switch(level)
         {
-            case "success":
+            case LogLevel.Success:
                 consoleCol = colors.fg.green;
                 logType = "Debug";
             break;
-            case "info":
+            case LogLevel.Info:
                 consoleCol = colors.fg.cyan;
                 logType = "Debug";
             break;
-            case "warning":
+            case LogLevel.Warning:
                 consoleCol = colors.fg.yellow;
                 logType = "Warning";
             break;
-            case "error":
+            case LogLevel.Error:
                 consoleCol = colors.fg.red;
                 logType = "Error";
             break;
-            case "fatal":
+            case LogLevel.Fatal:
                 consoleCol = colors.fg.magenta;
                 logType = "FATAL";
             break;
