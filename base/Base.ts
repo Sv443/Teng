@@ -203,6 +203,8 @@ const colorsAmount = Object.keys(Color).length / 2;
  */
 export function isColor(val: any): val is Color
 {
+    val = (val as Color);
+
     if(typeof val == "number" && val >= 0 && val < colorsAmount)
         return true;
 
