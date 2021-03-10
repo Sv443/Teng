@@ -59,6 +59,14 @@ export abstract class Cell extends TengObject
         this.char = char;
     }
 
+    /**
+     * Returns a string representation of this object
+     */
+    toString(): string
+    {
+        return `Cell '${this.getChar()}' @ ${this.position.toString()} - UID: ${this.uid.toString()}`;
+    }
+
     //#MARKER methods / setters
     /**
      * Abstract method - called on each tick to update this cell

@@ -12,6 +12,8 @@ export abstract class TengObject
 {
     /** Unique descriptor of type `Symbol` that's assigned to each Teng object at instantiation */
     readonly uid: Symbol;
+    /** The name of this Teng object */
+    readonly objectName: string;
 
     /**
      * Creates an instance of the TengObject class  
@@ -26,6 +28,7 @@ export abstract class TengObject
         else
             descriptor = "";
 
+        this.objectName = objectName;
         this.uid = Symbol(`${tengSettings.info.abbreviation}/${objectName}${descriptor}`);
     }
 
@@ -50,7 +53,7 @@ export abstract class TengObject
     /**
      * Returns a string representation of this teng object
      */
-    // abstract toString(): string;
+    abstract toString(): string;
 
     //#MARKER static
 

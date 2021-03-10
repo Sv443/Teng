@@ -72,7 +72,7 @@ export class Position implements IPosition
         this.x = x;
         this.y = y;
 
-        this.toString = () => `${this.x},${this.y}`;
+        this.toString = () => `[${this.x},${this.y}]`;
     }
 }
 
@@ -118,7 +118,10 @@ export class Area implements IArea
             br: cornerBR
         };
 
-        this.toString = () => `[${this.corners.tl.toString()}],[${this.corners.br.toString()}]`;
+        this.toString = () => {
+            const { tl, br } = this.corners;
+            return `⠋[${tl.x},${tl.y}] ⠴[${br.x},${br.y}]`;
+        }
     }
 }
 

@@ -39,7 +39,7 @@ export class Grid extends TengObject
      */
     constructor(size: Size, options?: Partial<IGridOptions>)
     {
-        super("Grid", `${size.width}x${size.height}`);
+        super("Grid", `${size.toString()}`);
 
         this.size = size;
 
@@ -49,6 +49,15 @@ export class Grid extends TengObject
         this.area = Grid.calculateArea(size);
 
         this.cells = [];
+    }
+
+    /**
+     * Returns a string representation of this object
+     */
+    toString(): string
+    {
+        const size = this.getSize(), area = this.getArea();
+        return `Grid [${size.toString()}] - area: ${area.toString()} - UID: ${this.uid.toString()}`;
     }
 
     //#MARKER methods

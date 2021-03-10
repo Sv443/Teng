@@ -20,6 +20,10 @@ const tengSettings = Object.freeze({
     loop: {
         /** Default ticks per second */
         defaultTps: 5
+    },
+    menus: {
+        /** The maximum length of menu descriptors */
+        descriptorMaxLength: 16
     }
 });
 

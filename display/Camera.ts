@@ -27,7 +27,7 @@ export interface ICameraInitialValues
 /**
  * Describes how to render a single cell
  */
-declare interface IRenderableCell
+declare interface ICellRenderInfo
 {
     [index: string]: ICellColors | string;
 
@@ -38,7 +38,7 @@ declare interface IRenderableCell
 /**
  * Describes a renderable representation of a grid
  */
-declare type RenderableGrid = IRenderableCell[][];
+declare type RenderableGrid = ICellRenderInfo[][];
 
 /**
  * A camera is responsible for rendering a specified area of a grid
@@ -72,6 +72,14 @@ export class Camera extends TengObject
         this.viewportSize = initialValues.viewportSize;
 
         this.outStream = outStream;
+    }
+
+    /**
+     * Returns a string representation of this object
+     */
+    toString(): string
+    {
+        return `Camera @ ${this.position.toString()} - viewport: ${this.viewportSize.toString()} - UID: ${this.uid.toString()}`;
     }
 
     /**
@@ -175,7 +183,7 @@ export class Camera extends TengObject
         return new Promise<RenderableGrid>(async (res, rej) => {
             this.isRenderingFrame = true;
 
-            const renderedCells: IRenderableCell[][] = [];
+            const renderedCells: ICellRenderInfo[][] = [];
 
             const cells = grid.getCells();
 
@@ -185,7 +193,7 @@ export class Camera extends TengObject
                 row.forEach((cell, x) => {
                     unused(x);
 
-                    const rendCell: IRenderableCell = {
+                    const rendCell: ICellRenderInfo = {
                         char: cell.getChar(),
                         colors: cell.getColors()
                     };
