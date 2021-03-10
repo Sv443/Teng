@@ -16,6 +16,8 @@ import { diff } from "deep-diff";
  */
 export interface CameraInitialValues
 {
+    [index: string]: Position | Size;
+
     /** Position of the top left corner of the camera */
     position: Position;
     /** Size of the camera's viewport */
@@ -27,6 +29,8 @@ export interface CameraInitialValues
  */
 declare interface RenderableCell
 {
+    [index: string]: CellColors | string;
+
     colors: CellColors;
     char: string;
 }

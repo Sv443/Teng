@@ -21,7 +21,7 @@ export enum NoiseAlgorithm
  */
 export interface NoiseAlgorithmSettings
 {
-
+    [index: string]: any; // change this
 }
 
 //#MARKER class

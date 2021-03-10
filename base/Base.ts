@@ -15,6 +15,8 @@ import { generalSettings } from "../../settings";
  */
 export interface SizeInterface
 {
+    [index: string]: number;
+
     width: number;
     height: number;
 }
@@ -24,6 +26,8 @@ export interface SizeInterface
  */
 export class Size implements SizeInterface
 {
+    [index: string]: number;
+
     readonly width: number;
     readonly height: number;
 
@@ -42,6 +46,8 @@ export class Size implements SizeInterface
  */
 export interface PositionInterface
 {
+    [index: string]: number;
+
     x: number;
     y: number;
 }
@@ -51,6 +57,8 @@ export interface PositionInterface
  */
 export class Position implements PositionInterface
 {
+    [index: string]: number;
+
     readonly x: number;
     readonly y: number;
 
@@ -69,6 +77,8 @@ export class Position implements PositionInterface
  */
 export interface AreaInterface
 {
+    [index: string]: AreaCornersInterface;
+
     corners: AreaCornersInterface;
 }
 
@@ -77,6 +87,8 @@ export interface AreaInterface
  */
 declare interface AreaCornersInterface
 {
+    [index: string]: Position;
+
     /** Top left corner */
     tl: Position;
     /** Bottom right corner */
@@ -88,6 +100,8 @@ declare interface AreaCornersInterface
  */
 export class Area implements AreaInterface
 {
+    [index: string]: AreaCornersInterface;
+
     readonly corners: AreaCornersInterface;
 
     /**

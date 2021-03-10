@@ -16,7 +16,7 @@ import { Land } from "../../game/components/cells/Land";
  */
 export interface GridOptions
 {
-
+    [index: string]: any; // change this
 }
 
 /**
