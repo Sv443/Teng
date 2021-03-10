@@ -14,7 +14,7 @@ import { Land } from "../../game/components/cells/Land";
 /**
  * Options that can be set on a Grid
  */
-export interface GridOptions
+export interface IGridOptions
 {
     [index: string]: any; // change this
 }
@@ -27,7 +27,7 @@ export class Grid extends TengObject
 {
     private size: Size;
     private area: Area;
-    private options: Partial<GridOptions> = {};
+    private options: Partial<IGridOptions> = {};
 
     private cells: Cell[][];
 
@@ -37,7 +37,7 @@ export class Grid extends TengObject
      * @param size The size of the grid
      * @param options Grid options
      */
-    constructor(size: Size, options?: Partial<GridOptions>)
+    constructor(size: Size, options?: Partial<IGridOptions>)
     {
         super("Grid", `${size.width}x${size.height}`);
 
@@ -186,7 +186,7 @@ export class Grid extends TengObject
     /**
      * Returns the options of this grid
      */
-    getOptions(): GridOptions
+    getOptions(): IGridOptions
     {
         return this.options;
     }

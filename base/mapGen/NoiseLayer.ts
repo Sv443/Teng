@@ -19,7 +19,7 @@ export enum NoiseAlgorithm
 /**
  * Settings for the coherent noise generation
  */
-export interface NoiseAlgorithmSettings
+export interface INoiseAlgorithmSettings
 {
     [index: string]: any; // change this
 }
@@ -32,18 +32,26 @@ export class NoiseLayer extends TengObject
 {
     readonly size: Size;
     readonly algorithm: NoiseAlgorithm;
-    readonly settings: NoiseAlgorithmSettings;
+    readonly settings: INoiseAlgorithmSettings;
 
     /**
      * Creates an instance of the NoiseLayer class
      * @param size The size of this layer
      */
-    constructor(size: Size, algorithm: NoiseAlgorithm, algorithmSettings: NoiseAlgorithmSettings)
+    constructor(size: Size, algorithm: NoiseAlgorithm, algorithmSettings: INoiseAlgorithmSettings)
     {
-        super("NoiseLayer", `${size.width}x${size.height}`);
+        super("NoiseLayer", `${size.toString()}`);
 
         this.size = size;
         this.algorithm = algorithm;
         this.settings = algorithmSettings;
+    }
+    
+    /**
+     * Returns a string representation of this object
+     */
+    toString(): string
+    {
+        return `NoiseLayer <${NoiseAlgorithm[this.algorithm]}> [${this.size.toString()}] - UID: ${this.uid}`;
     }
 }

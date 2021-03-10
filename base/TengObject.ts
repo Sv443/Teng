@@ -8,7 +8,7 @@ import { tengSettings } from "../settings";
 /**
  * Base class of all instantiatable Teng classes
  */
-export class TengObject
+export abstract class TengObject
 {
     /** Unique descriptor of type `Symbol` that's assigned to each Teng object at instantiation */
     readonly uid: Symbol;
@@ -46,6 +46,11 @@ export class TengObject
 
         return descriptor;
     }
+
+    /**
+     * Returns a string representation of this teng object
+     */
+    // abstract toString(): string;
 
     //#MARKER static
 

@@ -13,7 +13,7 @@ import { generalSettings } from "../../settings";
 /**
  * Describes a size in 2D space
  */
-export interface SizeInterface
+export interface ISize
 {
     [index: string]: number;
 
@@ -24,7 +24,7 @@ export interface SizeInterface
 /**
  * Describes a rectangular size in 2D space
  */
-export class Size implements SizeInterface
+export class Size implements ISize
 {
     [index: string]: number;
 
@@ -38,13 +38,15 @@ export class Size implements SizeInterface
     {
         this.width = width;
         this.height = height;
+
+        this.toString = () => `${this.width}x${this.height}`;
     }
 }
 
 /**
  * Describes a position / coordinate in 2D space
  */
-export interface PositionInterface
+export interface IPosition
 {
     [index: string]: number;
 
@@ -55,7 +57,7 @@ export interface PositionInterface
 /**
  * Describes a position or coordinate in 2D space
  */
-export class Position implements PositionInterface
+export class Position implements IPosition
 {
     [index: string]: number;
 
@@ -69,23 +71,15 @@ export class Position implements PositionInterface
     {
         this.x = x;
         this.y = y;
+
+        this.toString = () => `${this.x},${this.y}`;
     }
-}
-
-/**
- * Describes an area in 2D space
- */
-export interface AreaInterface
-{
-    [index: string]: AreaCornersInterface;
-
-    corners: AreaCornersInterface;
 }
 
 /**
  * Contains the corners of an area
  */
-declare interface AreaCornersInterface
+declare interface IAreaCorners
 {
     [index: string]: Position;
 
@@ -96,13 +90,23 @@ declare interface AreaCornersInterface
 }
 
 /**
+ * Describes an area in 2D space
+ */
+export interface IArea
+{
+    [index: string]: IAreaCorners;
+
+    corners: IAreaCorners;
+}
+
+/**
  * Describes a rectangular 2D area in a 2D space
  */
-export class Area implements AreaInterface
+export class Area implements IArea
 {
-    [index: string]: AreaCornersInterface;
+    [index: string]: IAreaCorners;
 
-    readonly corners: AreaCornersInterface;
+    readonly corners: IAreaCorners;
 
     /**
      * Creates a new instance of the Area class
@@ -113,6 +117,8 @@ export class Area implements AreaInterface
             tl: cornerTL,
             br: cornerBR
         };
+
+        this.toString = () => `[${this.corners.tl.toString()}],[${this.corners.br.toString()}]`;
     }
 }
 

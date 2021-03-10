@@ -54,6 +54,14 @@ export class LayeredNoise extends TengObject
     }
 
     /**
+     * Returns a string representation of this object
+     */
+    toString(): string
+    {
+        return `LayeredNoise - ${this.layers.length} layers, size = ${this.size.toString()} - UID: ${this.uid.toString()}`;
+    }
+
+    /**
      * Adds a noise layer
      */
     addLayer(layer: NoiseLayer): void

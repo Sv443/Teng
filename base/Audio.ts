@@ -134,6 +134,14 @@ export class Audio extends TengObject
         return this.volume;
     }
 
+    /**
+     * Returns a string representation of this object
+     */
+    toString(): string
+    {
+        return `Audio @ ${this.filePath} - UID: ${this.uid.toString()}`;
+    }
+
     //#MARKER static
 
     /**

@@ -6,7 +6,7 @@ import { unused } from "svcorelib";
 
 import { TengObject } from "../base/TengObject";
 import { ColorType, isColor, objectsEqual, Position, resolveColor, Size } from "../base/Base";
-import { Cell, CellColors } from "../components/Cell";
+import { Cell, ICellColors } from "../components/Cell";
 import { Grid } from "../components/Grid";
 import { diff } from "deep-diff";
 
@@ -14,7 +14,7 @@ import { diff } from "deep-diff";
 /**
  * Describes the initial values of a camera
  */
-export interface CameraInitialValues
+export interface ICameraInitialValues
 {
     [index: string]: Position | Size;
 
@@ -27,18 +27,18 @@ export interface CameraInitialValues
 /**
  * Describes how to render a single cell
  */
-declare interface RenderableCell
+declare interface IRenderableCell
 {
-    [index: string]: CellColors | string;
+    [index: string]: ICellColors | string;
 
-    colors: CellColors;
+    colors: ICellColors;
     char: string;
 }
 
 /**
  * Describes a renderable representation of a grid
  */
-declare type RenderableGrid = RenderableCell[][];
+declare type RenderableGrid = IRenderableCell[][];
 
 /**
  * A camera is responsible for rendering a specified area of a grid
@@ -64,7 +64,7 @@ export class Camera extends TengObject
      * @param initialValues The initial values (position, size, ...) of this camera
      * @param outStream The stream to write the rendered stuff to - defaults to `process.stdout`
      */
-    constructor(initialValues: CameraInitialValues, outStream: NodeJS.WriteStream = process.stdout)
+    constructor(initialValues: ICameraInitialValues, outStream: NodeJS.WriteStream = process.stdout)
     {
         super("Camera", `${initialValues.viewportSize.width}x${initialValues.viewportSize.height}`);
 
@@ -115,7 +115,7 @@ export class Camera extends TengObject
     private drawFrame(frame: RenderableGrid): Promise<void>
     {
         return new Promise(async (res, rej) => {
-            let lastColors: CellColors = frame[0][0].colors;
+            let lastColors: ICellColors = frame[0][0].colors;
 
             const drawRows: string[] = [];
 
@@ -175,7 +175,7 @@ export class Camera extends TengObject
         return new Promise<RenderableGrid>(async (res, rej) => {
             this.isRenderingFrame = true;
 
-            const renderedCells: RenderableCell[][] = [];
+            const renderedCells: IRenderableCell[][] = [];
 
             const cells = grid.getCells();
 
@@ -185,7 +185,7 @@ export class Camera extends TengObject
                 row.forEach((cell, x) => {
                     unused(x);
 
-                    const rendCell: RenderableCell = {
+                    const rendCell: IRenderableCell = {
                         char: cell.getChar(),
                         colors: cell.getColors()
                     };

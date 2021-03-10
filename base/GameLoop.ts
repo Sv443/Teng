@@ -30,6 +30,14 @@ export class GameLoop extends TengObject
     }
 
     /**
+     * Returns a string representation of this object
+     */
+    toString(): string
+    {
+        return `GameLoop @ ${this.targetTps}tps - UID: ${this.uid.toString()}`;
+    }
+
+    /**
      * Registers an event
      */
     on(event: GameLoopEvent, callback: () => any): void

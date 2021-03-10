@@ -9,7 +9,7 @@ import { TengObject } from "../base/TengObject";
 /**
  * Describes all colors a cell can have
  */
-export interface CellColors
+export interface ICellColors
 {
     [index: string]: Color | boolean;
 
@@ -33,7 +33,7 @@ export abstract class Cell extends TengObject
     private char: string;
 
     /** The colors of this cell */
-    private colors: CellColors = {
+    private colors: ICellColors = {
         fg: Color.White,
         fgDim: false,
         bg: Color.Black,
@@ -123,7 +123,7 @@ export abstract class Cell extends TengObject
     /**
      * Returns all color info that has been set on this cell
      */
-    getColors(): CellColors
+    getColors(): ICellColors
     {
         return this.colors;
     }
