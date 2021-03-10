@@ -1,18 +1,28 @@
 {
-    "name": "teng",
-    "version": "0.1.0",
-    "description": "A CLI game engine",
-    "keywords": [
-      "game-engine",
-      "cli",
-      "cli-game",
-      "command-line"
-    ],
-    "author": {
-      "name": "Sv443",
-      "email": "contact@sv443.net",
-      "url": "https://github.com/Sv443"
-    },
-    "license": "Proprietary"
+  "name": "teng",
+  "version": "0.1.0",
+  "description": "A CLI game engine",
+  "keywords": [
+    "game-engine",
+    "cli",
+    "cli-game",
+    "command-line"
+  ],
+  "author": {
+    "name": "Sv443",
+    "email": "contact@sv443.net",
+    "url": "https://github.com/Sv443"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "figlet": "^1.5.0",
+    "fs-extra": "^9.1.0",
+    "svcorelib": "^1.12.0"
+  },
+  "devDependencies": {
+    "@types/figlet": "^1.2.1",
+    "@types/fs-extra": "^9.0.8",
+    "@types/mysql": "^2.15.18",
+    "@types/node": "^14.14.32"
+  }
 }
-  
