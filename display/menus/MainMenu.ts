@@ -44,8 +44,8 @@ export class MainMenu extends TengObject
     static preloadFont(font: Fonts = "Standard")
     {
         return new Promise<void>((res, rej) => {
-            loadFont(font, (err) => {
-                if(err)
+            loadFont(font, (err: Error | null) => {
+                if(err != null)
                     return rej(err);
 
                 return res();

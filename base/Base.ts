@@ -3,7 +3,9 @@
 /*************************************************/
 
 
+import { diff } from "deep-diff";
 import { colors } from "svcorelib";
+
 import { generalSettings } from "../../settings";
 
 
@@ -180,6 +182,19 @@ export function resolveColor(type: ColorType, col: Color, dim: boolean = false):
     return retColor;
 }
 
+const colorsAmount = Object.keys(Color).length / 2;
+
+/**
+ * Checks if a provided value can be considered part of the Color enum
+ */
+export function isColor(val: any): val is Color
+{
+    if(typeof val == "number" && val >= 0 && val < colorsAmount)
+        return true;
+
+    return false;
+}
+
 
 //#MARKER logging
 
@@ -225,4 +240,14 @@ export function dbg(section: string, message: string, level: LogLevel = "info")
 
         console.log(`${consoleCol}[${logType}/${colors.fg.blue}${section}${consoleCol}]: ${colors.rst}${message}${colors.rst}`);
     }
+}
+
+/**
+ * Checks if two objects are equal
+ * @param origin The origin object
+ * @param comparand The object to compare to the origin object
+ */
+export function objectsEqual(origin: object, comparand: object): boolean
+{
+    return diff(origin, comparand) == undefined;
 }

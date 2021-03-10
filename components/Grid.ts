@@ -191,6 +191,14 @@ export class Grid extends TengObject
         return this.options;
     }
 
+    /**
+     * Returns the 2D array of cells of this grid
+     */
+    getCells(): Cell[][]
+    {
+        return this.cells;
+    }
+
     //#MARKER static
 
     /**

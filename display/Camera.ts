@@ -2,10 +2,13 @@
 /* Teng - Responsible for rendering the game */
 /*********************************************/
 
+import { unused } from "svcorelib";
+
 import { TengObject } from "../base/TengObject";
-import { Position, Size } from "../base/Base";
-import { Cell } from "../components/Cell";
+import { ColorType, isColor, objectsEqual, Position, resolveColor, Size } from "../base/Base";
+import { Cell, CellColors } from "../components/Cell";
 import { Grid } from "../components/Grid";
+import { diff } from "deep-diff";
 
 
 /**
@@ -20,9 +23,18 @@ export interface CameraInitialValues
 }
 
 /**
+ * Describes how to render a single cell
+ */
+declare interface RenderableCell
+{
+    colors: CellColors;
+    char: string;
+}
+
+/**
  * Describes a renderable representation of a grid
  */
-export type RenderableGrid = string[][];
+declare type RenderableGrid = RenderableCell[][];
 
 /**
  * A camera is responsible for rendering a specified area of a grid
@@ -40,7 +52,7 @@ export class Camera extends TengObject
     /** Buffers a frame until it is rendered, then it's overwritten with a newly calculated frame */
     private renderBuffer: Cell[][] = [];
     /** Is set to true only while a new frame is currently being rendered */
-    readonly isRenderingFrame: boolean = false;
+    private isRenderingFrame: boolean = false;
 
 
     /**
@@ -72,6 +84,10 @@ export class Camera extends TengObject
                     {
                         // this is the first call to draw() since instantiation of the camera, so the frame has to be rendered
                         let renderGrid = await this.renderFrame(grid);
+
+                        await this.drawFrame(renderGrid);
+
+                        return res();
                     }
                     else
                     {
@@ -89,15 +105,94 @@ export class Camera extends TengObject
     }
 
     /**
-     * Renders a frame of a passed grid
+     * Takes a renderable grid and actually renders it to the set output stream
+     * @param frame The frame to render
+     */
+    private drawFrame(frame: RenderableGrid): Promise<void>
+    {
+        return new Promise(async (res, rej) => {
+            let lastColors: CellColors = frame[0][0].colors;
+
+            const drawRows: string[] = [];
+
+            frame.forEach((row, y) => {
+                const drawChars: string[] = [];
+
+                row.forEach((cell, x) => {
+                    unused(x, y);
+
+                    const { char, colors } = cell;
+
+                    // only print color control characters to the out stream if the colors have changed, to massively improve performance
+                    const diffRes = diff(lastColors, colors);
+                    if(diffRes != undefined)
+                    {
+                        // go over each change
+                        diffRes.forEach(change => {
+                            // get the key of the changes ("fg", "bg", "fgDim", "bgDim")
+                            const key: string = change.path?.[0];
+                            // get the actual changed value
+                            const changedVal = colors[key];
+
+                            // I'm positive this should work? but I didn't test it at all
+                            switch(key)
+                            {
+                                case "fg":
+                                    drawChars.push(resolveColor(ColorType.Foreground, isColor(changedVal) ? changedVal : lastColors[key], colors.fgDim));
+                                break;
+                                case "bg":
+                                    drawChars.push(resolveColor(ColorType.Background, isColor(changedVal) ? changedVal : lastColors[key], colors.bgDim));
+                                break;
+                                default: break;
+                            }
+                        });
+                    }
+
+                    drawChars.push(char);
+
+                    if(lastColors == null)
+                        lastColors = colors;
+                });
+
+                drawRows.push(drawChars.join(""));
+            });
+
+            process.stdout.write(drawRows.join("\n"));
+        });
+    }
+
+    /**
+     * Renders a frame of a passed grid  
+     * TODO: consider position and viewport of camera (only render visible part of grid)
      * @param grid
      */
-    renderFrame(grid: Grid): Promise<RenderableGrid>
+    private renderFrame(grid: Grid): Promise<RenderableGrid>
     {
         return new Promise<RenderableGrid>(async (res, rej) => {
-            const renderedCells: string[][] = [];
+            this.isRenderingFrame = true;
 
-            return renderedCells;
+            const renderedCells: RenderableCell[][] = [];
+
+            const cells = grid.getCells();
+
+            cells.forEach((row, y) => {
+                renderedCells.push([]);
+
+                row.forEach((cell, x) => {
+                    unused(x);
+
+                    const rendCell: RenderableCell = {
+                        char: cell.getChar(),
+                        colors: cell.getColors()
+                    };
+
+                    renderedCells[y].push(rendCell);
+                });
+            });
+
+
+            this.isRenderingFrame = false;
+            return res(renderedCells);
         });
     }
 

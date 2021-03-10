@@ -7,6 +7,23 @@ import { TengObject } from "../base/TengObject";
 
 
 /**
+ * Describes all colors a cell can have
+ */
+export interface CellColors
+{
+    [index: string]: Color | boolean;
+
+    /** Foreground / text color */
+    fg: Color;
+    /** Whether the foreground color is dim */
+    fgDim: boolean;
+    /** Background color */
+    bg: Color;
+    /** Whether the background color is dim */
+    bgDim: boolean;
+}
+
+/**
  * Describes a single cell.  
  * Cells have to be contained in a Grid or Chunk.
  */
@@ -16,14 +33,10 @@ export abstract class Cell extends TengObject
     private char: string;
 
     /** The colors of this cell */
-    private colors = {
-        /** Foreground / text color */
+    private colors: CellColors = {
         fg: Color.White,
-        /** Whether the foreground color is dim */
         fgDim: false,
-        /** Background color */
         bg: Color.Black,
-        /** Whether the background color is dim */
         bgDim: false
     };
 
@@ -105,6 +118,14 @@ export abstract class Cell extends TengObject
     getChar(): string
     {
         return this.char;
+    }
+
+    /**
+     * Returns all color info that has been set on this cell
+     */
+    getColors(): CellColors
+    {
+        return this.colors;
     }
 
     //#MARKER static
