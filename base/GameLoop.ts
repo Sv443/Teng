@@ -24,6 +24,7 @@ export class GameLoop extends TengObject
     /** Number of ticks that have passed since this game loop was created */
     private tickNum: number = 0;
 
+    /** Function to be called on each tick - change this with the `on("tick", func)` method */
     private onTick: null | ((tickNum: number) => void) = null;
 
     /**
@@ -42,7 +43,9 @@ export class GameLoop extends TengObject
 
         this.nanoTimer = new NanoTimer();
 
-        this.nanoTimer.setInterval(this.intTick, "", `${interval}m`);
+        setImmediate(() => {
+            this.nanoTimer.setInterval(this.intTick, [this], `${interval}m`);
+        });
     }
     
     /**
@@ -65,13 +68,18 @@ export class GameLoop extends TengObject
     //#MARKER private
     /**
      * Internal tick handler
+     * @param that Reference to `this` is lost when NanoTimer calls this method, so it has to be explicitly passed as a parameter
      */
-    private intTick(): void
+    private intTick(that: GameLoop): void
     {
-        if(typeof this.onTick === "function")
-            this.onTick(this.tickNum);
+        // NanoTimer calls this function before `this` is created. setImmediate should fix this issue, but just to be sure, check if `this` exists:
+        if(that)
+        {
+            if(typeof that.onTick === "function")
+                that.onTick(that.tickNum);
 
-        this.tickNum++;
+            that.tickNum++;
+        }
     }
 
     //#MARKER events
