@@ -10,6 +10,7 @@ import { TengObject } from "../base/TengObject";
 import { Cell } from "./Cell";
 import { Land } from "../../game/components/cells/Land";
 import { mapRange } from "svcorelib";
+import { InputHandler, KeypressObject } from "../input/InputHandler";
 
 
 /**
@@ -17,7 +18,12 @@ import { mapRange } from "svcorelib";
  */
 export interface IGridOptions
 {
-    [index: string]: any; // change this
+    [index: string]: boolean | NodeJS.ReadStream | undefined;
+
+    /** Whether or not basic controls should be enabled initially - can be modified with `setInputEnabled()` */
+    inputEnabled: boolean;
+    /** The read stream to use when `inputEnabled` is set to `true` */
+    inputStream: NodeJS.ReadStream;
 }
 
 /**
@@ -32,6 +38,8 @@ export class Grid extends TengObject
 
     private cursorApplied = false;
     private cursorPos: Position;
+
+    private inputHandler: InputHandler | undefined;
 
     private cells: Cell[][];
 
@@ -54,6 +62,15 @@ export class Grid extends TengObject
 
         const cursorPos = new Position(Math.floor(size.width / 2), Math.floor(size.height / 2));
         this.cursorPos = cursorPos;
+
+        if(options?.inputEnabled === true)
+        {
+            this.inputHandler = new InputHandler(options.inputStream || process.stdin);
+
+            this.inputHandler.on("key", (char, key) => {
+                this.keyPress(char, key);
+            });
+        }
 
         this.cells = [];
     }
@@ -102,6 +119,41 @@ export class Grid extends TengObject
     }
 
     /**
+     * Handles the default inputs
+     */
+    keyPress(char: string, key: KeypressObject): void
+    {
+        if(!this.getOptions().inputEnabled)
+            return;
+        
+        let { x, y } = this.cursorPos;
+
+        switch(key.name)
+        {
+            case "left":
+                if(x > 0)
+                    x--;
+            break;
+            case "right":
+                if(x < (this.getSize().width - 1))
+                    x++;
+            break;
+            case "up":
+                if(y > 0)
+                    y--;
+            break;
+            case "down":
+                if(y < (this.getSize().height - 1))
+                    y++;
+            break;
+
+            default: return;
+        }
+
+        this.moveCursor(new Position(x, y));
+    }
+
+    /**
      * Tries to bulldoze a cell.  
      * The returned Promise resolves with a boolean value that tells you if the cell could be bulldozed.
      * @param pos The position of the cell to try to bulldoze
@@ -121,7 +173,8 @@ export class Grid extends TengObject
     moveCursor(pos: Position): void
     {
         // remove old cursor pos
-        this.getCell(this.getCursorPos()).setCursorActive(false);
+        const oldCursorPos = this.getCursorPos();
+        this.getCell(oldCursorPos).setCursorActive(false);
 
         // set new cursor pos
         this.getCell(pos).setCursorActive(true);
@@ -172,6 +225,7 @@ export class Grid extends TengObject
         this.setCells(cells);
     }
 
+    //#MARKER setters
     /**
      * Sets this grid's cells
      * @param cells 2D array of cells
@@ -196,20 +250,15 @@ export class Grid extends TengObject
         )
             throw new TypeError(`Passed cell position is out of range - got [${position.x},${position.y}] - expected between [0,0] and [${size.width},${size.height}]`);
 
-        this.cells[position.x][position.y] = cell;
+        this.cells[position.y][position.x] = cell;
     }
 
-    //#MARKER static
     /**
-     * Calculates the area of a grid based on its size
-     * @param size The size of the grid
+     * Used to enable or disable the default grid controls
      */
-    static calculateArea(size: Size): Area
+    setInputEnabled(inputEnabled: boolean): void
     {
-        const tl = new Position(0, 0);
-        const br = new Position(size.width, size.height);
-
-        return new Area(tl, br);
+        this.options.inputEnabled = inputEnabled;
     }
 
     //#MARKER getters
@@ -232,7 +281,7 @@ export class Grid extends TengObject
     /**
      * Returns the options of this grid
      */
-    getOptions(): IGridOptions
+    getOptions(): Partial<IGridOptions>
     {
         return this.options;
     }
@@ -243,6 +292,14 @@ export class Grid extends TengObject
     getCells(): Cell[][]
     {
         return this.cells;
+    }
+
+    /**
+     * Returns the state of the basic grid input
+     */
+    getInputEnabled(): boolean
+    {
+        return this.getOptions().inputEnabled === true;
     }
 
     /**
@@ -259,7 +316,7 @@ export class Grid extends TengObject
         )
             throw new TypeError(`Passed cell position is out of range - got [${position.x},${position.y}] - expected between [0,0] and [${size.width},${size.height}]`);
 
-        return this.cells[position.x][position.y];
+        return this.cells[position.y][position.x];
     }
 
     /**
@@ -271,6 +328,17 @@ export class Grid extends TengObject
     }
 
     //#MARKER static
+    /**
+     * Calculates the area of a grid based on its size
+     * @param size The size of the grid
+     */
+    static calculateArea(size: Size): Area
+    {
+        const tl = new Position(0, 0);
+        const br = new Position(size.width, size.height);
+
+        return new Area(tl, br);
+    }
 
     /**
      * Checks if the passed value is a Grid

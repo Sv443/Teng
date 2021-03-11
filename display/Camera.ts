@@ -190,7 +190,8 @@ export class Camera extends TengObject
                 drawRows.push(`${drawChars.join("")}${colors.rst}`);
             });
 
-            process.stdout.write(`${drawRows.join("\n")}${colors.rst}\n`);
+            console.clear();
+            process.stdout.write(`${drawRows.join("\n")}${colors.rst}`);
 
             return res();
         });
