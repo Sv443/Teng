@@ -53,6 +53,15 @@ export class GameLoop extends TengObject
         return `GameLoop @ ${this.targetTps}tps - UID: ${this.uid.toString()}`;
     }
 
+    //#MARKER getters
+    /**
+     * Returns the current amount of game ticks that have passed since the creation of this game loop
+     */
+    getTicks(): number
+    {
+        return this.tickNum;
+    }
+
     //#MARKER private
     /**
      * Internal tick handler

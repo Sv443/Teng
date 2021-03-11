@@ -14,6 +14,8 @@ export abstract class TengObject
     readonly uid: Symbol;
     /** The name of this Teng object */
     readonly objectName: string;
+    /** The time at which this object was created (with millisecond accuracy) */
+    readonly creationTime: Date;
 
     /**
      * Creates an instance of the TengObject class  
@@ -23,13 +25,20 @@ export abstract class TengObject
      */
     constructor(objectName: string, descriptor?: string)
     {
-        if(typeof descriptor === "string")
-            descriptor = `/${descriptor}`;
-        else
-            descriptor = "";
+        descriptor = (typeof descriptor === "string" ? `/${descriptor}` : "");
 
         this.objectName = objectName;
         this.uid = Symbol(`${tengSettings.info.abbreviation}/${objectName}${descriptor}`);
+        this.creationTime = new Date();
+    }
+
+    //#MARKER getters
+    /**
+     * Returns the time at which this object was created
+     */
+    getCreationTime(): Date
+    {
+        return this.creationTime;
     }
 
     //#MARKER abstract
