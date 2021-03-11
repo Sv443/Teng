@@ -171,12 +171,13 @@ export class Camera extends TengObject
                                 default: break;
                             }
 
+                            // draw cursor
                             if(key === "cursorActive")
                             {
                                 if(colors.cursorActive)
                                     drawChars.push(resolveColor(ColorType.Foreground, tengSettings.game.cursorColor, false));
                                 else
-                                    drawChars.push(resolveColor(ColorType.Foreground, lastColors.fg, lastColors.fgDim));
+                                    drawChars.push(resolveColor(ColorType.Foreground, colors.fg, lastColors.fgDim));
                             }
 
                             lastColors = colors;
