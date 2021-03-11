@@ -21,6 +21,8 @@ export interface ICellColors
     bg: Color;
     /** Whether the background color is dim */
     bgDim: boolean;
+    /** Whether the cursor is active on this cell */
+    cursorActive: boolean;
 }
 
 /**
@@ -37,7 +39,8 @@ export abstract class Cell extends TengObject
         fg: Color.White,
         fgDim: false,
         bg: Color.Black,
-        bgDim: false
+        bgDim: false,
+        cursorActive: false
     };
 
     private cursorActive: boolean = false;
@@ -91,6 +94,7 @@ export abstract class Cell extends TengObject
     setCursorActive(active: boolean): void
     {
         this.cursorActive = active;
+        this.colors.cursorActive = active;
     }
 
     /**

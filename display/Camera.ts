@@ -9,6 +9,7 @@ import { ColorType, isColor, objectsEqual, Position, resolveColor, Size } from "
 import { Cell, ICellColors } from "../components/Cell";
 import { Grid } from "../components/Grid";
 import { diff } from "deep-diff";
+import { tengSettings } from "../settings";
 
 
 /**
@@ -168,6 +169,14 @@ export class Camera extends TengObject
                                     drawChars.push(resolveColor(ColorType.Background, isColor(changedVal) ? changedVal : lastColors[key], colors.bgDim));
                                 break;
                                 default: break;
+                            }
+
+                            if(key === "cursorActive")
+                            {
+                                if(colors.cursorActive)
+                                    drawChars.push(resolveColor(ColorType.Foreground, tengSettings.game.cursorColor, false));
+                                else
+                                    drawChars.push(resolveColor(ColorType.Foreground, lastColors.fg, lastColors.fgDim));
                             }
 
                             lastColors = colors;

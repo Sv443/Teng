@@ -2,6 +2,7 @@
 /* Teng - Engine Settings */
 /**************************/
 
+import { Color } from "./base/Base";
 import * as packageJson from "./package.json";
 
 
@@ -24,6 +25,10 @@ const tengSettings = Object.freeze({
     menus: {
         /** The maximum length of menu descriptors */
         descriptorMaxLength: 16
+    },
+    game: {
+        /** The color of the cursor */
+        cursorColor: Color.Magenta
     }
 });
 

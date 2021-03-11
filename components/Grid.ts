@@ -30,6 +30,9 @@ export class Grid extends TengObject
     private area: Area;
     private options: Partial<IGridOptions> = {};
 
+    private cursorApplied = false;
+    private cursorPos: Position;
+
     private cells: Cell[][];
 
 
@@ -49,6 +52,9 @@ export class Grid extends TengObject
 
         this.area = Grid.calculateArea(size);
 
+        const cursorPos = new Position(Math.floor(size.width / 2), Math.floor(size.height / 2));
+        this.cursorPos = cursorPos;
+
         this.cells = [];
     }
 
@@ -63,22 +69,63 @@ export class Grid extends TengObject
 
     //#MARKER methods
     /**
-     * Call this method on every frame to update the grid.  
+     * Call this method on every tick to update the grid - use the GameLoop class for timing.  
      * This call is propagated throughout all cells.
      */
-    update(): Promise<any>
+    update(): Promise<void>
     {
-        return new Promise<any>((res, rej) => {
+        return new Promise<void>(async (res, rej) => {
             // TODO: only update active chunks
 
             const updatePromises: Promise<void>[] = [];
 
             this.cells.forEach((row, y) => {
                 row.forEach((cell, x) => {
+                    if(!this.cursorApplied && this.cursorPos.x === x && this.cursorPos.y === y)
+                        cell.setCursorActive(true);
+
                     updatePromises.push(cell.update());
                 });
             });
+
+            try
+            {
+                await Promise.all(updatePromises);
+
+                return res();
+            }
+            catch(err)
+            {
+                return rej(err);
+            }
         });
+    }
+
+    /**
+     * Tries to bulldoze a cell.  
+     * The returned Promise resolves with a boolean value that tells you if the cell could be bulldozed.
+     * @param pos The position of the cell to try to bulldoze
+     */
+    bulldozeCell(pos: Position): Promise<boolean>
+    {
+        return new Promise<boolean>(async (res) => {
+            const bulldozedCell = await this.getCell(pos).bulldoze();
+
+            return res(bulldozedCell);
+        });
+    }
+
+    /**
+     * Moves the cursor from the old position to a new position
+     */
+    moveCursor(pos: Position): void
+    {
+        // remove old cursor pos
+        this.getCell(this.getCursorPos()).setCursorActive(false);
+
+        // set new cursor pos
+        this.getCell(pos).setCursorActive(true);
+        this.cursorPos = pos;
     }
 
     /**
@@ -91,7 +138,7 @@ export class Grid extends TengObject
         let cells: Cell[][] = [];
         let cellsAmount = 0;
 
-        let colIdx = 1;
+        let colIdx = Color.Green;
 
         for(let row = 0; row < size.height; row++)
         {
@@ -108,13 +155,13 @@ export class Grid extends TengObject
 
                 cellsAmount++;
                 
-                const colorsAmount = Object.keys(Color).length / 2;
+                // const colorsAmount = Object.keys(Color).length / 2;
 
-                if(colIdx == colorsAmount)
-                    colIdx = 1;
+                // if(colIdx == colorsAmount)
+                //     colIdx = 1;
 
                 emptyCell.setColor(ColorType.Foreground, colIdx, true);
-                colIdx++;
+                // colIdx++;
                 
                 cells[row].push(emptyCell);
             }
@@ -150,37 +197,6 @@ export class Grid extends TengObject
             throw new TypeError(`Passed cell position is out of range - got [${position.x},${position.y}] - expected between [0,0] and [${size.width},${size.height}]`);
 
         this.cells[position.x][position.y] = cell;
-    }
-
-    /**
-     * Returns the cell at the provided position
-     * @param position Position of the cell
-     */
-    getCell(position: Position): Cell
-    {
-        const size = this.getSize();
-
-        if(
-            position.x < 0 || position.y < 0
-            || position.x > size.width || position.y > size.height
-        )
-            throw new TypeError(`Passed cell position is out of range - got [${position.x},${position.y}] - expected between [0,0] and [${size.width},${size.height}]`);
-
-        return this.cells[position.x][position.y];
-    }
-
-    /**
-     * Tries to bulldoze a cell.  
-     * The returned Promise resolves with a boolean value that tells you if the cell could be bulldozed.
-     * @param pos The position of the cell to try to bulldoze
-     */
-    bulldozeCell(pos: Position): Promise<boolean>
-    {
-        return new Promise<boolean>(async (res) => {
-            const bulldozedCell = await this.getCell(pos).bulldoze();
-
-            return res(bulldozedCell);
-        });
     }
 
     //#MARKER static
@@ -227,6 +243,31 @@ export class Grid extends TengObject
     getCells(): Cell[][]
     {
         return this.cells;
+    }
+
+    /**
+     * Returns the cell at the provided position
+     * @param position Position of the cell
+     */
+    getCell(position: Position): Cell
+    {
+        const size = this.getSize();
+
+        if(
+            position.x < 0 || position.y < 0
+            || position.x > size.width || position.y > size.height
+        )
+            throw new TypeError(`Passed cell position is out of range - got [${position.x},${position.y}] - expected between [0,0] and [${size.width},${size.height}]`);
+
+        return this.cells[position.x][position.y];
+    }
+
+    /**
+     * Returns the current position of the cursor
+     */
+    getCursorPos(): Position
+    {
+        return this.cursorPos;
     }
 
     //#MARKER static
