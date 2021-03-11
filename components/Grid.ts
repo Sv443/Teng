@@ -4,11 +4,12 @@
 
 import {  } from "../../settings";
 
-import { Size, Position, Area, dbg } from "../base/Base";
+import { Size, Position, Area, dbg, Color, ColorType } from "../base/Base";
 import { TengObject } from "../base/TengObject";
 
 import { Cell } from "./Cell";
 import { Land } from "../../game/components/cells/Land";
+import { mapRange } from "svcorelib";
 
 
 /**
@@ -90,6 +91,8 @@ export class Grid extends TengObject
         let cells: Cell[][] = [];
         let cellsAmount = 0;
 
+        let colIdx = 1;
+
         for(let row = 0; row < size.height; row++)
         {
             cells.push([]);
@@ -103,8 +106,17 @@ export class Grid extends TengObject
 
                 const emptyCell = new Land(cellPos);
 
-                cells[row].push(emptyCell);
                 cellsAmount++;
+                
+                const colorsAmount = Object.keys(Color).length / 2;
+
+                if(colIdx == colorsAmount)
+                    colIdx = 1;
+
+                emptyCell.setColor(ColorType.Foreground, colIdx, true);
+                colIdx++;
+                
+                cells[row].push(emptyCell);
             }
         }
 

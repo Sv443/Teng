@@ -2,7 +2,7 @@
 /* Teng - Responsible for rendering the game */
 /*********************************************/
 
-import { unused } from "svcorelib";
+import { colors, unused } from "svcorelib";
 
 import { TengObject } from "../base/TengObject";
 import { ColorType, isColor, objectsEqual, Position, resolveColor, Size } from "../base/Base";
@@ -123,12 +123,15 @@ export class Camera extends TengObject
     private drawFrame(frame: RenderableGrid): Promise<void>
     {
         return new Promise(async (res, rej) => {
+            let first = true;
             let lastColors: ICellColors = frame[0][0].colors;
 
             const drawRows: string[] = [];
 
             frame.forEach((row, y) => {
                 const drawChars: string[] = [];
+
+                first = true;
 
                 row.forEach((cell, x) => {
                     unused(x, y);
@@ -137,10 +140,19 @@ export class Camera extends TengObject
 
                     // only print color control characters to the out stream if the colors have changed, to massively improve performance
                     const diffRes = diff(lastColors, colors);
-                    if(diffRes != undefined)
+
+                    if(first)
+                    {
+                        // first cell doesn't have a comparand so its color should always be printed
+                        first = false;
+
+                        drawChars.push(resolveColor(ColorType.Foreground, colors.fg, colors.fgDim));
+                        drawChars.push(resolveColor(ColorType.Background, colors.bg, colors.bgDim));
+                    }
+                    else if(diffRes != undefined)
                     {
                         // go over each change
-                        diffRes.forEach(change => {
+                        diffRes.forEach((change, i) => {
                             // get the key of the changes ("fg", "bg", "fgDim", "bgDim")
                             const key: string = change.path?.[0];
                             // get the actual changed value
@@ -157,19 +169,20 @@ export class Camera extends TengObject
                                 break;
                                 default: break;
                             }
+
+                            lastColors = colors;
                         });
                     }
 
                     drawChars.push(char);
-
-                    if(lastColors == null)
-                        lastColors = colors;
                 });
 
-                drawRows.push(drawChars.join(""));
+                drawRows.push(`${drawChars.join("")}${colors.rst}`);
             });
 
-            process.stdout.write(drawRows.join("\n"));
+            process.stdout.write(`${drawRows.join("\n")}${colors.rst}\n`);
+
+            return res();
         });
     }
 
