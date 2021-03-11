@@ -67,12 +67,23 @@ export abstract class Cell extends TengObject
         return `Cell '${this.getChar()}' @ ${this.position.toString()} - UID: ${this.uid.toString()}`;
     }
 
-    //#MARKER methods / setters
+    //#MARKER abstract
     /**
-     * Abstract method - called on each tick to update this cell
+     * Called on each tick to update this cell
      */
     abstract update(): Promise<void>;
 
+    /**
+     * Called when this cell is bulldozed.  
+     *   
+     * This method has to return a Promise.  
+     * The Promise has to resolve with a boolean value.  
+     * `true` = the cell can be bulldozed.  
+     * `false` = the cell can't be bulldozed.
+     */
+    abstract bulldoze(): Promise<boolean>;
+    
+    //#MARKER methods / setters
     /**
      * Sets the state of the cursor
      * @param active

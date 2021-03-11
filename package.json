@@ -15,9 +15,11 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
+    "@types/nanotimer": "^0.3.0",
     "deep-diff": "^1.0.2",
     "figlet": "^1.5.0",
     "fs-extra": "^9.1.0",
+    "nanotimer": "^0.3.15",
     "svcorelib": "^1.12.0",
     "systeminformation": "^5.6.1"
   },

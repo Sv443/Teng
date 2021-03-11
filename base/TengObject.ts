@@ -10,7 +10,7 @@ import { tengSettings } from "../settings";
  */
 export abstract class TengObject
 {
-    /** Unique descriptor of type `Symbol` that's assigned to each Teng object at instantiation */
+    /** Unique identification of type `Symbol` that's assigned to each Teng object at instantiation */
     readonly uid: Symbol;
     /** The name of this Teng object */
     readonly objectName: string;
@@ -32,6 +32,13 @@ export abstract class TengObject
         this.uid = Symbol(`${tengSettings.info.abbreviation}/${objectName}${descriptor}`);
     }
 
+    //#MARKER abstract
+    /**
+     * Returns a string representation of this teng object
+     */
+    abstract toString(): string;
+
+    //#MARKER static
     /**
      * Limits the length of a passed teng object descriptor (string)
      * @param descriptor A descriptor to limit
@@ -49,13 +56,6 @@ export abstract class TengObject
 
         return descriptor;
     }
-
-    /**
-     * Returns a string representation of this teng object
-     */
-    abstract toString(): string;
-
-    //#MARKER static
 
     /**
      * Checks if the passed value is a TengObject

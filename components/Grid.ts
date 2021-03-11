@@ -69,10 +69,12 @@ export class Grid extends TengObject
     {
         return new Promise<any>((res, rej) => {
             // TODO: only update active chunks
-            
+
+            const updatePromises: Promise<void>[] = [];
+
             this.cells.forEach((row, y) => {
                 row.forEach((cell, x) => {
-                    cell.update();
+                    updatePromises.push(cell.update());
                 });
             });
         });
@@ -155,6 +157,20 @@ export class Grid extends TengObject
         return this.cells[position.x][position.y];
     }
 
+    /**
+     * Tries to bulldoze a cell.  
+     * The returned Promise resolves with a boolean value that tells you if the cell could be bulldozed.
+     * @param pos The position of the cell to try to bulldoze
+     */
+    bulldozeCell(pos: Position): Promise<boolean>
+    {
+        return new Promise<boolean>(async (res) => {
+            const bulldozedCell = await this.getCell(pos).bulldoze();
+
+            return res(bulldozedCell);
+        });
+    }
+
     //#MARKER static
     /**
      * Calculates the area of a grid based on its size
@@ -162,15 +178,8 @@ export class Grid extends TengObject
      */
     static calculateArea(size: Size): Area
     {
-        const tl: Position = {
-            x: 0,
-            y: 0
-        };
-
-        const br: Position = {
-            x: size.width,
-            y: size.height
-        };
+        const tl = new Position(0, 0);
+        const br = new Position(size.width, size.height);
 
         return new Area(tl, br);
     }
