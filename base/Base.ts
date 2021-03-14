@@ -10,23 +10,31 @@ import { generalSettings } from "../../settings";
 
 
 //#MARKER base components
-/**
- * Describes a size in 2D space
- */
-export interface ISize
-{
-    [index: string]: number;
+// /**
+//  * Describes a size in 2D space
+//  */
+// export interface ISize
+// {
+//     [index: string]: number;
 
-    width: number;
-    height: number;
+//     width: number;
+//     height: number;
+// }
+
+declare abstract class Stringifiable
+{
+    /**
+     * Turns this object into a string representation
+     */
+    abstract toString(): string;
 }
 
 /**
  * Describes a rectangular size in 2D space
  */
-export class Size implements ISize
+export class Size extends Stringifiable// implements ISize
 {
-    [index: string]: number;
+    // [index: string]: number;
 
     readonly width: number;
     readonly height: number;
@@ -36,30 +44,47 @@ export class Size implements ISize
      */
     constructor(width: number, height: number)
     {
+        super();
+
         this.width = width;
         this.height = height;
+    }
 
-        this.toString = () => `${this.width}x${this.height}`;
+    toString(): string
+    {
+        return `${this.width}x${this.height}`;
+    }
+
+    /**
+     * Turns an instance of the Area class into an instance of the Size class
+     */
+    static fromArea(area: Area): Size
+    {
+        const { tl, br } = area.corners;
+        const w = br.x - tl.x + 1;
+        const h = br.y - tl.y + 1;
+
+        return new Size(w, h);
     }
 }
 
-/**
- * Describes a position / coordinate in 2D space
- */
-export interface IPosition
-{
-    [index: string]: number;
+// /**
+//  * Describes a position / coordinate in 2D space
+//  */
+// export interface IPosition
+// {
+//     [index: string]: number;
 
-    x: number;
-    y: number;
-}
+//     x: number;
+//     y: number;
+// }
 
 /**
  * Describes a position or coordinate in 2D space
  */
-export class Position implements IPosition
+export class Position extends Stringifiable// implements IPosition
 {
-    [index: string]: number;
+    // [index: string]: number;
 
     readonly x: number;
     readonly y: number;
@@ -69,10 +94,15 @@ export class Position implements IPosition
      */
     constructor(x: number, y: number)
     {
+        super();
+
         this.x = x;
         this.y = y;
+    }
 
-        this.toString = () => `[${this.x},${this.y}]`;
+    toString(): string
+    {
+        return `[${this.x},${this.y}]`;
     }
 }
 
@@ -89,22 +119,22 @@ declare interface IAreaCorners
     br: Position;
 }
 
-/**
- * Describes an area in 2D space
- */
-export interface IArea
-{
-    [index: string]: IAreaCorners;
+// /**
+//  * Describes an area in 2D space
+//  */
+// export interface IArea
+// {
+//     [index: string]: IAreaCorners;
 
-    corners: IAreaCorners;
-}
+//     corners: IAreaCorners;
+// }
 
 /**
  * Describes a rectangular 2D area in a 2D space
  */
-export class Area implements IArea
+export class Area extends Stringifiable
 {
-    [index: string]: IAreaCorners;
+    // [index: string]: IAreaCorners;
 
     readonly corners: IAreaCorners;
 
@@ -113,15 +143,18 @@ export class Area implements IArea
      */
     constructor(cornerTL: Position, cornerBR: Position)
     {
+        super();
+
         this.corners = {
             tl: cornerTL,
             br: cornerBR
         };
+    }
 
-        this.toString = () => {
-            const { tl, br } = this.corners;
-            return `⠋[${tl.x},${tl.y}] ⠴[${br.x},${br.y}]`;
-        }
+    toString(): string
+    {
+        const { tl, br } = this.corners;
+        return `⠋[${tl.x},${tl.y}] ⠴[${br.x},${br.y}]`;
     }
 }
 
