@@ -2,9 +2,9 @@
 /* Teng - Responsible for map generation */
 /*****************************************/
 
-import { gameSettings } from "../../../settings";
+import { gameSettings } from "../../settings";
 
-import { Cell } from "../../components/Cell";
+import { Cell } from "../components/Cell";
 import { seededRNG } from "svcorelib";
 
 

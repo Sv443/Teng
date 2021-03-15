@@ -2,8 +2,8 @@
 /* Teng - To be used in LayeredNoise to create noise maps */
 /**********************************************************/
 
-import { Size } from "../Base";
-import { TengObject } from "../TengObject";
+import { Size } from "../base/Base";
+import { TengObject } from "../base/TengObject";
 
 
 //#MARKER types

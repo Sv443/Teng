@@ -2,8 +2,8 @@
 /* Teng - Creates noise maps from multiple layers of coherent noise */
 /********************************************************************/
 
-import { Size } from "../Base";
-import { TengObject } from "../TengObject";
+import { Size } from "../base/Base";
+import { TengObject } from "../base/TengObject";
 import { NoiseLayer } from "./NoiseLayer";
 
 
