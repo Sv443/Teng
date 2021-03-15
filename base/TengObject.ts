@@ -53,7 +53,7 @@ export abstract class TengObject
      * @param descriptor A descriptor to limit
      * @param limit How many characters to limit the descriptor to
      */
-    static limitedLengthDescriptor(descriptor: string, limit: number = 16): string
+    static limitedLengthDescriptor(descriptor: string, limit: number = tengSettings.objects.descriptorDefaultMaxLength): string
     {
         const suffix = "…";
 
@@ -74,6 +74,9 @@ export abstract class TengObject
         value = (value as TengObject);
 
         if(typeof value.uid !== "symbol")
+            return false;
+
+        if(!(value.creationTime instanceof Date))
             return false;
 
         return true;

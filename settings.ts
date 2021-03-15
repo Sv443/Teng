@@ -22,15 +22,19 @@ const tengSettings = Object.freeze({
     },
     loop: {
         /** Default ticks per second */
-        defaultTps: 5
+        defaultTps: 5,
     },
     menus: {
         /** The maximum length of menu descriptors */
-        descriptorMaxLength: 16
+        descriptorMaxLength: 16,
+    },
+    objects: {
+        /** The default maximum length of teng object descriptors */
+        descriptorDefaultMaxLength: 16,
     },
     game: {
         /** The color of the cursor */
-        cursorColor: Color.Magenta
+        cursorColor: Color.Magenta,
     }
 });
 

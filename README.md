@@ -9,6 +9,10 @@ You can view the full license text [in this file.](./LICENSE.txt)
 
 <br>
 
+## [Click here to view the documentation](./docs/home.md#readme)
+
+<br><br>
+
 ### Goals:
 - This engine, once at a stable state, should be available to the public, just like [Unity](https://unity.com/) or [Unreal.](https://www.unrealengine.com/)  
   Private / indie dev use should be free (below a certain produced income).  
@@ -21,7 +25,7 @@ You can view the full license text [in this file.](./LICENSE.txt)
 <br>
 
 ### Teng's brand identity:
-- The name originates from a combination "Townly" and "Engine", Townly being the game which it was originally developed for.
+- The name originates from a combination "Townly" and "Engine", [Townly](https://github.com/Sv443/Townly) being the game which it was originally developed for.
   
 - The logo of the engine should be in ASCII, inspired by its text based nature.  
   An example logo can be found by viewing this file in a text editor (or clicking [here](https://raw.githubusercontent.com/Sv443/Townly/master/engine/README.md)) and then scrolling to the bottom.  
