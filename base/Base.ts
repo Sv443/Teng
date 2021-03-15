@@ -21,6 +21,9 @@ import { generalSettings } from "../../settings";
 //     height: number;
 // }
 
+/**
+ * Extended (derived) classes need to have a toString() method, making the instances of those classes stringifiable
+ */
 export abstract class Stringifiable
 {
     /**
@@ -64,7 +67,7 @@ export class Size extends Stringifiable// implements ISize
         const w = br.x - tl.x + 1;
         const h = br.y - tl.y + 1;
 
-        return new Size(w, h);
+        return new this(w, h);
     }
 }
 
@@ -155,6 +158,19 @@ export class Area extends Stringifiable
     {
         const { tl, br } = this.corners;
         return `⠋[${tl.x},${tl.y}] ⠴[${br.x},${br.y}]`;
+    }
+
+    /**
+     * Returns a new instance of the Area class based on the passed chunk index and chunk size
+     */
+    static fromChunkIndex(chunkIdx: Position, chunkSize: Size): Area
+    {
+        /** TL corner is always just a multiple of the chunk idx and its size */
+        const tl = new Position((chunkIdx.x * chunkSize.width), (chunkIdx.y * chunkSize.height));
+        /** BR corner is easy to derive from just the chunk size added to the TL corner */
+        const br = new Position((tl.x + chunkSize.width - 1), (tl.y + chunkSize.height - 1));
+
+        return new this(tl, br);
     }
 }
 

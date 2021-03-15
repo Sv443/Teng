@@ -1,1 +1,7 @@
+# NodeJS modules
 node_modules/
+
+# MS Office
+~$*.doc*
+~$*.xls*
+~$*.ppt*

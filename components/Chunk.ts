@@ -21,6 +21,8 @@ export class Chunk extends TengObject
 
     private cells: Cell[][] = [];
 
+    private active: boolean = false;
+
     /**
      * Creates an instance of the Chunk class
      * @param chunkIndex The index of this chunk inside a parent grid
@@ -78,6 +80,14 @@ export class Chunk extends TengObject
         return this.cells[pos.y][pos.x];
     }
 
+    /**
+     * Returns the active state of this chunk
+     */
+    isActive(): boolean
+    {
+        return this.active;
+    }
+
     //#MARKER setters
 
     /**
@@ -94,5 +104,13 @@ export class Chunk extends TengObject
     setCell(cell: Cell, pos: Position): void
     {
         this.cells[pos.y][pos.x] = cell;
+    }
+
+    /**
+     * Sets this chunk's active state
+     */
+    setActive(active: boolean): void
+    {
+        this.active = active;
     }
 }

@@ -38,9 +38,6 @@ export class Grid extends TengObject
     private area: Area;
     private options: Partial<IGridOptions> = {};
 
-    private cursorApplied = false;
-    private cursorPos: Position;
-
     private inputHandler: InputHandler | undefined;
 
     private chunks: Chunk[][];
@@ -65,8 +62,8 @@ export class Grid extends TengObject
 
         this.area = Grid.calculateArea(gridSize);
 
-        const cursorPos = new Position(Math.floor(gridSize.width / 2), Math.floor(gridSize.height / 2));
-        this.cursorPos = cursorPos;
+        // set initial cursor pos, at the center of the grid
+        // const cursorPos = new Position(Math.floor(gridSize.width / 2), Math.floor(gridSize.height / 2));
 
         if(options?.inputEnabled === true)
         {
@@ -88,7 +85,7 @@ export class Grid extends TengObject
      */
     toString(): string
     {
-        const size = this.getSize(), area = this.getArea();
+        const size = this.getGridSize(), area = this.getArea();
         return `Grid [${size.toString()}] - area: ${area.toString()} - UID: ${this.uid.toString()}`;
     }
 
@@ -106,9 +103,9 @@ export class Grid extends TengObject
 
             this.chunks.forEach((row, y) => {
                 row.forEach((chunk, x) => {
-                    // TODO: move to chunk's update()
-                    // if(!this.cursorApplied && this.cursorPos.x === x && this.cursorPos.y === y)
-                    //     cell.setCursorActive(true);
+                    // if chunk is inactive, continue with the next chunk:
+                    if(!chunk.isActive())
+                        return;
 
                     updatePromises.push(chunk.update());
                 });
@@ -132,34 +129,34 @@ export class Grid extends TengObject
      */
     keyPress(char: string, key: KeypressObject): void
     {
-        if(!this.getOptions().inputEnabled)
-            return;
+        // if(!this.getOptions().inputEnabled)
+        //     return;
         
-        let { x, y } = this.cursorPos;
+        // let { x, y } = this.cursorPos;
 
-        switch(key.name)
-        {
-            case "left":
-                if(x > 0)
-                    x--;
-            break;
-            case "right":
-                if(x < (this.getSize().width - 1))
-                    x++;
-            break;
-            case "up":
-                if(y > 0)
-                    y--;
-            break;
-            case "down":
-                if(y < (this.getSize().height - 1))
-                    y++;
-            break;
+        // switch(key.name)
+        // {
+        //     case "left":
+        //         if(x > 0)
+        //             x--;
+        //     break;
+        //     case "right":
+        //         if(x < (this.getGridSize().width - 1))
+        //             x++;
+        //     break;
+        //     case "up":
+        //         if(y > 0)
+        //             y--;
+        //     break;
+        //     case "down":
+        //         if(y < (this.getGridSize().height - 1))
+        //             y++;
+        //     break;
 
-            default: return;
-        }
+        //     default: return;
+        // }
 
-        this.moveCursor(new Position(x, y));
+        // this.moveCursor(new Position(x, y));
     }
 
     /**
@@ -183,14 +180,7 @@ export class Grid extends TengObject
      */
     moveCursor(pos: Position): void
     {
-        // TODO: fix
-        // remove old cursor pos
-        const oldCursorPos = this.getCursorPos();
-        // this.getCell(oldCursorPos).setCursorActive(false);
-
-        // set new cursor pos
-        // this.getCell(pos).setCursorActive(true);
-        this.cursorPos = pos;
+        // TODO: rewrite
     }
 
     /**
@@ -198,43 +188,87 @@ export class Grid extends TengObject
      */
     devFill(): void
     {
-        const size = this.getSize();
+        const gridSize = this.getGridSize();
+        const chunkSize = this.getChunkSize();
 
-        let cells: Cell[][] = [];
         let cellsAmount = 0;
+        let chunksAmount = 0;
 
-        let colIdx = Color.Green;
 
-        for(let row = 0; row < size.height; row++)
+        // create chunks
+        for(let chy = 0; chy < gridSize.height; chy++)
         {
-            cells.push([]);
-
-            for(let col = 0; col < size.width; col++)
+            for(let chx = 0; chx < gridSize.width; chx++)
             {
-                const cellPos: Position = {
-                    x: col,
-                    y: row
-                };
+                const chunkIndex = new Position(chx, chy);
+                const chunkArea = Area.fromChunkIndex(chunkIndex, chunkSize);
 
-                const emptyCell = new Land(cellPos);
+                const chunkColor = ((chx % 2 === 0) !== (chy % 2 === 0)) ? Color.Green : Color.Blue;
 
-                cellsAmount++;
-                
-                // const colorsAmount = Object.keys(Color).length / 2;
 
-                // if(colIdx == colorsAmount)
-                //     colIdx = 1;
+                // create cells inside chunk
+                const cells: Cell[][] = [];
 
-                emptyCell.setColor(ColorType.Foreground, colIdx, true);
-                // colIdx++;
-                
-                cells[row].push(emptyCell);
+                for(let celly = 0; celly < chunkSize.height; celly++)
+                {
+                    cells.push([]);
+
+                    for(let cellx = 0; cellx < chunkSize.width; cellx++)
+                    {
+                        const cell = new Land(new Position(cellx, celly));
+
+                        cell.setColor(ColorType.Foreground, chunkColor);
+
+                        cells[celly].push(cell);
+                        cellsAmount++;
+                    }
+                }
+
+                const chunk = new Chunk(chunkIndex, chunkArea, cells);
+
+                this.setChunk(chunkIndex, chunk);
+                chunksAmount++;
             }
         }
 
-        dbg("Grid", `Filled grid of size ${size.width}x${size.height} with ${cellsAmount} cells`);
+        dbg("Grid", `Filled grid of size ${gridSize.toString()} with ${cellsAmount} cells (${chunksAmount} chunks)`);
 
-        // TODO:
+        // const size = this.getSize();
+
+        // let cells: Cell[][] = [];
+        // let cellsAmount = 0;
+
+        // let colIdx = Color.Green;
+
+        // for(let row = 0; row < size.height; row++)
+        // {
+        //     cells.push([]);
+
+        //     for(let col = 0; col < size.width; col++)
+        //     {
+        //         const cellPos: Position = {
+        //             x: col,
+        //             y: row
+        //         };
+
+        //         const emptyCell = new Land(cellPos);
+
+        //         cellsAmount++;
+                
+        //         // const colorsAmount = Object.keys(Color).length / 2;
+
+        //         // if(colIdx == colorsAmount)
+        //         //     colIdx = 1;
+
+        //         emptyCell.setColor(ColorType.Foreground, colIdx, true);
+        //         // colIdx++;
+                
+        //         cells[row].push(emptyCell);
+        //     }
+        // }
+
+        // dbg("Grid", `Filled grid of size ${size.width}x${size.height} with ${cellsAmount} cells`);
+
         // this.setCells(cells);
     }
 
@@ -250,6 +284,16 @@ export class Grid extends TengObject
     }
 
     /**
+     * Sets a chunk at the specified chunk index
+     * @param chunkIndex The index of the chunk
+     * @param chunk The chunk to set
+     */
+    setChunk(chunkIndex: Position, chunk: Chunk): void
+    {
+        this.chunks[chunkIndex.y][chunkIndex.x] = chunk;
+    }
+
+    /**
      * Sets the cell at the provided position
      * @param chunkIndex The index of the chunk
      * @param cellPosition Position of the cell inside the chunk
@@ -257,7 +301,7 @@ export class Grid extends TengObject
      */
     setCell(chunkIndex: Position, cellPosition: Position, cell: Cell)
     {
-        const size = this.getSize();
+        const size = this.getGridSize();
 
         if(
             cellPosition.x < 0 || cellPosition.y < 0
@@ -280,9 +324,17 @@ export class Grid extends TengObject
     /**
      * Returns the size of this grid
      */
-    getSize(): Size
+    getGridSize(): Size
     {
         return this.gridSize;
+    }
+
+    /**
+     * Returns the size of the chunks in this grid
+     */
+    getChunkSize(): Size
+    {
+        return this.chunkSize;
     }
 
     /**
@@ -302,11 +354,19 @@ export class Grid extends TengObject
     }
 
     /**
-     * Returns the 2D array of cells of this grid
+     * Returns the 2D array of cells of a chunk at the specified index
      */
     getCells(chunkIdx: Position): Cell[][]
     {
         return this.chunks[chunkIdx.y][chunkIdx.x].getCells();
+    }
+
+    /**
+     * Returns the chunk at the specified index
+     */
+    getChunk(chunkIdx: Position): Chunk
+    {
+        return this.chunks[chunkIdx.y][chunkIdx.x];
     }
 
     /**
@@ -324,7 +384,7 @@ export class Grid extends TengObject
      */
     getCell(chunkIdx: Position, cellPosition: Position): Cell
     {
-        const size = this.getSize();
+        const size = this.getGridSize();
 
         if(
             cellPosition.x < 0 || cellPosition.y < 0
@@ -340,7 +400,9 @@ export class Grid extends TengObject
      */
     getCursorPos(): Position
     {
-        return this.cursorPos;
+        // TODO: fix
+        // return this.cursorPos;
+        return new Position(0, 0);
     }
 
     //#MARKER static
