@@ -35,9 +35,14 @@ const tengSettings = Object.freeze({
     game: {
         /** The color of the cursor - has to be a value in the Color enum from `Base.ts` */
         cursorColor: Color.Magenta,
-        /** Settings regarding chunks */
         chunks: {
 
+        },
+        saveStates: {
+            /** Maximum length of a save state name - in characters */
+            maxStateNameLength: 32,
+            /** File extension to save save states as (don't prefix this with a dot) */
+            defaultFileExtension: "tes",
         }
     }
 });
