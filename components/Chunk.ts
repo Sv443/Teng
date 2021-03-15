@@ -1,6 +1,6 @@
-/*********************************************************************/
-/* Teng - Chunks contain cells. They are used to improve performance */
-/*********************************************************************/
+/**********************************************************************/
+/* Teng - Chunks contain cells. They are used to improve performance. */
+/**********************************************************************/
 
 import { TengObject } from "../base/TengObject";
 import { Area, Position, Size } from "../base/Base";
@@ -45,6 +45,19 @@ export class Chunk extends TengObject
     toString(): string
     {
         return `Chunk @ ${this.chunkIndex.toString()} - size: ${this.size.toString()} - area: ${this.area.toString()} - UID: ${this.uid.toString()}`;
+    }
+
+    //#MARKER other
+
+    /**
+     * Call this method on every tick to update this chunk - use the GameLoop class for timing.  
+     * This call is propagated throughout all cells.
+     */
+    update(): Promise<void>
+    {
+        return new Promise<void>(async (res) => {
+            return res();
+        });
     }
 
     //#MARKER getters

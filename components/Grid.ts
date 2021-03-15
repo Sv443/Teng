@@ -9,8 +9,8 @@ import { TengObject } from "../base/TengObject";
 
 import { Cell } from "./Cell";
 import { Land } from "../../game/components/cells/Land";
-import { mapRange } from "svcorelib";
 import { InputHandler, KeypressObject } from "../input/InputHandler";
+import { Chunk } from "./Chunk";
 
 
 /**
@@ -41,15 +41,16 @@ export class Grid extends TengObject
 
     private inputHandler: InputHandler | undefined;
 
-    private cells: Cell[][];
+    private chunks: Chunk[][];
 
 
     /**
      * Creates an instance of the Grid class
      * @param size The size of the grid
+     * @param chunks Initial value of this grid's chunks
      * @param options Grid options
      */
-    constructor(size: Size, options?: Partial<IGridOptions>)
+    constructor(size: Size, chunks?: Chunk[][], options?: Partial<IGridOptions>)
     {
         super("Grid", `${size.toString()}`);
 
@@ -72,7 +73,10 @@ export class Grid extends TengObject
             });
         }
 
-        this.cells = [];
+        if(Array.isArray(chunks))
+            this.chunks = chunks;
+        else
+            this.chunks = [];
     }
 
     /**
@@ -87,7 +91,7 @@ export class Grid extends TengObject
     //#MARKER methods
     /**
      * Call this method on every tick to update the grid - use the GameLoop class for timing.  
-     * This call is propagated throughout all cells.
+     * This call is propagated throughout all chunks and cells.
      */
     update(): Promise<void>
     {
@@ -96,12 +100,13 @@ export class Grid extends TengObject
 
             const updatePromises: Promise<void>[] = [];
 
-            this.cells.forEach((row, y) => {
-                row.forEach((cell, x) => {
-                    if(!this.cursorApplied && this.cursorPos.x === x && this.cursorPos.y === y)
-                        cell.setCursorActive(true);
+            this.chunks.forEach((row, y) => {
+                row.forEach((chunk, x) => {
+                    // TODO: move to chunk's update()
+                    // if(!this.cursorApplied && this.cursorPos.x === x && this.cursorPos.y === y)
+                    //     cell.setCursorActive(true);
 
-                    updatePromises.push(cell.update());
+                    updatePromises.push(chunk.update());
                 });
             });
 
@@ -161,9 +166,11 @@ export class Grid extends TengObject
     bulldozeCell(pos: Position): Promise<boolean>
     {
         return new Promise<boolean>(async (res) => {
-            const bulldozedCell = await this.getCell(pos).bulldoze();
+            // TODO: fix
+            // const bulldozedCell = await this.getCell(pos).bulldoze();
 
-            return res(bulldozedCell);
+            // return res(bulldozedCell);
+            return res(false);
         });
     }
 
@@ -172,12 +179,13 @@ export class Grid extends TengObject
      */
     moveCursor(pos: Position): void
     {
+        // TODO: fix
         // remove old cursor pos
         const oldCursorPos = this.getCursorPos();
-        this.getCell(oldCursorPos).setCursorActive(false);
+        // this.getCell(oldCursorPos).setCursorActive(false);
 
         // set new cursor pos
-        this.getCell(pos).setCursorActive(true);
+        // this.getCell(pos).setCursorActive(true);
         this.cursorPos = pos;
     }
 
@@ -222,35 +230,38 @@ export class Grid extends TengObject
 
         dbg("Grid", `Filled grid of size ${size.width}x${size.height} with ${cellsAmount} cells`);
 
-        this.setCells(cells);
+        // TODO:
+        // this.setCells(cells);
     }
 
     //#MARKER setters
     /**
-     * Sets this grid's cells
+     * Sets the cells of a chunk
+     * @param chunkIndex The index of the chunk
      * @param cells 2D array of cells
      */
-    setCells(cells: Cell[][]): void
+    setCells(chunkIndex: Position, cells: Cell[][]): void
     {
-        this.cells = cells;
+        this.chunks[chunkIndex.y][chunkIndex.x].setCells(cells);
     }
 
     /**
      * Sets the cell at the provided position
-     * @param position Position of the cell
+     * @param chunkIndex The index of the chunk
+     * @param cellPosition Position of the cell inside the chunk
      * @param cell The cell to set at the provided position
      */
-    setCell(position: Position, cell: Cell)
+    setCell(chunkIndex: Position, cellPosition: Position, cell: Cell)
     {
         const size = this.getSize();
 
         if(
-            position.x < 0 || position.y < 0
-            || position.x > size.width || position.y > size.height
+            cellPosition.x < 0 || cellPosition.y < 0
+            || cellPosition.x > size.width || cellPosition.y > size.height
         )
-            throw new TypeError(`Passed cell position is out of range - got [${position.x},${position.y}] - expected between [0,0] and [${size.width},${size.height}]`);
+            throw new TypeError(`Passed cell position is out of range - got [${cellPosition.x},${cellPosition.y}] - expected between [0,0] and [${size.width},${size.height}]`);
 
-        this.cells[position.y][position.x] = cell;
+        this.chunks[chunkIndex.y][chunkIndex.x].setCell(cell, cellPosition);
     }
 
     /**
@@ -289,9 +300,9 @@ export class Grid extends TengObject
     /**
      * Returns the 2D array of cells of this grid
      */
-    getCells(): Cell[][]
+    getCells(chunkIdx: Position): Cell[][]
     {
-        return this.cells;
+        return this.chunks[chunkIdx.y][chunkIdx.x].getCells();
     }
 
     /**
@@ -304,19 +315,20 @@ export class Grid extends TengObject
 
     /**
      * Returns the cell at the provided position
-     * @param position Position of the cell
+     * @param chunkIdx The index of the chunk
+     * @param cellPosition Position of the cell within the chunk
      */
-    getCell(position: Position): Cell
+    getCell(chunkIdx: Position, cellPosition: Position): Cell
     {
         const size = this.getSize();
 
         if(
-            position.x < 0 || position.y < 0
-            || position.x > size.width || position.y > size.height
+            cellPosition.x < 0 || cellPosition.y < 0
+            || cellPosition.x > size.width || cellPosition.y > size.height
         )
-            throw new TypeError(`Passed cell position is out of range - got [${position.x},${position.y}] - expected between [0,0] and [${size.width},${size.height}]`);
+            throw new TypeError(`Passed cell position is out of range - got [${cellPosition.x},${cellPosition.y}] - expected between [0,0] and [${size.width},${size.height}]`);
 
-        return this.cells[position.y][position.x];
+        return this.chunks[chunkIdx.y][chunkIdx.x].getCell(cellPosition);
     }
 
     /**
