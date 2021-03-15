@@ -7,10 +7,11 @@ import {  } from "../../settings";
 import { Size, Position, Area, dbg, Color, ColorType } from "../base/Base";
 import { TengObject } from "../base/TengObject";
 
-import { Cell } from "./Cell";
+import { Cell, IRelativeCellPosition, IAbsoluteCellPosition } from "./Cell";
 import { Land } from "../../game/components/cells/Land";
 import { InputHandler, KeypressObject } from "../input/InputHandler";
 import { Chunk } from "./Chunk";
+import { tengSettings } from "../settings";
 
 
 /**
@@ -357,6 +358,9 @@ export class Grid extends TengObject
      */
     static isGrid(value: any): value is Grid
     {
+        if(!value)
+            return false;
+
         value = (value as Grid);
 
         if(typeof value.getSize !== "function" || !(value.getSize() instanceof Size))
@@ -366,5 +370,32 @@ export class Grid extends TengObject
             return false;
 
         return true;
+    }
+
+    /**
+     * Turns a passed absolute cell position (relative to the grid) into a chunk index and cell pos relative to its parent chunk
+     */
+    static absoluteCellPosToRelative(absPos: IAbsoluteCellPosition): IRelativeCellPosition
+    {
+        const { absolutePos, chunkSize } = absPos;
+
+        // some magic bitshift fuckery to find out chunk index - stolen from https://stackoverflow.com/a/14494439
+        const chunkIdx = new Position(((absolutePos.x / chunkSize.width) >> 0), ((absolutePos.y / chunkSize.height) >> 0));
+        // simple trick to find out relative cell position
+        const relativePos = new Position((absolutePos.x % chunkSize.width), (absolutePos.y % chunkSize.height));
+
+        return { chunkIdx, relativePos, chunkSize };
+    }
+
+    /**
+     * Turns the passed relative cell position (relative to its parent chunk) into an absolute position, relative to the parent grid
+     */
+    static relativeCellPosToAbsolute(relPos: IRelativeCellPosition): IAbsoluteCellPosition
+    {
+        const { relativePos, chunkIdx, chunkSize } = relPos;
+
+        const absolutePos = new Position((chunkIdx.x * chunkSize.width + relativePos.x), (chunkIdx.y * chunkSize.height + relativePos.y));
+
+        return { absolutePos, chunkSize };
     }
 }

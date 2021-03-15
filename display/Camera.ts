@@ -209,22 +209,23 @@ export class Camera extends TengObject
 
             const renderedCells: ICellRenderInfo[][] = [];
 
-            const cells = grid.getCells();
+            // TODO: fix
+            // const cells = grid.getCells();
 
-            cells.forEach((row, y) => {
-                renderedCells.push([]);
+            // cells.forEach((row, y) => {
+            //     renderedCells.push([]);
 
-                row.forEach((cell, x) => {
-                    unused(x);
+            //     row.forEach((cell, x) => {
+            //         unused(x);
 
-                    const rendCell: ICellRenderInfo = {
-                        char: cell.getChar(),
-                        colors: cell.getColors()
-                    };
+            //         const rendCell: ICellRenderInfo = {
+            //             char: cell.getChar(),
+            //             colors: cell.getColors()
+            //         };
 
-                    renderedCells[y].push(rendCell);
-                });
-            });
+            //         renderedCells[y].push(rendCell);
+            //     });
+            // });
 
 
             this.isRenderingFrame = false;

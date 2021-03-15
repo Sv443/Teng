@@ -2,7 +2,7 @@
 /* Teng - Cells are the smallest parts that make up the game */
 /*************************************************************/
 
-import { Position, Color, ColorType } from "../base/Base";
+import { Position, Color, ColorType, Size } from "../base/Base";
 import { TengObject } from "../base/TengObject";
 
 
@@ -168,4 +168,28 @@ export abstract class Cell extends TengObject
 
         return true;
     }
+}
+
+/**
+ * Describes a position of a specific cell inside a specific chunk of a grid
+ */
+export interface IRelativeCellPosition
+{
+    /** The chunk's index inside its parent **grid** */
+    chunkIdx: Position;
+    /** The position of a cell inside its parent **chunk** */
+    relativePos: Position;
+    /** The size of the chunks */
+    chunkSize: Size;
+}
+
+/**
+ * Describes the position of a specific cell inside its parent grid, disregarding its parent chunk
+ */
+export interface IAbsoluteCellPosition
+{
+    /** The absolute position of a specific cell in its parent **grid**, disregarding its parent chunk */
+    absolutePos: Position;
+    /** The size of the chunks */
+    chunkSize: Size;
 }

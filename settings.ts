@@ -2,7 +2,7 @@
 /* Teng - Engine Settings */
 /**************************/
 
-import { Color } from "./base/Base";
+import { Color, Size } from "./base/Base";
 import * as packageJson from "./package.json";
 
 
@@ -33,8 +33,12 @@ const tengSettings = Object.freeze({
         descriptorDefaultMaxLength: 16,
     },
     game: {
-        /** The color of the cursor */
+        /** The color of the cursor - has to be a value in the Color enum from `Base.ts` */
         cursorColor: Color.Magenta,
+        /** Settings regarding chunks */
+        chunks: {
+
+        }
     }
 });
 

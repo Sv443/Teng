@@ -21,7 +21,7 @@ import { generalSettings } from "../../settings";
 //     height: number;
 // }
 
-declare abstract class Stringifiable
+export abstract class Stringifiable
 {
     /**
      * Turns this object into a string representation
