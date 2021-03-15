@@ -12,6 +12,9 @@ import { diff } from "deep-diff";
 import { tengSettings } from "../settings";
 
 
+// TODO: make changeable in game settings menu
+const legacyCursorEnabled = true;
+
 /**
  * Describes the initial values of a camera
  */
@@ -172,7 +175,7 @@ export class Camera extends TengObject
                             }
 
                             // draw cursor
-                            if(key === "cursorActive")
+                            if(key === "cursorActive" && legacyCursorEnabled)
                             {
                                 if(colors.cursorActive)
                                     drawChars.push(resolveColor(ColorType.Foreground, tengSettings.game.cursorColor, false));

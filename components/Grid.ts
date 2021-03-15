@@ -33,7 +33,8 @@ export interface IGridOptions
  */
 export class Grid extends TengObject
 {
-    private size: Size;
+    private gridSize: Size;
+    private chunkSize: Size;
     private area: Area;
     private options: Partial<IGridOptions> = {};
 
@@ -47,22 +48,24 @@ export class Grid extends TengObject
 
     /**
      * Creates an instance of the Grid class
-     * @param size The size of the grid
-     * @param chunks Initial value of this grid's chunks
+     * @param gridSize The size of the grid
+     * @param chunkSize The size of the chunks
+     * @param chunks Optional initialization value of this grid's chunks
      * @param options Grid options
      */
-    constructor(size: Size, chunks?: Chunk[][], options?: Partial<IGridOptions>)
+    constructor(gridSize: Size, chunkSize: Size, chunks?: Chunk[][], options?: Partial<IGridOptions>)
     {
-        super("Grid", `${size.toString()}`);
+        super("Grid", `${gridSize.toString()}`);
 
-        this.size = size;
+        this.gridSize = gridSize;
+        this.chunkSize = chunkSize;
 
         if(options)
             this.options = options;
 
-        this.area = Grid.calculateArea(size);
+        this.area = Grid.calculateArea(gridSize);
 
-        const cursorPos = new Position(Math.floor(size.width / 2), Math.floor(size.height / 2));
+        const cursorPos = new Position(Math.floor(gridSize.width / 2), Math.floor(gridSize.height / 2));
         this.cursorPos = cursorPos;
 
         if(options?.inputEnabled === true)
@@ -279,7 +282,7 @@ export class Grid extends TengObject
      */
     getSize(): Size
     {
-        return this.size;
+        return this.gridSize;
     }
 
     /**
