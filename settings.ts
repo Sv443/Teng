@@ -9,14 +9,16 @@ import * as packageJson from "./package.json";
 /** Teng engine settings */
 const tengSettings = Object.freeze({
     info: {
-        /** The name of the engine */
+        /** The full name of the engine */
         name: "Teng",
-        /** Engine name abbreviation to use in class descriptors and more */
+        /** Engine name abbreviation to use in object descriptors and more */
         abbreviation: "TE",
         /** Version, as a number array */
         version: packageJson.version.split(/\./g).map(v=>parseInt(v)),
         /** Version, as a string */
         versionStr: packageJson.version,
+        /** Teng's main author */
+        author: packageJson.author,
     },
     loop: {
         /** Default ticks per second */

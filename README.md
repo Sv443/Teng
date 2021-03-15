@@ -1,5 +1,5 @@
 # Teng
-This is the engine I am writing alongside the Townly game.  
+This is the engine I am writing alongside the [Townly game.](https://github.com/Sv443/Townly)  
 It is written in TypeScript and was created for CLI (command line / TTY) games.  
   
 I currently reserve the rights to the engine.  
