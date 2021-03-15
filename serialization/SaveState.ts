@@ -19,6 +19,8 @@ export type SaveStateData<T> = object;
 const encryptionKey = "TODO: figure this out";
 
 
+// TODO: add compression
+
 /**
  * Keeps track of a save state and is responsible for saving and loading from save state files
  */
