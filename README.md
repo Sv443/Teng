@@ -10,6 +10,7 @@ You can view the full license text [in this file.](./LICENSE.txt)
 <br>
 
 ## [Click here to view the documentation](./docs/home.md#readme)
+### If you have questions or wanna chat, feel free to [join my Discord server](https://sv443.net/discord)
 
 <br><br>
 
