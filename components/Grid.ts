@@ -258,44 +258,6 @@ export class Grid extends TengObject
         }
 
         dbg("Grid", `Filled grid of size ${gridSize.toString()} with ${cellsAmount} total cells // ${chunksAmount} chunks with ${cellsAmount / chunksAmount} cells each`);
-
-        // const size = this.getSize();
-
-        // let cells: Cell[][] = [];
-        // let cellsAmount = 0;
-
-        // let colIdx = Color.Green;
-
-        // for(let row = 0; row < size.height; row++)
-        // {
-        //     cells.push([]);
-
-        //     for(let col = 0; col < size.width; col++)
-        //     {
-        //         const cellPos: Position = {
-        //             x: col,
-        //             y: row
-        //         };
-
-        //         const emptyCell = new Land(cellPos);
-
-        //         cellsAmount++;
-                
-        //         // const colorsAmount = Object.keys(Color).length / 2;
-
-        //         // if(colIdx == colorsAmount)
-        //         //     colIdx = 1;
-
-        //         emptyCell.setColor(ColorType.Foreground, colIdx, true);
-        //         // colIdx++;
-                
-        //         cells[row].push(emptyCell);
-        //     }
-        // }
-
-        // dbg("Grid", `Filled grid of size ${size.width}x${size.height} with ${cellsAmount} cells`);
-
-        // this.setCells(cells);
     }
 
     //#MARKER setters
