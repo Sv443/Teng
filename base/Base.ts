@@ -69,6 +69,17 @@ export class Size extends Stringifiable// implements ISize
 
         return new this(w, h);
     }
+
+    /**
+     * Checks if this size is a multiple of the passed size
+     */
+    isMultipleOf(comparand: Size): boolean
+    {
+        if(this.width % comparand.width === 0 && this.height % comparand.height === 0)
+            return true;
+
+        return false;
+    }
 }
 
 // /**

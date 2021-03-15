@@ -49,10 +49,15 @@ export class Grid extends TengObject
      * @param chunkSize The size of the chunks
      * @param chunks Optional initialization value of this grid's chunks
      * @param options Grid options
+     * @throws TypeError if the grid size is not a multiple of the chunk size
      */
     constructor(gridSize: Size, chunkSize: Size, chunks?: Chunk[][], options?: Partial<IGridOptions>)
     {
         super("Grid", `${gridSize.toString()}`);
+
+        // check if chunk size is valid
+        if(!gridSize.isMultipleOf(chunkSize))
+            throw new TypeError(`Grid size is not a multiple of the chunk size`);
 
         this.gridSize = gridSize;
         this.chunkSize = chunkSize;
@@ -191,18 +196,22 @@ export class Grid extends TengObject
         const gridSize = this.getGridSize();
         const chunkSize = this.getChunkSize();
 
+        // find out max possible chunk index, which guides the chunk creation
+        const chunkMaxIndex = new Position((gridSize.width / chunkSize.width - 1), (gridSize.height / chunkSize.height - 1));
+
         let cellsAmount = 0;
         let chunksAmount = 0;
 
 
         // create chunks
-        for(let chy = 0; chy < gridSize.height; chy++)
+        for(let chy = 0; chy <= chunkMaxIndex.y; chy++)
         {
-            for(let chx = 0; chx < gridSize.width; chx++)
+            for(let chx = 0; chx <= chunkMaxIndex.x; chx++)
             {
                 const chunkIndex = new Position(chx, chy);
                 const chunkArea = Area.fromChunkIndex(chunkIndex, chunkSize);
 
+                // color chunks in a checkerboard pattern
                 const chunkColor = ((chx % 2 === 0) !== (chy % 2 === 0)) ? Color.Green : Color.Blue;
 
 
@@ -231,7 +240,7 @@ export class Grid extends TengObject
             }
         }
 
-        dbg("Grid", `Filled grid of size ${gridSize.toString()} with ${cellsAmount} cells (${chunksAmount} chunks)`);
+        dbg("Grid", `Filled grid of size ${gridSize.toString()} with ${cellsAmount} total cells // ${chunksAmount} chunks with ${cellsAmount / chunksAmount} cells each`);
 
         // const size = this.getSize();
 
@@ -290,6 +299,9 @@ export class Grid extends TengObject
      */
     setChunk(chunkIndex: Position, chunk: Chunk): void
     {
+        if(!this.chunks[chunkIndex.y] && chunkIndex.y === this.chunks.length)
+            this.chunks.push([]);
+
         this.chunks[chunkIndex.y][chunkIndex.x] = chunk;
     }
 
