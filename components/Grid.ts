@@ -102,8 +102,6 @@ export class Grid extends TengObject
     update(): Promise<void>
     {
         return new Promise<void>(async (res, rej) => {
-            // TODO: only update active chunks
-
             const updatePromises: Promise<void>[] = [];
 
             this.chunks.forEach((row, y) => {

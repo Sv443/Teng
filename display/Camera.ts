@@ -205,7 +205,7 @@ export class Camera extends TengObject
                 for(let chx = 0; chx < maxChunkIdx.x; chx++)
                 {
                     const chunkIndex = new Position(chx, chy);
-                    // console.log(`---\n#DEBUG: Chunk @ ${chunkIndex.toString()}\n---`);
+                    // console.log(`---\nDEBUG/RenderFrame: Chunk @ ${chunkIndex.toString()}\n---`);
 
                     const chunk = grid.getChunk(chunkIndex);
 
@@ -221,7 +221,7 @@ export class Camera extends TengObject
 
                             const offsetPos = new Position(xOffset, yOffset);
 
-                            // console.log(`#DEBUG: Cell @ ${offsetPos.toString()}`);
+                            // console.log(`DEBUG/RenderFrame: Cell @ ${offsetPos.toString()}`);
 
                             renderedCells[offsetPos.y][offsetPos.x] = {
                                 char: cell.getChar(),
@@ -231,27 +231,6 @@ export class Camera extends TengObject
                     });
                 }
             }
-
-            return res(renderedCells);
-
-            // TODO: fix
-            // const cells = grid.getCells();
-
-            // cells.forEach((row, y) => {
-            //     renderedCells.push([]);
-
-            //     row.forEach((cell, x) => {
-            //         unused(x);
-
-            //         const rendCell: ICellRenderInfo = {
-            //             char: cell.getChar(),
-            //             colors: cell.getColors()
-            //         };
-
-            //         renderedCells[y].push(rendCell);
-            //     });
-            // });
-
 
             this.isRenderingFrame = false;
             return res(renderedCells);
