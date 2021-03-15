@@ -202,6 +202,25 @@ export class Grid extends TengObject
         let cellsAmount = 0;
         let chunksAmount = 0;
 
+        let chunkColor = Color.Green;
+        const cycleColor = () => {
+            switch(chunkColor)
+            {
+                case Color.Green:
+                    chunkColor = Color.Blue;
+                break;
+                case Color.Blue:
+                    chunkColor = Color.Red;
+                break;
+                case Color.Red:
+                    chunkColor = Color.Yellow;
+                break;
+                case Color.Yellow:
+                    chunkColor = Color.Green;
+                break;
+            }
+        };
+
 
         // create chunks
         for(let chy = 0; chy <= chunkMaxIndex.y; chy++)
@@ -211,8 +230,8 @@ export class Grid extends TengObject
                 const chunkIndex = new Position(chx, chy);
                 const chunkArea = Area.fromChunkIndex(chunkIndex, chunkSize);
 
-                // color chunks in a checkerboard pattern
-                const chunkColor = ((chx % 2 === 0) !== (chy % 2 === 0)) ? Color.Green : Color.Blue;
+                // color chunks in a pattern
+                cycleColor();
 
 
                 // create cells inside chunk
@@ -415,6 +434,14 @@ export class Grid extends TengObject
         // TODO: fix
         // return this.cursorPos;
         return new Position(0, 0);
+    }
+
+    /**
+     * Returns the biggest chunk index from the currently set chunks
+     */
+    getMaxChunkIdx(): Position
+    {
+        return new Position((this.chunks[0].length - 1), (this.chunks.length - 1));
     }
 
     //#MARKER static

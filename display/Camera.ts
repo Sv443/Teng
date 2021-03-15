@@ -5,7 +5,7 @@
 import { colors, unused } from "svcorelib";
 
 import { TengObject } from "../base/TengObject";
-import { ColorType, isColor, objectsEqual, Position, resolveColor, Size } from "../base/Base";
+import { Area, ColorType, isColor, objectsEqual, Position, resolveColor, Size } from "../base/Base";
 import { Cell, ICellColors } from "../components/Cell";
 import { Grid } from "../components/Grid";
 import { diff } from "deep-diff";
@@ -14,19 +14,6 @@ import { tengSettings } from "../settings";
 
 // TODO: make changeable in game settings menu
 // const legacyCursorEnabled = true;
-
-/**
- * Describes the initial values of a camera
- */
-export interface ICameraInitialValues
-{
-    [index: string]: Position | Size;
-
-    /** Position of the top left corner of the camera */
-    position: Position;
-    /** Size of the camera's viewport */
-    viewportSize: Size;
-}
 
 /**
  * Describes how to render a single cell
@@ -49,31 +36,36 @@ declare type RenderableGrid = ICellRenderInfo[][];
  */
 export class Camera extends TengObject
 {
-    /** The position of the camera's top left corner, in a parent grid */
-    readonly position: Position;
     /** The size of the camera's viewport / frustum / whatever tf it's called */
-    readonly viewportSize: Size;
+    private viewportSize: Size;
+    /** The area of a parent Grid this camera is rendering */
+    private area: Area;
 
     /** The stream to write the rendered data to */
     private outStream: NodeJS.WriteStream;
 
     /** Buffers a frame until it is rendered, then it's overwritten with a newly calculated frame */
-    private renderBuffer: Cell[][] = [];
+    private renderBuffer: Cell[][];
     /** Is set to true only while a new frame is currently being rendered */
-    private isRenderingFrame: boolean = false;
+    private isRenderingFrame: boolean;
 
 
     /**
      * Creates an instance of the Camera class
-     * @param initialValues The initial values (position, size, ...) of this camera
+     * @param initialArea The initial area the camera starts at
      * @param outStream The stream to write the rendered stuff to - defaults to `process.stdout`
      */
-    constructor(initialValues: ICameraInitialValues, outStream: NodeJS.WriteStream = process.stdout)
+    constructor(initialArea: Area, outStream: NodeJS.WriteStream = process.stdout)
     {
-        super("Camera", `${initialValues.viewportSize.width}x${initialValues.viewportSize.height}`);
+        const viewportSize = Size.fromArea(initialArea);
 
-        this.position = initialValues.position;
-        this.viewportSize = initialValues.viewportSize;
+        super("Camera", `${viewportSize}x${viewportSize.height}`);
+
+        this.area = initialArea;
+        this.viewportSize = viewportSize;
+
+        this.renderBuffer = [];
+        this.isRenderingFrame = false;
 
         this.outStream = outStream;
     }
@@ -83,7 +75,7 @@ export class Camera extends TengObject
      */
     toString(): string
     {
-        return `Camera @ ${this.position.toString()} - viewport: ${this.viewportSize.toString()} - UID: ${this.uid.toString()}`;
+        return `Camera with viewport size ${this.viewportSize.toString()} - UID: ${this.uid.toString()}`;
     }
 
     /**
@@ -203,6 +195,44 @@ export class Camera extends TengObject
             this.isRenderingFrame = true;
 
             const renderedCells: ICellRenderInfo[][] = [];
+
+            const maxChunkIdx = grid.getMaxChunkIdx();
+            const chunkSize = grid.getChunkSize();
+
+            // iterate over all chunks
+            for(let chy = 0; chy < maxChunkIdx.y; chy++)
+            {
+                for(let chx = 0; chx < maxChunkIdx.x; chx++)
+                {
+                    const chunkIndex = new Position(chx, chy);
+                    // console.log(`---\n#DEBUG: Chunk @ ${chunkIndex.toString()}\n---`);
+
+                    const chunk = grid.getChunk(chunkIndex);
+
+                    // iterate over chunk's cells
+                    chunk.getCells().forEach((row, celly) => {
+                        const yOffset = (chunkIndex.y * chunkSize.height + celly);
+
+                        if(renderedCells.length == yOffset)
+                            renderedCells.push([]);
+
+                        row.forEach((cell, cellx) => {
+                            const xOffset = (chunkIndex.x * chunkSize.width + cellx);
+
+                            const offsetPos = new Position(xOffset, yOffset);
+
+                            // console.log(`#DEBUG: Cell @ ${offsetPos.toString()}`);
+
+                            renderedCells[offsetPos.y][offsetPos.x] = {
+                                char: cell.getChar(),
+                                colors: cell.getColors()
+                            };
+                        });
+                    });
+                }
+            }
+
+            return res(renderedCells);
 
             // TODO: fix
             // const cells = grid.getCells();
