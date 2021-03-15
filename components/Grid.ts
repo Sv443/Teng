@@ -129,7 +129,8 @@ export class Grid extends TengObject
     }
 
     /**
-     * Handles the default inputs
+     * Handles the default inputs  
+     * TODO: rewrite
      */
     keyPress(char: string, key: KeypressObject): void
     {
