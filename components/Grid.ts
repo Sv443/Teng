@@ -12,6 +12,7 @@ import { Land } from "../../game/components/cells/Land";
 import { InputHandler, KeypressObject } from "../input/InputHandler";
 import { Chunk } from "./Chunk";
 import { tengSettings } from "../settings";
+import { unused } from "svcorelib";
 
 
 /**
@@ -170,11 +171,24 @@ export class Grid extends TengObject
     bulldozeCell(pos: Position): Promise<boolean>
     {
         return new Promise<boolean>(async (res) => {
-            // TODO: fix
-            // const bulldozedCell = await this.getCell(pos).bulldoze();
+            try
+            {
+                const relativePos = Grid.absoluteCellPosToRelative({
+                    absolutePos: pos,
+                    chunkSize: this.getChunkSize()
+                });
 
-            // return res(bulldozedCell);
-            return res(false);
+                const bulldozedCell = await this.getCell(relativePos.chunkIdx, relativePos.relativePos).bulldoze();
+
+                return res(bulldozedCell);
+            }
+            catch(err)
+            {
+                unused(err);
+
+                // some error occurred so better not bulldoze this cell
+                return res(false);
+            }
         });
     }
 
@@ -387,11 +401,11 @@ export class Grid extends TengObject
     }
 
     /**
-     * Returns the current position of the cursor
+     * Returns the current position of the cursor  
+     * // TODO: fix (currently just returns [0, 0])
      */
     getCursorPos(): Position
     {
-        // TODO: fix
         // return this.cursorPos;
         return new Position(0, 0);
     }
