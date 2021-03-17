@@ -5,8 +5,24 @@
 import { resolve } from "path";
 import { statSync } from "fs-extra";
 
-import { TengObject } from "./TengObject";
+import { TengObject } from "../base/TengObject";
+import { IAudioMetadata, parseFile } from "music-metadata";
+import { StatePromise } from "../base/StatePromise";
 
+
+/**
+ * Internal name of the audio
+ */
+export type AudioName = string;
+
+/**
+ * Contains the Audio class instance and its name
+ */
+export interface Track
+{
+    name: AudioName;
+    instance: Audio;
+}
 
 /**
  * Describes the state of an audio
@@ -30,6 +46,8 @@ export class Audio extends TengObject
 
     private state = AudioState.Stopped;
 
+    private metaPromise: StatePromise<IAudioMetadata>;
+
 
     /**
      * Constructs an instance of the Audio class
@@ -43,6 +61,8 @@ export class Audio extends TengObject
 
         if(!statSync(filePath).isFile())
             throw new TypeError(`File path "${filePath}" is invalid or doesn't point to a file`);
+
+        this.metaPromise = new StatePromise<IAudioMetadata>(parseFile(filePath));
 
         this.filePath = filePath;
     }
@@ -147,7 +167,7 @@ export class Audio extends TengObject
     /**
      * Checks if the passed value is an Audio
      */
-    static isCamera(value: any): value is Audio
+    static isAudio(value: any): value is Audio
     {
         value = (value as Audio);
 
