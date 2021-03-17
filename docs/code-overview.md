@@ -78,6 +78,53 @@ It has two properties; width and height. Both have unsigned integer precision (c
   
 This class does *not* extend [TengObject.](#tengobject)
 
+<br><br>
+
+
+
+## StatePromise
+This class is a wrapper for JS' [Promise API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).  
+  
+Usually, you can't view the state of a Promise, unless you do some janky string matching.  
+This class aims to fix this by adding a method `getState()` which returns the current state of the promise.  
+  
+<details><summary><b>Example code - click to view</b></summary>
+
+```ts
+import { StatePromise } from "./engine/base/StatePromise";
+
+
+function waitASecond()
+{
+    return new Promise<number>((res, rej) => {
+        setTimeout(() => {
+            // randomly resolve or reject, for demonstration:
+            if(Math.floor(Math.random() * 2))
+                return res(Math.floor(Math.random() * 10));
+            else
+                return rej(new Error("Hello, I am an error"));
+        }, 1000);
+    });
+}
+
+async function promiseTest()
+{
+    const statePromise = new StatePromise<number>(waitASecond());
+
+    console.log(`BEGIN - ${statePromise.toString()}`);
+
+    statePromise.exec().then((num) => {
+        console.log(`DONE - ${statePromise.toString()} - Random number: ${num}`);
+    }).catch(err => {
+        console.log(`REJECTED - ${statePromise.toString()} - ${err}`);
+    })
+}
+
+promiseTest();
+```
+
+</details>
+
 <br><br><br><br><br><br>
 
 
