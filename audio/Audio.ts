@@ -46,7 +46,7 @@ export class Audio extends TengObject
 
     private state = AudioState.Stopped;
 
-    private metaPromise: StatePromise<IAudioMetadata>;
+    private meta?: IAudioMetadata;
 
 
     /**
@@ -62,8 +62,6 @@ export class Audio extends TengObject
         if(!statSync(filePath).isFile())
             throw new TypeError(`File path "${filePath}" is invalid or doesn't point to a file`);
 
-        this.metaPromise = new StatePromise<IAudioMetadata>(parseFile(filePath));
-
         this.filePath = filePath;
     }
 
@@ -73,6 +71,25 @@ export class Audio extends TengObject
     toString(): string
     {
         return `Audio @ ${this.filePath} - UID: ${this.uid.toString()}`;
+    }
+
+    /**
+     * Loads this audio's metadata
+     */
+    loadMeta(): Promise<IAudioMetadata>
+    {
+        return new Promise<IAudioMetadata>(async (res, rej) => {
+            try
+            {
+                this.meta = await parseFile(this.filePath);
+
+                return res(this.meta);
+            }
+            catch(err)
+            {
+                return rej(err);
+            }
+        });
     }
 
     /**
@@ -160,6 +177,17 @@ export class Audio extends TengObject
     getVolume(): number
     {
         return this.volume;
+    }
+
+    /**
+     * Returns this audio's metadata.  
+     * Run `loadMeta()` first to load it.  
+     *   
+     * Returns `undefined` if `loadMeta()` wasn't run yet
+     */
+    getMeta(): IAudioMetadata | undefined
+    {
+        return this.meta;
     }
 
     //#MARKER static

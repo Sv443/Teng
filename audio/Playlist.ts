@@ -2,20 +2,22 @@
 /* Teng - Contains multiple audio instances and offers ways to cycle through them */
 /**********************************************************************************/
 
+import { IAudioMetadata } from "music-metadata";
+import { PromiseState, StatePromise } from "../base/StatePromise";
 import { TengObject } from "../base/TengObject";
 import { Track } from "./Audio";
 
 
 /**
- * The mode of cycling through the audios in the playlist
+ * The mode of cycling through the tracks in the playlist
  */
 export enum CycleMode
 {
-    /** Audio has to be played manually */
+    /** Tracks have to be played manually */
     Manual,
-    /** Audio is played in consecutive order */
+    /** Tracks are played in consecutive order */
     Consecutive,
-    /** Audio is randomly played, without repeating the same song twice */
+    /** Tracks are randomly played, without them repeating */
     Shuffle,
 }
 
@@ -57,9 +59,17 @@ export class Playlist extends TengObject
     /**
      * Adds a track to this playlist
      */
-    addTrack(audio: Track): void
+    addTrack(track: Track): void
     {
-        this.tracks.push(audio);
+        this.tracks.push(track);
+    }
+
+    /**
+     * Sets the tracks of this playlist
+     */
+    setTracks(tracks: Track[]): void
+    {
+        this.tracks = tracks;
     }
 
     /**
@@ -93,13 +103,39 @@ export class Playlist extends TengObject
         }
 
 
-        let foundAudio = this.tracks.find(t => t.name == indexOrName);
+        let foundTrack = this.tracks.find(t => t.name == indexOrName);
 
-        if(!foundAudio)
+        if(!foundTrack)
             return false;
 
-        this.tracks.splice(this.tracks.indexOf(foundAudio), 1);
+        this.tracks.splice(this.tracks.indexOf(foundTrack), 1);
         return true;
+    }
+
+    /**
+     * Loads the metadata of all tracks in this playlist
+     */
+    loadMetadata(): Promise<void>
+    {
+        return new Promise<void>(async (res, rej) => {
+            try
+            {
+                const loadProms: Promise<IAudioMetadata>[] = [];
+
+                this.tracks.forEach(track => {
+                    loadProms.push(track.instance.loadMeta());
+                });
+
+
+                const meta = await Promise.all(loadProms);
+
+                return res();
+            }
+            catch(err)
+            {
+                return rej(err);
+            }
+        });
     }
 
     //#MARKER static
