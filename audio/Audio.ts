@@ -59,8 +59,15 @@ export class Audio extends TengObject
 
         filePath = resolve(filePath);
 
-        if(!statSync(filePath).isFile())
-            throw new TypeError(`File path "${filePath}" is invalid or doesn't point to a file`);
+        try
+        {
+            if(!statSync(filePath).isFile())
+                throw new TypeError(`File path "${filePath}" is invalid or doesn't point to a file`);
+        }
+        catch(err)
+        {
+            throw new TypeError(`File path "${filePath}" doesn't exist: ${err}`);
+        }
 
         this.filePath = filePath;
     }

@@ -79,9 +79,17 @@ export class Playlist extends TengObject
     getTrack(indexOrName: number | string): Track | undefined
     {
         if(typeof indexOrName === "number")
-            return this.tracks?.[indexOrName] || undefined;
+            return this.tracks?.[indexOrName];
 
         return this.tracks.find(t => t.name == indexOrName);
+    }
+
+    /**
+     * Returns all tracks - empty array if unset
+     */
+    getTracks(): Track[]
+    {
+        return this.tracks;
     }
 
     /**
