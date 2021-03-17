@@ -210,14 +210,14 @@ export class Camera extends TengObject
                     const chunk = grid.getChunk(chunkIndex);
 
                     // iterate over chunk's cells
-                    chunk.getCells().forEach((row, celly) => {
-                        const yOffset = (chunkIndex.y * chunkSize.height + celly);
+                    chunk.getCells().forEach((row, cellY) => {
+                        const yOffset = (chunkIndex.y * chunkSize.height + cellY);
 
                         if(renderedCells.length == yOffset)
                             renderedCells.push([]);
 
-                        row.forEach((cell, cellx) => {
-                            const xOffset = (chunkIndex.x * chunkSize.width + cellx);
+                        row.forEach((cell, cellX) => {
+                            const xOffset = (chunkIndex.x * chunkSize.width + cellX);
 
                             const offsetPos = new Position(xOffset, yOffset);
 

@@ -250,17 +250,17 @@ export class Grid extends TengObject
                 // create cells inside chunk
                 const cells: Cell[][] = [];
 
-                for(let celly = 0; celly < chunkSize.height; celly++)
+                for(let cellY = 0; cellY < chunkSize.height; cellY++)
                 {
                     cells.push([]);
 
-                    for(let cellx = 0; cellx < chunkSize.width; cellx++)
+                    for(let cellX = 0; cellX < chunkSize.width; cellX++)
                     {
-                        const cell = new Land(new Position(cellx, celly));
+                        const cell = new Land(new Position(cellX, cellY));
 
                         cell.setColor(ColorType.Foreground, chunkColor);
 
-                        cells[celly].push(cell);
+                        cells[cellY].push(cell);
                         cellsAmount++;
                     }
                 }
