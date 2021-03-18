@@ -2,13 +2,14 @@
 /* Teng - Base class for all instantiatable Teng classes */
 /*********************************************************/
 
+import { EventEmitter } from "events";
 import { tengSettings } from "../settings";
 
 
 /**
  * Base class of all instantiatable Teng classes
  */
-export abstract class TengObject
+export abstract class TengObject extends EventEmitter
 {
     /** Unique identification of type `Symbol` that's assigned to each Teng object at instantiation */
     readonly uid: Symbol;
@@ -25,6 +26,8 @@ export abstract class TengObject
      */
     constructor(objectName: string, descriptor?: string)
     {
+        super();
+
         descriptor = (typeof descriptor === "string" ? `/${descriptor}` : "");
 
         this.objectName = objectName;

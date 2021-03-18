@@ -3,6 +3,7 @@
 /*********************************/
 
 import keypress from "keypress";
+import { EventEmitter } from "events";
 
 import { TengObject } from "../base/TengObject";
 
@@ -35,9 +36,7 @@ export interface KeypressObject
  */
 export class InputHandler extends TengObject
 {
-    inStream: NodeJS.ReadStream;
-
-    onKey: (char: string, key: KeypressObject) => void = () => {};
+    private inStream: NodeJS.ReadStream;
 
     /**
      * Creates an instance of the Input class
@@ -68,19 +67,6 @@ export class InputHandler extends TengObject
     }
 
     /**
-     * Registers an event
-     */
-    on(event: InputEvent, func: (char: string, key: KeypressObject) => void): void
-    {
-        switch(event)
-        {
-            case "key":
-                this.onKey = func;
-            break;
-        }
-    }
-
-    /**
      * Called when a key is pressed
      */
     private onKeypress(char: string, key: KeypressObject | undefined)
@@ -98,7 +84,7 @@ export class InputHandler extends TengObject
             if(key.ctrl && ["c", "d"].includes(key.name))
                 process.exit();
 
-            this.onKey(char, key);
+            this.emit("key", char, key);
         }
         else
         {

@@ -75,7 +75,7 @@ export class Grid extends TengObject
         {
             this.inputHandler = new InputHandler(options.inputStream || process.stdin);
 
-            this.inputHandler.on("key", (char, key) => {
+            this.inputHandler.on("key", (char: string, key: KeypressObject) => {
                 this.keyPress(char, key);
             });
         }

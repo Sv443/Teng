@@ -3,15 +3,11 @@
 /********************************/
 
 import NanoTimer from "nanotimer";
+import { EventEmitter } from "events";
 import { tengSettings } from "../settings";
 
 import { TengObject } from "./TengObject";
 
-
-/**
- * The type of game loop event
- */
-declare type GameLoopEvent = "tick";
 
 /**
  * This class handles the game loop, aka the ticks / FPS and maybe other stuff, idk yet
@@ -23,9 +19,6 @@ export class GameLoop extends TengObject
 
     /** Number of ticks that have passed since this game loop was created */
     private tickNum: number = 0;
-
-    /** Function to be called on each tick - change this with the `on("tick", func)` method */
-    private onTick: null | ((tickNum: number) => void) = null;
 
     /**
      * Creates an instance of the GameLoop class
@@ -75,32 +68,9 @@ export class GameLoop extends TengObject
         // NanoTimer calls this function before `this` is created. setImmediate should fix this issue, but just to be sure, check if `this` exists:
         if(that)
         {
-            if(typeof that.onTick === "function")
-                that.onTick(that.tickNum);
+            that.emit("tick", that.tickNum);
 
             that.tickNum++;
         }
-    }
-
-    //#MARKER events
-    /**
-     * Registers an event
-     */
-    on(event: GameLoopEvent, callback: null | ((tickNum: number) => void)): void
-    {
-        switch(event)
-        {
-            case "tick":
-                this.onTick = callback;
-            break;
-        }
-    }
-
-    /**
-     * Removes an event that was previously set with `on()`
-     */
-    removeEvent(event: GameLoopEvent): void
-    {
-        this.on(event, null);
     }
 }
