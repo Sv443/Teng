@@ -12,27 +12,35 @@ import { TengObject } from "../base/TengObject";
  */
 export class LocalStorage<T> extends TengObject
 {
-    readonly storageDirLocation: string;
+    /** Path to the directory where data should be stored */
+    readonly storageDir: string;
+    /** Name of the file */
     readonly fileName: string;
+    /** File extension */
     readonly fileExtension: string;
 
+    /** Absolute file path to the data file */
     readonly filePath: string;
 
     private data?: T;
     private stringData: string = "";
 
+
     /**
      * Creates an instance of the LocalStorage class
+     * @param storageDirLocation Path to the directory where data should be stored
+     * @param fileName Name of the file
+     * @param fileExtension File extension
      */
     constructor(storageDirLocation: string, fileName: string, fileExtension: string)
     {
         super("LocalStorage", fileName);
 
-        this.storageDirLocation = storageDirLocation;
+        this.storageDir = storageDirLocation;
         this.fileName = fileName;
         this.fileExtension = fileExtension;
 
-        this.filePath = resolve(this.storageDirLocation, `${this.fileName}.${this.fileExtension}`);
+        this.filePath = resolve(this.storageDir, `${this.fileName}.${this.fileExtension}`);
     }
 
     toString(): string
