@@ -46,7 +46,7 @@ export class Chunk extends TengObject
      */
     toString(): string
     {
-        return `Chunk @ ${this.chunkIndex.toString()} - size: ${this.size.toString()} - area: ${this.area.toString()} - UID: ${this.uid.toString()}`;
+        return `${this.objectName} @ ${this.chunkIndex.toString()} - size: ${this.size.toString()} - area: ${this.area.toString()} - UID: ${this.uid.toString()}`;
     }
 
     //#MARKER other

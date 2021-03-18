@@ -52,6 +52,6 @@ export class NoiseLayer extends TengObject
      */
     toString(): string
     {
-        return `NoiseLayer <${NoiseAlgorithm[this.algorithm]}> [${this.size.toString()}] - UID: ${this.uid}`;
+        return `${this.objectName} <${NoiseAlgorithm[this.algorithm]}> [${this.size.toString()}] - UID: ${this.uid}`;
     }
 }

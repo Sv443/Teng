@@ -38,7 +38,7 @@ export class StatePromise<T> extends TengObject
     toString(): string
     {
         const state = this.getState();
-        return `StatePromise with state ${PromiseState[state]} (${state})`;
+        return `${this.objectName} with state ${PromiseState[state]} (${state})`;
     }
 
     /**

@@ -79,7 +79,7 @@ export class SaveState<T> extends TengObject
 
     toString(): string
     {
-        return `SaveState '${this.stateName}' @ '${this.saveDirectory}'`;
+        return `${this.objectName} '${this.stateName}' @ '${this.saveDirectory}'`;
     }
 
     //#MARKER getters

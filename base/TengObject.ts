@@ -36,6 +36,7 @@ export abstract class TengObject extends EventEmitter
     }
 
     //#MARKER getters
+
     /**
      * Returns the time at which this object was created
      */
@@ -45,12 +46,14 @@ export abstract class TengObject extends EventEmitter
     }
 
     //#MARKER abstract
+
     /**
      * Returns a string representation of this teng object
      */
     abstract toString(): string;
 
     //#MARKER static
+
     /**
      * Limits the length of a passed teng object descriptor (string)
      * @param descriptor A descriptor to limit

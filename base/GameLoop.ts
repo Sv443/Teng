@@ -79,7 +79,7 @@ export class GameLoop extends TengObject
      */
     toString(): string
     {
-        return `GameLoop @ ${this.targetTps}tps - UID: ${this.uid.toString()}`;
+        return `${this.objectName} @ ${this.targetTps}tps - UID: ${this.uid.toString()}`;
     }
 
     //#MARKER getters

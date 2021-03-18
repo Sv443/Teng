@@ -67,7 +67,7 @@ export abstract class Cell extends TengObject
      */
     toString(): string
     {
-        return `Cell '${this.getChar()}' @ ${this.position.toString()} - UID: ${this.uid.toString()}`;
+        return `${this.objectName} '${this.getChar()}' @ ${this.position.toString()} - UID: ${this.uid.toString()}`;
     }
 
     //#MARKER abstract

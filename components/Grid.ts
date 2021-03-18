@@ -75,7 +75,7 @@ export class Grid extends TengObject
         {
             this.inputHandler = new InputHandler(options.inputStream || process.stdin);
 
-            this.inputHandler.on("key", (char: string, key: KeypressObject) => {
+            this.inputHandler.on("key", (char: string, key: KeypressObject | undefined) => {
                 this.keyPress(char, key);
             });
         }
@@ -92,7 +92,7 @@ export class Grid extends TengObject
     toString(): string
     {
         const size = this.getGridSize(), area = this.getArea();
-        return `Grid [${size.toString()}] - area: ${area.toString()} - UID: ${this.uid.toString()}`;
+        return `${this.objectName} [${size.toString()}] - area: ${area.toString()} - UID: ${this.uid.toString()}`;
     }
 
     //#MARKER methods
@@ -132,7 +132,7 @@ export class Grid extends TengObject
      * Handles the default inputs  
      * TODO: rewrite
      */
-    keyPress(char: string, key: KeypressObject): void
+    keyPress(char: string, key: KeypressObject | undefined): void
     {
         // if(!this.getOptions().inputEnabled)
         //     return;

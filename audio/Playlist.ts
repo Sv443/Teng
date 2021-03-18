@@ -45,7 +45,7 @@ export class Playlist extends TengObject
 
     toString(): string
     {
-        return `Playlist with ${this.tracks.length} tracks - cycle mode: ${CycleMode[this.cycleMode]} - UID: ${this.uid.toString()}`;
+        return `${this.objectName} with ${this.tracks.length} tracks - cycle mode: ${CycleMode[this.cycleMode]} - UID: ${this.uid.toString()}`;
     }
 
     /**

@@ -50,7 +50,7 @@ export class InputHandler extends TengObject
      */
     constructor(inStream: NodeJS.ReadStream = process.stdin)
     {
-        super("Input");
+        super("InputHandler");
 
 
         this.inStream = inStream;
@@ -69,7 +69,7 @@ export class InputHandler extends TengObject
      */
     toString(): string
     {
-        return `Input - UID: ${this.uid.toString()}`;
+        return `${this.objectName} - UID: ${this.uid.toString()}`;
     }
 
     /**

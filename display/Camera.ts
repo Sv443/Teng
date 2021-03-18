@@ -75,7 +75,7 @@ export class Camera extends TengObject
      */
     toString(): string
     {
-        return `Camera with viewport size ${this.viewportSize.toString()} - UID: ${this.uid.toString()}`;
+        return `${this.objectName} with viewport size ${this.viewportSize.toString()} - UID: ${this.uid.toString()}`;
     }
 
     /**

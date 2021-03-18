@@ -78,7 +78,7 @@ export class Audio extends TengObject
      */
     toString(): string
     {
-        return `Audio @ ${this.filePath} - UID: ${this.uid.toString()}`;
+        return `${this.objectName} @ ${this.filePath} - UID: ${this.uid.toString()}`;
     }
 
     /**
