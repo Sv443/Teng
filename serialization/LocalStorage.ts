@@ -1,6 +1,6 @@
-/****************************************/
-/* Teng - Stores and loads data locally */
-/****************************************/
+/**************************************/
+/* Teng - Manages locally stored data */
+/**************************************/
 
 import { readFile, writeFile } from "fs-extra";
 import { resolve } from "path";
