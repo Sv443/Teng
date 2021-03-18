@@ -67,6 +67,7 @@ export class GameLoop extends TengObject
         this.nanoTimer = new NanoTimer();
 
 
+        // `intTick()` is called before `this` is created, so use setImmediate to improve the chances of `this` existing
         setImmediate(() => {
             // arrow function is needed so the reference to `this` in `intTick()` persists
             this.nanoTimer.setInterval(() => this.intTick(), [], `${interval}m`);
