@@ -29,8 +29,8 @@ export class LocalStorage<T> extends TengObject
     /**
      * Creates an instance of the LocalStorage class
      * @param storageDirLocation Path to the directory where data should be stored
-     * @param fileName Name of the file
-     * @param fileExtension File extension
+     * @param fileName Name of the file without an extension
+     * @param fileExtension File extension without `.`
      */
     constructor(storageDirLocation: string, fileName: string, fileExtension: string)
     {
