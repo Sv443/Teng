@@ -13,8 +13,8 @@ import { Track } from "./Audio";
  */
 export enum CycleMode
 {
-    /** Tracks have to be played manually */
-    Manual,
+    /** Cycling disabled, tracks have to be played manually */
+    Off,
     /** Tracks are played in consecutive order */
     Consecutive,
     /** Tracks are randomly played, without them repeating */
@@ -26,7 +26,7 @@ export enum CycleMode
  */
 export class Playlist extends TengObject
 {
-    private cycleMode: CycleMode = CycleMode.Manual;
+    private cycleMode: CycleMode = CycleMode.Off;
 
     private tracks: Track[] = [];
 

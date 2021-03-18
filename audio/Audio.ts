@@ -4,6 +4,7 @@
 
 import { resolve } from "path";
 import { statSync } from "fs-extra";
+import * as sound from "sound-play";
 
 import { TengObject } from "../base/TengObject";
 import { IAudioMetadata, parseFile } from "music-metadata";
@@ -102,41 +103,55 @@ export class Audio extends TengObject
     /**
      * Plays the audio
      */
-    play(): void
+    play(): Promise<void>
     {
-        const state = this.getState();
+        return new Promise<void>(async (res, rej) => {
+            try
+            {
+                const state = this.getState();
 
-        if(state === AudioState.Paused || state === AudioState.Stopped)
-        {
-            // TODO:
-        }
+                if(state === AudioState.Paused || state === AudioState.Stopped)
+                {
+                    this.state = AudioState.Playing;
+                    await sound.play(this.filePath, this.volume);
+
+                    return res();
+                }
+                else
+                    return res();
+            }
+            catch(err)
+            {
+                return rej(err);
+            }
+        });
     }
 
-    /**
-     * Pauses the audio
-     */
-    pause(): void
-    {
-        const state = this.getState();
+    // /**
+    //  * Pauses the audio
+    //  */
+    // pause(): void
+    // {
+    //     const state = this.getState();
 
-        if(state === AudioState.Playing)
-        {
-            // TODO:
-        }
-    }
+    //     if(state === AudioState.Playing)
+    //     {
+    //         // TODO:
+    //     }
+    // }
 
-    /**
-     * Stops the audio
-     */
-    stop(): void
-    {
-        const state = this.getState();
+    // /**
+    //  * Stops the audio
+    //  */
+    // stop(): void
+    // {
+    //     const state = this.getState();
 
-        if(state === AudioState.Playing || state === AudioState.Paused)
-        {
-            // TODO:
-        }
-    }
+    //     if(state === AudioState.Playing || state === AudioState.Paused)
+    //     {
+    //         // TODO:
+    //     }
+    // }
 
     /**
      * Returns the audio's state (playing / paused / stopped)
@@ -172,7 +187,7 @@ export class Audio extends TengObject
      */
     setVolume(vol: number): void
     {
-        if(vol < 0 || vol > 1)
+        if(vol < 0.0 || vol > 1.0)
             throw new TypeError(`Volume ${vol} is out of range (expected value between 0.0 and 1.0)`);
 
         this.volume = vol;
