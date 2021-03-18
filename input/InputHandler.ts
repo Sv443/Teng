@@ -31,6 +31,12 @@ export interface KeypressObject
     code?: string;
 }
 
+export interface InputHandler
+{
+    /** Event gets emitted when a key is pressed */
+    on(event: "key", listener: (char: string, key: KeypressObject | undefined) => void): this;
+}
+
 /**
  * This class handles keyboard input
  */
