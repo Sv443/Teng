@@ -163,11 +163,9 @@ export class GameLoop extends TengObject
             }
 
             this.tickTimes.push(curTickDiff);
-
-            this.lastTickTS = now;
         }
-        else
-            this.lastTickTS = now;
+
+        this.lastTickTS = now;
 
         // NanoTimer calls this function before `this` is created. setImmediate should fix this issue, but just to be sure, check if `this` exists:
         if(this)
