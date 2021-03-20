@@ -10,17 +10,6 @@ import { generalSettings } from "../../settings";
 
 
 //#MARKER base components
-// /**
-//  * Describes a size in 2D space
-//  */
-// export interface ISize
-// {
-//     [index: string]: number;
-
-//     width: number;
-//     height: number;
-// }
-
 /**
  * Extended (derived) classes need to have a toString() method, making the instances of those classes stringifiable
  */
@@ -35,10 +24,8 @@ export abstract class Stringifiable
 /**
  * Describes a rectangular size in 2D space
  */
-export class Size extends Stringifiable// implements ISize
+export class Size extends Stringifiable
 {
-    // [index: string]: number;
-
     readonly width: number;
     readonly height: number;
 
@@ -59,7 +46,7 @@ export class Size extends Stringifiable// implements ISize
     }
 
     /**
-     * Turns an instance of the Area class into an instance of the Size class
+     * Creates an instance of the Size class by taking values from an instance of the Area class
      */
     static fromArea(area: Area): Size
     {
@@ -82,24 +69,11 @@ export class Size extends Stringifiable// implements ISize
     }
 }
 
-// /**
-//  * Describes a position / coordinate in 2D space
-//  */
-// export interface IPosition
-// {
-//     [index: string]: number;
-
-//     x: number;
-//     y: number;
-// }
-
 /**
  * Describes a position or coordinate in 2D space
  */
-export class Position extends Stringifiable// implements IPosition
+export class Position extends Stringifiable
 {
-    // [index: string]: number;
-
     readonly x: number;
     readonly y: number;
 
@@ -133,23 +107,12 @@ declare interface IAreaCorners
     br: Position;
 }
 
-// /**
-//  * Describes an area in 2D space
-//  */
-// export interface IArea
-// {
-//     [index: string]: IAreaCorners;
-
-//     corners: IAreaCorners;
-// }
-
 /**
  * Describes a rectangular 2D area in a 2D space
  */
 export class Area extends Stringifiable
 {
-    // [index: string]: IAreaCorners;
-
+    /** The corners that make up this area */
     readonly corners: IAreaCorners;
 
     /**
@@ -210,7 +173,7 @@ export enum Color
  */
 export enum ColorType
 {
-    /** Text color */
+    /** Text / foreground color */
     Foreground,
     /** Background color */
     Background
@@ -283,7 +246,9 @@ export function isColor(val: any): val is Color
 
 //#MARKER logging
 
-/** Describes the log level */
+/**
+ * Describes the log level
+ */
 export enum LogLevel
 {
     /** Success */
@@ -340,7 +305,7 @@ export function dbg(section: string, message: string, level: LogLevel = LogLevel
 }
 
 /**
- * Checks if two objects are equal
+ * Checks if two objects are equal (recursively searches through them / deep-diffs them)
  * @param origin The origin object
  * @param comparand The object to compare to the origin object
  */

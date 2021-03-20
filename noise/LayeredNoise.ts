@@ -11,7 +11,7 @@ import { NoiseLayer } from "./NoiseLayer";
 /**
  * Function that is used to calculate the noise layer importance
  * @param currentIdx The index of the current layer (0 based)
- * @param lastVal The importance of the last layer - will be `-1` on the first layer
+ * @param lastVal The importance of the last layer - will be `NaN` on the first layer
  * @param layerAmount The total amount of layers
  * @returns Should return a floating point number between 0.0 and 1.0
  */
@@ -23,7 +23,7 @@ export type LayerImportanceFormula = (currentIdx: number, lastVal: number, layer
 export type NoiseMap = number[][];
 
 const defaultLayerImportanceFormula: LayerImportanceFormula = (currentIdx, lastVal, layerAmount) => {
-    if(lastVal < 0)
+    if(isNaN(lastVal))
         return 1.0;
     else
         return lastVal / 2;
@@ -42,14 +42,18 @@ export class LayeredNoise extends TengObject
 
     /**
      * Creates an instance of the LayeredNoise class
-     * @param layers The different noise layers to apply. Items with a lower index have the largest effect on the generated noise map
+     * @param layers The different noise layers to apply. Items with a lower index have the largest effect on the generated noise map.
      * @param size The size of the noise layers
      */
-    constructor(layers: NoiseLayer[], size: Size)
+    constructor(size: Size, layers?: NoiseLayer[])
     {
-        super("LayeredNoise", `L${layers.length}_${size.width}x${size.height}`);
+        super("LayeredNoise", `L${layers ? layers.length : 0}_${size.width}x${size.height}`);
 
-        this.layers = layers;
+        if(layers)
+            this.layers = layers;
+        else
+            this.layers = [];
+
         this.size = size;
     }
 
@@ -82,7 +86,7 @@ export class LayeredNoise extends TengObject
      */
     generateMap(): NoiseMap
     {
-        let lastImportance = -1.0;
+        let lastImportance = NaN;
 
         this.layers.forEach((layer, i) => {
             /** Importance is a modifier to noise layers, which dictates how much a layer contributes to the final noise map */
