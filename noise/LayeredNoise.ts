@@ -100,7 +100,8 @@ export class LayeredNoise extends TengObject
 
             // generate layer data:
             this.layers.forEach((layer) => {
-                layerPromises.push(layer.generate(resolution));
+                if(!layer.isGenerated())
+                    layerPromises.push(layer.generate(resolution));
             });
 
             await Promise.all(layerPromises);
