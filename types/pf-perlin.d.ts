@@ -5,7 +5,7 @@
  */
 declare module "pf-perlin"
 {
-    export interface IPerlinOptions
+    interface IPerlinOptions
     {
         /** RNG's seed - using the same seed will yield the same noise map */
         seed: string;
@@ -30,7 +30,7 @@ declare module "pf-perlin"
     /**
      * Represents a Perlin noise generator.
      */
-    export class Perlin
+    class Perlin
     {
         /**
          * Creates an instance of the Perlin noise generator.
@@ -45,4 +45,6 @@ declare module "pf-perlin"
          */
         get(coordinates: number[]): number;
     }
+
+    export = Perlin;
 }

@@ -2,12 +2,13 @@
 /* Teng - To be used in LayeredNoise to create noise maps */
 /**********************************************************/
 
-import { Perlin } from "pf-perlin";
+import Perlin from "pf-perlin";
 import Simplex from "simplex-noise";
 import { seededRNG } from "svcorelib";
 
 import { Size } from "../base/Base";
 import { TengObject } from "../base/TengObject";
+import { tengSettings } from "../settings";
 
 
 //#MARKER types
@@ -25,9 +26,10 @@ export enum Algorithm
  */
 export interface INoiseAlgorithmSettings
 {
-    [index: string]: string;
+    [index: string]: string | number;
 
     seed: string;
+    resolution: number;
 }
 
 /**
@@ -94,7 +96,7 @@ export class NoiseLayer extends TengObject
      */
     toString(): string
     {
-        return `${this.objectName} <${Algorithm[this.algorithm]}> [${this.size.toString()}] - UID: ${this.uid}`;
+        return `${this.objectName} <${Algorithm[this.algorithm]}> [${this.size.toString()}] - UID: ${this.uid.toString()}`;
     }
 
     //#MARKER other
@@ -103,11 +105,13 @@ export class NoiseLayer extends TengObject
      * Generates this noise layer.  
      * Use `getData()` after to get the generated data.
      */
-    generate(resolution: number): Promise<void>
+    generate(): Promise<void>
     {
         return new Promise<void>(async (res, rej) => {
             try
             {
+                const resolution = this.settings.resolution || tengSettings.game.noise.defaultResolution;
+                
                 for(let y = 0; y < this.size.height; y++)
                 {
                     this.data.push([]);

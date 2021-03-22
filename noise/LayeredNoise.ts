@@ -89,10 +89,10 @@ export class LayeredNoise extends TengObject
     /**
      * Generates the noise map
      */
-    generateMap(resolution: number): Promise<NoiseMap>
+    generateMap(): Promise<NoiseMap>
     {
         return new Promise<NoiseMap>(async (res, rej) => {
-            const noiseMap: NoiseMap = [];
+            let noiseMap: NoiseMap = [];
 
             let lastImportance = NaN;
 
@@ -101,7 +101,7 @@ export class LayeredNoise extends TengObject
             // generate layer data:
             this.layers.forEach((layer) => {
                 if(!layer.isGenerated())
-                    layerPromises.push(layer.generate(resolution));
+                    layerPromises.push(layer.generate());
             });
 
             // even if the layerPromises array is empty, this will still work as intended:
@@ -119,6 +119,8 @@ export class LayeredNoise extends TengObject
                     return rej(`Error in noise layer #${i} (${layer.toString()}): layer data wasn't generated yet or was reset prior to concatenation`);
 
                 // TODO: concat `currentLayerData` onto `noiseMap`
+                // #DEBUG# overwrite noiseMap just so there is some output
+                noiseMap = currentLayerData;
             });
 
             return res(noiseMap);
