@@ -71,10 +71,8 @@ export class NoiseLayer extends TengObject
         else
             this.settings = {};
 
-        const seed = (this.settings.seed || seededRNG.generateRandomSeed(10).toString());
-
-        // overwrite seed in case it was randomly generated:
-        this.settings.seed = seed;
+        // randomly generate seed if it isn't set:
+        this.settings.seed = (this.settings.seed || seededRNG.generateRandomSeed(tengSettings.game.noise.defaultSeedLength).toString());
 
         // set up noise generator based on algorithm:
         switch(algorithm)
@@ -82,11 +80,11 @@ export class NoiseLayer extends TengObject
             case Algorithm.Perlin:
                 this.generator = new Perlin({
                     dimensions: 2,
-                    seed
+                    seed: this.settings.seed
                 });
             break;
             case Algorithm.Simplex:
-                this.generator = new Simplex(seed);
+                this.generator = new Simplex(this.settings.seed);
             break;
         }
     }

@@ -41,6 +41,8 @@ const tengSettings = Object.freeze({
         noise: {
             /** Default resolution value for layered noise generation */
             defaultResolution: 30,
+            /** Default length of noise map seeds */
+            defaultSeedLength: 10,
         },
         saveStates: {
             /** Maximum length of a save state name - in characters */
