@@ -21,7 +21,7 @@ export abstract class Menu extends TengObject
      */
     constructor(objectName: string, descriptor: string)
     {
-        const limitedDescriptor = TengObject.limitedLengthDescriptor(descriptor, tengSettings.menus.descriptorMaxLength);
+        const limitedDescriptor = TengObject.truncateDescriptor(descriptor, tengSettings.menus.descriptorMaxLength);
 
         super(objectName, limitedDescriptor);
 

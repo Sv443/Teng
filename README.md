@@ -1,4 +1,5 @@
 # Teng
+
 This is the engine I am writing alongside the [Townly game.](https://github.com/Sv443/Townly)  
 It is written in TypeScript and was created for CLI (command line / TTY) games.  
   
@@ -9,8 +10,15 @@ You can view the full license text [in this file.](./LICENSE.txt)
 
 <br>
 
+<div align="center" style="text-align:center;">
+
 ## [Click here to view the documentation](./docs/home.md#readme)
+
+---
+
 ### If you have questions or wanna chat, feel free to [join my Discord server](https://sv443.net/discord)
+
+</div>
 
 <br><br>
 
@@ -29,7 +37,7 @@ You can view the full license text [in this file.](./LICENSE.txt)
 - The name originates from a combination "Townly" and "Engine", [Townly](https://github.com/Sv443/Townly) being the game which it was originally developed for.
   
 - The logo of the engine should be in ASCII, inspired by its text based nature.  
-  An example logo can be found by viewing this file in a text editor (or clicking [here](https://raw.githubusercontent.com/Sv443/Townly/master/engine/README.md)) and then scrolling to the bottom.  
+  A reference logo can be found by viewing this file in a text editor (or clicking [here](https://raw.githubusercontent.com/Sv443/Townly/master/engine/README.md)) and scrolling to the bottom.  
   The logo could be inspired by the [flying dragon Teng in Chinese mythology.](https://en.wikipedia.org/wiki/Teng_(mythology))
 
 

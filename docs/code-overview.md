@@ -3,11 +3,36 @@
 # Teng - Code Overview [WIP]
 
 ## Table of Contents:
-- [Base Classes](#base-classes)
-    - [TengObject](#tengobject)
-    - [Position](#position)
-    - [Area](#area)
-    - [Size](#size)
+- [Modules](#modules)
+    - **[Base Module](#base-module)**
+        - [TengObject](#tengobject)
+        - [Base Namespace](#base-namespace)
+            - [Position](#position)
+            - [Area](#area)
+            - [Size](#size)
+        - [GameLoop](#gameloop)
+        - [Crypto](#crypto)
+        - [StatePromise](#statepromise)
+    - **[Audio Module](#audio-module)**
+        - [Audio](#audio)
+        - [Playlist](#playlist)
+    - **[Components Module](#components-module)**
+        - [Cell](#cell)
+        - [Chunk](#chunk)
+        - [Grid](#grid)
+    - **[Display Module](#display-module)**
+        - [Camera](#camera)
+        - [Menu](#menu)
+            - [MainMenu](#mainmenu)
+    - **[Input Module](#input-module)**
+        - [InputHandler](#inputhandler)
+    - **[Noise Module](#noise-module)**
+        - [LayeredNoise](#layerednoise)
+        - [NoiseLayer](#noiselayer)
+        - [MapGen](#mapgen)
+    - **[Serialization Module](#serialization-module)**
+        - [LocalStorage](#localstorage)
+        - [SaveState](#savestate)
 - [Components](#components)
     - [Grid](#grid)
     - [Chunk](#chunk)
@@ -15,7 +40,11 @@
 
 <br><br>
 
-# Base Classes
+# Modules
+
+## Base Module
+The base module, located at `/base/` contains base classes, gimmicks and other features that can't be categorized.
+
 ## TengObject
 This is the base class for most of Teng's instantiatable classes.  
 It is an abstract class, meaning it has to be extended (inherited) and can't be directly instantiated.  
@@ -26,11 +55,12 @@ This class exposes these properties:
 > This enables you to always have a unique identifier for each object.  
 > The description of the symbol has the following syntax:  
 > ```
-> Symbol(TE/OBJ_NAME/DESCRIPTOR)
+> Symbol(TE~INDEX/OBJ_NAME/DESCRIPTOR)
 > ```
-> - TE is the Teng Engine prefix
-> - OBJ_NAME is the name of the class
-> - DESCRIPTOR is a string that describes the class instance
+> - `TE` is the Teng Engine prefix
+> - `INDEX` is a unique zero-based index that increments for each created teng object
+> - `OBJ_NAME` is the name of the class
+> - `DESCRIPTOR` is a string that describes the class instance
 >   
 > This UID is created by calling `super(OBJ_NAME, DESCRIPTOR)` in the constructor of the extended (derived) class.
 
@@ -45,6 +75,12 @@ This class exposes these properties:
 > ### `creationTime`
 > This is an instance of the `Date` class, set to the exact time when the teng object instance was created.  
 > Currently, it has millisecond accuracy but this might change later on.
+
+<br>
+
+> ### `uniqueIdx`
+> This is a number that starts at 0 and increments every time a new teng object is instantiated.  
+> I only added it because I wanted a use case for JavaScript's generator functions, don't judge me.
 
 <br><br>
 

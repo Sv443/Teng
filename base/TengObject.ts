@@ -13,10 +13,13 @@ export abstract class TengObject extends EventEmitter
 {
     /** Unique identification of type `Symbol` that's assigned to each Teng object at instantiation */
     readonly uid: Symbol;
+    /** Unique index number that is assigned to each Teng object at instantiation */
+    readonly uniqueIdx: number;
     /** The name of this Teng object */
     readonly objectName: string;
-    /** The time at which this object was created (with millisecond accuracy) */
-    readonly creationTime: Date;
+    /** Timestamp at which this object was created (with millisecond accuracy) */
+    readonly creationTime: number;
+
 
     /**
      * Creates an instance of the TengObject class  
@@ -30,19 +33,28 @@ export abstract class TengObject extends EventEmitter
 
         descriptor = (typeof descriptor === "string" ? `/${descriptor}` : "");
 
+        this.uniqueIdx = uniqueIdxGen.next().value;
         this.objectName = objectName;
-        this.uid = Symbol(`${tengSettings.info.abbreviation}/${objectName}${descriptor}`);
-        this.creationTime = new Date();
+        this.uid = Symbol(`${tengSettings.info.abbreviation}~${this.uniqueIdx}/${objectName}${descriptor}`);
+        this.creationTime = Date.now();
     }
 
     //#MARKER getters
 
     /**
-     * Returns the time at which this object was created
+     * Returns the timestamp at which this object was created - with millisecond accuracy
      */
-    getCreationTime(): Date
+    getCreationTime(): number
     {
         return this.creationTime;
+    }
+
+    /**
+     * Returns the unique index number that is assigned to this object at instantiation
+     */
+    getUniqueIndex(): number
+    {
+        return this.uniqueIdx;
     }
 
     //#MARKER abstract
@@ -56,13 +68,12 @@ export abstract class TengObject extends EventEmitter
 
     /**
      * Limits the length of a passed teng object descriptor (string)
-     * @param descriptor A descriptor to limit
-     * @param limit How many characters to limit the descriptor to
+     * @param descriptor A descriptor to limit / truncate
+     * @param limit How many characters to limit the descriptor to / when to truncate the descriptor
+     * @param suffix Suffix to add after the descriptor, if it was truncated - defaults to `…`
      */
-    static limitedLengthDescriptor(descriptor: string, limit: number = tengSettings.objects.descriptorDefaultMaxLength): string
+    static truncateDescriptor(descriptor: string, limit: number = tengSettings.objects.descriptorDefaultMaxLength, suffix: string = "…"): string
     {
-        const suffix = "…";
-
         if(limit < 1 || limit % 1 != 0)
             throw new TypeError(`Limit has to be a number bigger than 0 (got ${limit})`);
 
@@ -87,4 +98,19 @@ export abstract class TengObject extends EventEmitter
 
         return true;
     }
+
+    /**
+     * Generator function that returns a number that starts at `0` and incrementing by `1` each time `next()` is called
+     * @generator
+     */
+    static *uniqueIndexGenerator(): Generator<number>
+    {
+        let idx = 0;
+
+        while(true)
+            yield idx++;
+    }
 }
+
+/** Generator function that generates a unique index number */
+const uniqueIdxGen = TengObject.uniqueIndexGenerator();
