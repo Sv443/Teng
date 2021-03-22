@@ -114,6 +114,8 @@ export class Area extends Stringifiable
 {
     /** The corners that make up this area */
     readonly corners: IAreaCorners;
+    /** The size of this area */
+    readonly size: Size;
 
     /**
      * Creates a new instance of the Area class
@@ -126,6 +128,8 @@ export class Area extends Stringifiable
             tl: cornerTL,
             br: cornerBR
         };
+
+        this.size = Size.fromArea(this);
     }
 
     toString(): string

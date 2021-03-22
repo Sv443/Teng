@@ -66,7 +66,7 @@ export class Grid extends TengObject
         if(options)
             this.options = options;
 
-        this.area = Grid.calculateArea(gridSize);
+        this.area = Grid.calculateArea(this.gridSize);
 
         // set initial cursor pos, at the center of the grid
         // const cursorPos = new Position(Math.floor(gridSize.width / 2), Math.floor(gridSize.height / 2));
