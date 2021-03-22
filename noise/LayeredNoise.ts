@@ -104,6 +104,7 @@ export class LayeredNoise extends TengObject
                     layerPromises.push(layer.generate(resolution));
             });
 
+            // even if the layerPromises array is empty, this will still work as intended:
             await Promise.all(layerPromises);
 
             // layer data has been generated, so concatenate layers into a single layer now:

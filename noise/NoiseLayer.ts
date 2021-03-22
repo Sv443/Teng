@@ -45,9 +45,12 @@ export class NoiseLayer extends TengObject
     readonly algorithm: Algorithm;
     readonly settings: Partial<INoiseAlgorithmSettings>;
 
+    /** The noise map data. Created by calling the `generate()` method */
     private data: NoiseMap = [];
+    /** Is set to `true` if the noise map data is generated. */
     private generated = false;
 
+    /** The noise generator that will be used to generate the noise map */
     readonly generator: Perlin | Simplex;
 
     /**
@@ -71,6 +74,7 @@ export class NoiseLayer extends TengObject
         // overwrite seed in case it was randomly generated:
         this.settings.seed = seed;
 
+        // set up noise generator based on algorithm:
         switch(algorithm)
         {
             case Algorithm.Perlin:
@@ -115,15 +119,18 @@ export class NoiseLayer extends TengObject
                         switch(this.algorithm)
                         {
                             case Algorithm.Perlin:
+                                // needed so TypeScript shuts up:
                                 if(this.generator instanceof Perlin)
                                     value = this.generator.get([ x / resolution, y / resolution ]);
                             break;
                             case Algorithm.Simplex:
+                                // needed so TypeScript shuts up:
                                 if(this.generator instanceof Simplex)
                                     value = this.generator.noise2D(x / resolution, y / resolution);
                             break;
                         }
 
+                        // push generated value onto NoiseMap data
                         this.data[y].push(value);
                     }
                 }
