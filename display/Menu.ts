@@ -2,7 +2,6 @@
 /* Teng - Base class of menus */
 /******************************/
 
-import { tengSettings } from "../settings";
 import { TengObject } from "../base/TengObject";
 
 
@@ -11,21 +10,20 @@ import { TengObject } from "../base/TengObject";
  */
 export abstract class Menu extends TengObject
 {
-    limitedDescriptor: string;
+    /** The title of this menu */
+    protected title: string;
 
 
     /**
      * Creates an instance of the Menu class
      * @param objectName The name of the object (usually the class or menu name)
-     * @param descriptor Something to more precisely describe this object
+     * @param title Title of this menu
      */
-    constructor(objectName: string, descriptor: string)
+    constructor(objectName: string, title: string)
     {
-        const limitedDescriptor = TengObject.truncateDescriptor(descriptor, tengSettings.menus.descriptorMaxLength);
+        super(objectName, TengObject.truncateDescriptor(title));
 
-        super(objectName, limitedDescriptor);
-
-        this.limitedDescriptor = limitedDescriptor;
+        this.title = title;
     }
 
     /**
@@ -33,6 +31,31 @@ export abstract class Menu extends TengObject
      */
     toString(): string
     {
-        return `Menu <${this.objectName}> with title '${this.limitedDescriptor}' - UID: ${this.uid.toString()}`;
+        return `Menu <${this.objectName}> with title '${this.title}' - UID: ${this.uid.toString()}`;
+    }
+
+    //#MARKER other
+
+    /**
+     * Returns the title of this menu
+     */
+    getTitle(): string
+    {
+        return this.title;
+    }
+
+    //#MARKER static
+
+    /**
+     * Checks if a value is a menu
+     */
+    isMenu(value: any): value is Menu
+    {
+        value = (value as Menu);
+
+        if(typeof value.getTitle() !== "string")
+            return false;
+
+        return true;
     }
 }

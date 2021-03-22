@@ -15,7 +15,6 @@ export type MenuOption = (string|null);
  */
 export class MainMenu extends Menu
 {
-    private title: string;
     private figTitle: string = "";
     private options: MenuOption[];
     private titleFont: Fonts;
@@ -33,7 +32,6 @@ export class MainMenu extends Menu
     {
         super("MainMenu", title);
 
-        this.title = title;
         this.options = options;
         this.titleFont = titleFont;
     }

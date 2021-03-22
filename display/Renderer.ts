@@ -66,4 +66,22 @@ export class Renderer extends TengObject
     {
         this.cursor.beep();
     }
+
+    //#MARKER static
+
+    /**
+     * Checks if a value is a renderer
+     */
+    static isRenderer(value: any): value is Renderer
+    {
+        value = (value as Renderer);
+
+        if(!(value.cursor instanceof Cursor))
+            return false;
+
+        if(typeof value.outStream.write !== "function")
+            return false;
+
+        return true;
+    }
 }
