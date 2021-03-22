@@ -4,7 +4,7 @@
 
 import { Perlin } from "pf-perlin";
 import { seededRNG } from "svcorelib";
-import { Position, Size } from "../base/Base";
+import { Size } from "../base/Base";
 import { TengObject } from "../base/TengObject";
 
 
@@ -22,15 +22,15 @@ export enum Algorithm
  */
 export interface INoiseAlgorithmSettings
 {
-    [index: string]: any; // change this
+    [index: string]: string;
 
     seed: string;
 }
 
 /**
- * Two-dimensional array of numbers between `0.0` and `1.0`
+ * A 2D array of noise values
  */
-declare type NoiseMapData = number[][];
+export type NoiseMap = number[][];
 
 //#MARKER class
 /**
@@ -42,7 +42,7 @@ export class NoiseLayer extends TengObject
     readonly algorithm: Algorithm;
     readonly settings: Partial<INoiseAlgorithmSettings>;
 
-    private data: NoiseMapData = [];
+    private data: NoiseMap = [];
     private generated = false;
 
     readonly perlin: Perlin;
@@ -126,7 +126,7 @@ export class NoiseLayer extends TengObject
      * Returns the noise map data that has been created with `generate()`  
      * Returns an empty array if the map wasn't generated yet
      */
-    getData(): NoiseMapData
+    getData(): NoiseMap
     {
         return this.data;
     }

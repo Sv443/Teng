@@ -4,7 +4,7 @@
 
 import { Size } from "../base/Base";
 import { TengObject } from "../base/TengObject";
-import { NoiseLayer } from "./NoiseLayer";
+import { NoiseLayer, NoiseMap } from "./NoiseLayer";
 
 
 //#MARKER types
@@ -16,11 +16,6 @@ import { NoiseLayer } from "./NoiseLayer";
  * @returns Should return a floating point number between 0.0 and 1.0
  */
 export type LayerImportanceFormula = (currentIdx: number, lastVal: number, layerAmount: number) => number;
-
-/**
- * A 2D array of noise values
- */
-export type NoiseMap = number[][];
 
 const defaultLayerImportanceFormula: LayerImportanceFormula = (currentIdx, lastVal, layerAmount) => {
     if(isNaN(lastVal))
@@ -65,6 +60,8 @@ export class LayeredNoise extends TengObject
         return `${this.objectName} - ${this.layers.length} layers, size = ${this.size.toString()} - UID: ${this.uid.toString()}`;
     }
 
+    //#MARKER other
+
     /**
      * Adds a noise layer
      */
@@ -82,20 +79,57 @@ export class LayeredNoise extends TengObject
     }
 
     /**
+     * Resets the importance calculation formula to the default one of `lastVal / 2`
+     */
+    resetImportanceFormula(): void
+    {
+        this.importanceFormula = defaultLayerImportanceFormula;
+    }
+
+    /**
      * Generates the noise map
      */
-    generateMap(): NoiseMap
+    generateMap(resolution: number): Promise<NoiseMap>
     {
-        let lastImportance = NaN;
+        return new Promise<NoiseMap>(async (res, rej) => {
+            const noiseMap: NoiseMap = [];
 
-        this.layers.forEach((layer, i) => {
-            /** Importance is a modifier to noise layers, which dictates how much a layer contributes to the final noise map */
-            const importance = this.importanceFormula(i, lastImportance, this.layers.length);
-            lastImportance = importance;
+            let lastImportance = NaN;
 
-            // TODO:
+            const layerPromises: Promise<void>[] = [];
+
+            // generate layer data:
+            this.layers.forEach((layer) => {
+                layerPromises.push(layer.generate(resolution));
+            });
+
+            await Promise.all(layerPromises);
+
+            // layer data has been generated, so concatenate layers into a single layer now:
+            this.layers.forEach((layer, i) => {
+                /** Importance is a modifier to noise layers, which dictates how much a layer contributes to the final noise map */
+                const importance = this.importanceFormula(i, lastImportance, this.layers.length);
+                lastImportance = importance;
+
+                const currentLayerData: NoiseMap = layer.getData();
+
+                if(currentLayerData.length == 0)
+                    return rej(`Error in noise layer #${i} (${layer.toString()}): layer data wasn't generated yet or was reset prior to concatenation`);
+
+                // TODO: concat `currentLayerData` onto `noiseMap`
+            });
+
+            return res(noiseMap);
         });
+    }
 
-        return [];
+    //#MARKER static
+
+    /**
+     * Returns the default layer importance calculation formula of `lastVal / 2`
+     */
+    static getDefaultImportanceFormula(): LayerImportanceFormula
+    {
+        return defaultLayerImportanceFormula;
     }
 }
