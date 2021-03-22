@@ -3,7 +3,9 @@
 /**********************************************************/
 
 import { Perlin } from "pf-perlin";
+import Simplex from "simplex-noise";
 import { seededRNG } from "svcorelib";
+
 import { Size } from "../base/Base";
 import { TengObject } from "../base/TengObject";
 
@@ -14,7 +16,8 @@ import { TengObject } from "../base/TengObject";
  */
 export enum Algorithm
 {
-    Perlin
+    Perlin,
+    Simplex
 }
 
 /**
@@ -45,7 +48,7 @@ export class NoiseLayer extends TengObject
     private data: NoiseMap = [];
     private generated = false;
 
-    readonly perlin: Perlin;
+    readonly generator: Perlin | Simplex;
 
     /**
      * Creates an instance of the NoiseLayer class
@@ -63,13 +66,21 @@ export class NoiseLayer extends TengObject
         else
             this.settings = {};
 
+        const seed = (this.settings.seed || seededRNG.generateRandomSeed(10).toString());
+
+        // overwrite seed in case it was randomly generated:
+        this.settings.seed = seed;
+
         switch(algorithm)
         {
             case Algorithm.Perlin:
-                this.perlin = new Perlin({
+                this.generator = new Perlin({
                     dimensions: 2,
-                    seed: (this.settings.seed || seededRNG.generateRandomSeed(10).toString())
+                    seed
                 });
+            break;
+            case Algorithm.Simplex:
+                this.generator = new Simplex(seed);
             break;
         }
     }
@@ -99,12 +110,17 @@ export class NoiseLayer extends TengObject
 
                     for(let x = 0; x < this.size.width; x++)
                     {
-                        let value: number;
+                        let value: number = NaN;
 
                         switch(this.algorithm)
                         {
                             case Algorithm.Perlin:
-                                value = this.perlin.get([ x / resolution, y / resolution ]);
+                                if(this.generator instanceof Perlin)
+                                    value = this.generator.get([ x / resolution, y / resolution ]);
+                            break;
+                            case Algorithm.Simplex:
+                                if(this.generator instanceof Simplex)
+                                    value = this.generator.noise2D(x / resolution, y / resolution);
                             break;
                         }
 
