@@ -26,9 +26,6 @@ export abstract class Menu extends TengObject
         this.title = title;
     }
 
-    /**
-     * Returns a string representation of this object
-     */
     toString(): string
     {
         return `Menu <${this.objectName}> with title '${this.title}' - UID: ${this.uid.toString()}`;
