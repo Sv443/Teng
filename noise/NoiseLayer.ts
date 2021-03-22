@@ -150,7 +150,7 @@ export class NoiseLayer extends TengObject
     /**
      * Returns the state of the noise map generation
      */
-    getIsGenerated(): boolean
+    isGenerated(): boolean
     {
         return this.generated;
     }
