@@ -107,12 +107,18 @@ export class LayeredNoise extends TengObject
             // even if the layerPromises array is empty, this will still work as intended:
             await Promise.all(layerPromises);
 
+
+            /** Importances need to be accumulated in order to calculate the final noise values */
+            let importanceAccumulator: number = 0;
+
             // layer data has been generated, so concatenate layers into a single layer now:
             this.layers.forEach((layer, i) => {
                 /** Importance is a modifier to noise layers, which dictates how much a layer contributes to the final noise map */
                 const importance = this.importanceFormula(i, lastImportance, this.layers.length);
+                importanceAccumulator += importance;
                 lastImportance = importance;
 
+                // get noise map of current layer
                 const currentLayerData: NoiseMap = layer.getData();
 
                 if(currentLayerData.length == 0)
