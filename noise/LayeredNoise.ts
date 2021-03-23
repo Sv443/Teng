@@ -137,3 +137,21 @@ export class LayeredNoise extends TengObject
         return defaultLayerImportanceFormula;
     }
 }
+
+/*
+
+For each cell:
+
+(layer: importance * value = result)
+
+l1:  1.0  * 0.5  = 0.5
+      +             +
+l2:  0.5  * 0.3  = 0.15
+      +             +
+l3:  0.25 * 0.45 = 0.11
+      =             =
+     1.75          0.76  /  1.75  =  0.43
+      |                      ^
+       \---------------------/
+
+*/
