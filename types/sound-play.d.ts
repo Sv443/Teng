@@ -1,6 +1,6 @@
 /**
  * ### [sound-play](https://github.com/nomadhoc/sound-play)  
- * Dead simple sound player for Node -- because it should be simple.
+ * Dead simple sound player for Node - because it should be simple.
  * @author nomadhoc
  */
 declare module "sound-play"
