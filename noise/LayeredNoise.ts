@@ -124,7 +124,25 @@ export class LayeredNoise extends TengObject
                 if(currentLayerData.length == 0)
                     return rej(`Error in noise layer #${i} (${layer.toString()}): layer data wasn't generated yet or was reset prior to concatenation`);
 
-                // TODO: concat `currentLayerData` onto `noiseMap`
+                // TODO: concat `currentLayerData` onto `noiseMap` using the following formula:
+                /*
+
+                For each cell:
+
+                (layer_number: importance * value = result)
+
+                l1:  1.0  * 0.5  = 0.5
+                      +             +
+                l2:  0.5  * 0.3  = 0.15
+                      +             +
+                l3:  0.25 * 0.45 = 0.11
+                      =             =
+                     1.75          0.76  /  1.75  =  0.43
+                      ▼                      ▲
+                      └──────────────────────┘
+
+                */
+
                 // #DEBUG# overwrite noiseMap just so there is some output
                 noiseMap = currentLayerData;
             });
@@ -143,21 +161,3 @@ export class LayeredNoise extends TengObject
         return defaultLayerImportanceFormula;
     }
 }
-
-/*
-
-For each cell:
-
-(layer: importance * value = result)
-
-l1:  1.0  * 0.5  = 0.5
-      +             +
-l2:  0.5  * 0.3  = 0.15
-      +             +
-l3:  0.25 * 0.45 = 0.11
-      =             =
-     1.75          0.76  /  1.75  =  0.43
-      |                      ^
-       \---------------------/
-
-*/
