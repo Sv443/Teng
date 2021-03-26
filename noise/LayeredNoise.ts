@@ -9,11 +9,11 @@ import { NoiseLayer, NoiseMap } from "./NoiseLayer";
 
 //#MARKER types
 /**
- * Function that is used to calculate the noise layer importance
+ * Function that is used to calculate the noise layer importance (how much a layer contributes to the final noise map)
  * @param currentIdx The index of the current layer (0 based)
- * @param lastVal The importance of the last layer - will be `NaN` on the first layer
- * @param layerAmount The total amount of layers
- * @returns Should return a floating point number between 0.0 and 1.0
+ * @param lastVal The importance of the last layer - will be `NaN` on the first layer (the layer with index `0`)
+ * @param layerAmount The total amount of layers - this value will always stay the same
+ * @returns This function has to return a floating point number between 0.0 and 1.0
  */
 export type LayerImportanceFormula = (currentIdx: number, lastVal: number, layerAmount: number) => number;
 
@@ -71,7 +71,8 @@ export class LayeredNoise extends TengObject
     }
 
     /**
-     * Overrides the default importance calculation formula
+     * Overrides the default importance calculation formula.  
+     * You should probably look at the in-IDE documentation of the `LayerImportanceFormula` type to understand how to use it.
      */
     setImportanceFormula(func: LayerImportanceFormula): void
     {
@@ -86,8 +87,12 @@ export class LayeredNoise extends TengObject
         this.importanceFormula = defaultLayerImportanceFormula;
     }
 
+    //#MARKER generate
+
     /**
-     * Generates the noise map
+     * Uses the layers added to this LayeredNoise instance and the previously defined importance formula to calculate a single noise map.  
+     * Add layers using the method `addLayer()`.  
+     * The importance formula describes how much each layer contributes to the final noise map. Change it with the method `setImportanceFormula()`.
      */
     generateMap(): Promise<NoiseMap>
     {
@@ -107,7 +112,7 @@ export class LayeredNoise extends TengObject
 
 
             /** Importances need to be accumulated in order to calculate the final noise values */
-            let importanceAccumulator: number = 0;
+            let accumulatedImportances: number = 0;
 
             const layersData: NoiseMap[] = [];
 
@@ -115,7 +120,12 @@ export class LayeredNoise extends TengObject
             this.layers.forEach((layer, i) => {
                 /** Importance is a modifier to noise layers, which dictates how much a layer contributes to the final noise map */
                 const importance = this.importanceFormula(i, lastImportance, this.layers.length);
-                importanceAccumulator += importance;
+
+                // if the formula is invalid, throw an error
+                if(typeof importance !== "number" || importance < 0.0 || importance > 1.0)
+                    throw new TypeError(`Error in layer importance formula.\nPassed parameters { index=${i}, last_importance=${lastImportance}, layers_amount=${this.layers.length} } yielded an invalid value of ${importance} (expected number between 0.0 and 1.0)`);
+
+                accumulatedImportances += importance;
                 lastImportance = importance;
 
                 // get noise map of current layer
@@ -127,6 +137,7 @@ export class LayeredNoise extends TengObject
 
                 const values: NoiseMap = [];
 
+                // go through the current layer data & apply the first part of the noise map value calculation formula (importance * value)
                 currentLayerData.forEach((row, y) => {
                     values.push([]);
 
@@ -135,16 +146,28 @@ export class LayeredNoise extends TengObject
                     });
                 });
 
-                // #DEBUG# overwrite noiseMap just so there is some output
-                // noiseMap = currentLayerData;
-
                 layersData.push(values);
             });
 
             /*
+            noise map value calculation formula
+            -----------------------------------
+
             >>>> For each cell:
 
-            (layer_number: importance * value = result)
+            A: importance
+            B: value of current cell
+            C: result
+
+            l0:  A1 * B1 = C1
+            l1:  A2 * B2 = C2
+
+            result = (C1 + C2) / (A1 + A2)
+
+
+
+
+            Example (3 layers):
 
             l1:  1.0  * 0.5  = 0.5
                   +             +
@@ -153,23 +176,26 @@ export class LayeredNoise extends TengObject
             l3:  0.25 * 0.45 = 0.11
                   =             =
                  1.75          0.76  /  1.75  =  0.43
-                  ▼                      ▲
-                  └──────────────────────┘
+                  ▼                      ▲      └────┘
+                  └──────────────────────┘      result
             */
             const finalNoiseMap: NoiseMap = [];
             const layersAmount = layersData.length;
 
+            // go through each position of the final noise map
             this.size.forEachPosition(pos => {
                 if(finalNoiseMap.length == pos.y)
                     finalNoiseMap.push([]);
 
-                let addedValue = 0.0;
+                let sumValues = 0.0;
 
+                // add the values from every layer but at the same exact position together:
                 for(let i = 0; i < layersAmount; i++)
-                    addedValue += layersData[i][pos.y][pos.x];
+                    sumValues += layersData[i][pos.y][pos.x];
 
 
-                const finalValue = addedValue / importanceAccumulator;
+                // apply the final part of the noise map value calculation formula (sumValues / accumulatedImportances)
+                const finalValue = sumValues / accumulatedImportances;
 
                 finalNoiseMap[pos.y].push(finalValue);
             });
