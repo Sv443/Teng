@@ -122,7 +122,7 @@ export class LayeredNoise extends TengObject
                 const importance = this.importanceFormula(i, lastImportance, this.layers.length);
 
                 // if the formula is invalid, throw an error
-                if(typeof importance !== "number" || importance < 0.0 || importance > 1.0)
+                if(typeof importance !== "number" || importance < 0.0 || importance > 1.0 || isNaN(importance))
                     throw new TypeError(`Error in layer importance formula.\nPassed parameters { index=${i}, last_importance=${lastImportance}, layers_amount=${this.layers.length} } yielded an invalid value of ${importance} (expected number between 0.0 and 1.0)`);
 
                 accumulatedImportances += importance;
