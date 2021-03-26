@@ -28,9 +28,13 @@ export interface INoiseAlgorithmSettings
 {
     [index: string]: string | number;
 
-    seed: string;
+    /** Using the same seed will yield the same noise map. Leave empty to generate a random seed. Use `getSeed()` to read the set or generated seed. */
+    seed: number;
+    /** Higher number = more zoomed in / smooth noise - Base level is around 20-50 */
     resolution: number;
 }
+
+declare type CoherentRNG = Perlin | Simplex;
 
 /**
  * A 2D array of noise values
@@ -53,7 +57,7 @@ export class NoiseLayer extends TengObject
     private generated = false;
 
     /** The noise generator that will be used to generate the noise map */
-    readonly generator: Perlin | Simplex;
+    readonly generator: CoherentRNG;
 
     /**
      * Creates an instance of the NoiseLayer class
@@ -72,7 +76,7 @@ export class NoiseLayer extends TengObject
             this.settings = {};
 
         // randomly generate seed if it isn't set:
-        this.settings.seed = (this.settings.seed || seededRNG.generateRandomSeed(tengSettings.game.noise.defaultSeedLength).toString());
+        this.settings.seed = (this.settings.seed || seededRNG.generateRandomSeed(tengSettings.game.noise.defaultSeedLength));
 
         // set up noise generator based on algorithm:
         switch(algorithm)
@@ -80,15 +84,15 @@ export class NoiseLayer extends TengObject
             case Algorithm.Perlin:
                 this.generator = new Perlin({
                     dimensions: 2,
-                    seed: this.settings.seed
+                    seed: this.settings.seed.toString()
                 });
             break;
             case Algorithm.Simplex:
-                this.generator = new Simplex(this.settings.seed);
+                this.generator = new Simplex(this.settings.seed.toString());
             break;
         }
     }
-    
+
     /**
      * Returns a string representation of this object
      */
@@ -121,14 +125,10 @@ export class NoiseLayer extends TengObject
                         switch(this.algorithm)
                         {
                             case Algorithm.Perlin:
-                                // needed so TypeScript shuts up:
-                                if(this.generator instanceof Perlin)
-                                    value = this.generator.get([ x / resolution, y / resolution ]);
+                                value = (this.generator as Perlin).get([ x / resolution, y / resolution ]);
                             break;
                             case Algorithm.Simplex:
-                                // needed so TypeScript shuts up:
-                                if(this.generator instanceof Simplex)
-                                    value = this.generator.noise2D(x / resolution, y / resolution);
+                                value = (this.generator as Simplex).noise2D(x / resolution, y / resolution);
                             break;
                         }
 
@@ -154,6 +154,23 @@ export class NoiseLayer extends TengObject
     getData(): NoiseMap
     {
         return this.data;
+    }
+
+    /**
+     * Sets the seed of this layer
+     */
+    setSeed(seed: number): void
+    {
+        this.settings.seed = seed;
+    }
+
+    /**
+     * Returns the seed that has been set or randomly generated.  
+     * Returns `NaN` if no seed was found.
+     */
+    getSeed(): number
+    {
+        return this.settings?.seed || NaN;
     }
 
     /**
