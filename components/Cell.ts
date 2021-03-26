@@ -77,7 +77,7 @@ export abstract class Cell extends TengObject
     abstract update(): Promise<void>;
 
     /**
-     * Called when this cell is bulldozed.  
+     * Called to find out if this cell can be bulldozed.  
      *   
      * This method has to return a Promise.  
      * The Promise has to resolve with a boolean value.  
