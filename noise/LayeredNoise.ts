@@ -92,8 +92,6 @@ export class LayeredNoise extends TengObject
     generateMap(): Promise<NoiseMap>
     {
         return new Promise<NoiseMap>(async (res, rej) => {
-            let noiseMap: NoiseMap = [];
-
             let lastImportance = NaN;
 
             const layerPromises: Promise<void>[] = [];
@@ -111,6 +109,8 @@ export class LayeredNoise extends TengObject
             /** Importances need to be accumulated in order to calculate the final noise values */
             let importanceAccumulator: number = 0;
 
+            const layersData: NoiseMap[] = [];
+
             // layer data has been generated, so concatenate layers into a single layer now:
             this.layers.forEach((layer, i) => {
                 /** Importance is a modifier to noise layers, which dictates how much a layer contributes to the final noise map */
@@ -124,30 +124,57 @@ export class LayeredNoise extends TengObject
                 if(currentLayerData.length == 0)
                     return rej(`Error in noise layer #${i} (${layer.toString()}): layer data wasn't generated yet or was reset prior to concatenation`);
 
-                // TODO: concat `currentLayerData` onto `noiseMap` using the following formula:
-                /*
 
-                For each cell:
+                const values: NoiseMap = [];
 
-                (layer_number: importance * value = result)
+                currentLayerData.forEach((row, y) => {
+                    values.push([]);
 
-                l1:  1.0  * 0.5  = 0.5
-                      +             +
-                l2:  0.5  * 0.3  = 0.15
-                      +             +
-                l3:  0.25 * 0.45 = 0.11
-                      =             =
-                     1.75          0.76  /  1.75  =  0.43
-                      ▼                      ▲
-                      └──────────────────────┘
-
-                */
+                    row.forEach((val) => {
+                        values[y].push(importance * val);
+                    });
+                });
 
                 // #DEBUG# overwrite noiseMap just so there is some output
-                noiseMap = currentLayerData;
+                // noiseMap = currentLayerData;
+
+                layersData.push(values);
             });
 
-            return res(noiseMap);
+            /*
+            >>>> For each cell:
+
+            (layer_number: importance * value = result)
+
+            l1:  1.0  * 0.5  = 0.5
+                  +             +
+            l2:  0.5  * 0.3  = 0.15
+                  +             +
+            l3:  0.25 * 0.45 = 0.11
+                  =             =
+                 1.75          0.76  /  1.75  =  0.43
+                  ▼                      ▲
+                  └──────────────────────┘
+            */
+            const finalNoiseMap: NoiseMap = [];
+            const layersAmount = layersData.length;
+
+            this.size.forEachPosition(pos => {
+                if(finalNoiseMap.length == pos.y)
+                    finalNoiseMap.push([]);
+
+                let addedValue = 0.0;
+
+                for(let i = 0; i < layersAmount; i++)
+                    addedValue += layersData[i][pos.y][pos.x];
+
+
+                const finalValue = addedValue / importanceAccumulator;
+
+                finalNoiseMap[pos.y].push(finalValue);
+            });
+
+            return res(finalNoiseMap);
         });
     }
 

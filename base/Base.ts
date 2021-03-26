@@ -67,6 +67,21 @@ export class Size extends Stringifiable
 
         return false;
     }
+
+    /**
+     * Runs a function for each position in this size instance.  
+     * The first position starts at 0. Offset it yourself if needed.
+     */
+    forEachPosition(callback: (pos: Position) => void): void
+    {
+        for(let y = 0; y < this.height; y++)
+        {
+            for(let x = 0; x < this.width; x++)
+            {
+                callback(new Position(x, y));
+            }
+        }
+    }
 }
 
 /**
