@@ -4,8 +4,8 @@
 
 import { allOfType, unused, Errors, colors } from "svcorelib";
 
-import { tengSettings } from "../settings";
-import { TengObject } from "../base/TengObject";
+import { tengSettings } from "../../settings";
+import { TengObject } from "../../base/TengObject";
 import { Menu, MenuOption } from "./Menu";
 
 const col = colors.fg;
@@ -51,6 +51,12 @@ export interface ISelectionMenuLocale
     returnKey: string;
     /** Select text - defaults to "Select" */
     select: string;
+}
+
+export interface SelectionMenu
+{
+    /** Called when the user has selected an option */
+    on(event: "submit", listener: (result: ISelectionMenuResult) => void): this;
 }
 
 //#MARKER class

@@ -8,11 +8,15 @@ import { Menu, MenuOption } from "../Menu";
 import { ISelectionMenuResult, SelectionMenu } from "../SelectionMenu";
 
 
+//#MARKER types
+
 export interface MainMenu
 {
     /** Called when the user has selected an option */
     on(event: "submit", listener: (result: ISelectionMenuResult) => void): this;
 }
+
+//#MARKER class
 
 /**
  * Main menu of the game
@@ -28,7 +32,7 @@ export class MainMenu extends SelectionMenu
      * Creates an instance of the MainMenu class
      * @param title Name of the game or title of the main menu
      * @param options The selectable options - add empty string or `null` for a spacer
-     * @param titleFont The font of the 3D title
+     * @param titleFont The font of the title banner
      */
     constructor(title: string, options?: MenuOption[], titleFont: Fonts = "Standard")
     {
