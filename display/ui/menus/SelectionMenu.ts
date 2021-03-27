@@ -4,8 +4,8 @@
 
 import { allOfType, unused, Errors, colors } from "svcorelib";
 
-import { tengSettings } from "../../settings";
-import { TengObject } from "../../base/TengObject";
+import { tengSettings } from "../../../settings";
+import { TengObject } from "../../../base/TengObject";
 import { Menu, MenuOption } from "./Menu";
 
 const col = colors.fg;

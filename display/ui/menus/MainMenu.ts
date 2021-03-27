@@ -4,8 +4,8 @@
 
 import { Fonts } from "figlet";
 
-import { Menu, MenuOption } from "../Menu";
-import { ISelectionMenuResult, SelectionMenu } from "../SelectionMenu";
+import { Menu, MenuOption } from "./Menu";
+import { ISelectionMenuResult, SelectionMenu } from "./SelectionMenu";
 
 
 //#MARKER types

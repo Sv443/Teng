@@ -2,7 +2,7 @@
 /* Teng - Base class of menus */
 /******************************/
 
-import { TengObject } from "../../base/TengObject";
+import { TengObject } from "../../../base/TengObject";
 import { text, loadFont,  Fonts } from "figlet";
 
 
