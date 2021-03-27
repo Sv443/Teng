@@ -3,7 +3,7 @@
 /******************************/
 
 import { TengObject } from "../../../base/TengObject";
-import { text, loadFont,  Fonts } from "figlet";
+import { text, loadFont,  Fonts, Options, KerningMethods } from "figlet";
 
 
 /** A single option of a menu - set to empty string or `null` for a spacer */
@@ -101,10 +101,15 @@ export abstract class Menu extends TengObject
     /**
      * Creates FIGText out of the passed text and font
      */
-    static createFIGText(txt: string, font: Fonts): Promise<string>
+    static createFIGText(txt: string, font: Fonts, kerning: KerningMethods = "default"): Promise<string>
     {
         return new Promise<string>(async (res, rej) => {
-            text(txt, font, (err, result) => {
+            const opts: Options = {
+                font,
+                horizontalLayout: kerning
+            }
+
+            text(txt, opts, (err, result) => {
                 if(err || typeof result == "undefined")
                     return rej(err);
                 

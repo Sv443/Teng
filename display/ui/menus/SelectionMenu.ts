@@ -7,6 +7,7 @@ import { allOfType, unused, Errors, colors } from "svcorelib";
 import { tengSettings } from "../../../settings";
 import { TengObject } from "../../../base/TengObject";
 import { Menu, MenuOption } from "./Menu";
+import { InputHandler } from "../../../input/InputHandler";
 
 const col = colors.fg;
 
@@ -74,6 +75,8 @@ export class SelectionMenu extends Menu
 
     private outStream: NodeJS.WriteStream;
 
+    private inputHandler: InputHandler;
+
 
     /**
      * Creates an instance of the SelectionMenu class
@@ -102,6 +105,8 @@ export class SelectionMenu extends Menu
             returnKey: "Return",
             select: "Select"
         };
+
+        this.inputHandler = new InputHandler();
     }
 
     toString(): string
@@ -150,22 +155,63 @@ export class SelectionMenu extends Menu
         this.options.push(option);
     }
 
-    show()
+    /**
+     * Shows this menu
+     */
+    show(): void
     {
+        this.registerInputHandler();
+
         this.draw();
+    }
+
+    //#MARKER private / protected
+
+    /**
+     * Registers the input handler
+     */
+    private registerInputHandler()
+    {
+        this.inputHandler.on("key", (char, key) => {
+            // TODO:
+            switch(key?.name)
+            {
+                case "w":
+                case "up":
+
+                break;
+                case "s":
+                case "down":
+
+                break;
+                case "return":
+
+                break;
+                case "escape":
+
+                break;
+            }
+        });
     }
 
     /**
      * Called to draw the menu to the outStream
      */
-    protected draw()
+    protected draw(): void
     {
         this.clearConsole();
 
         const logTxt = [];
 
-        if(typeof this.title == "string")
+        const figText = this.getFIGTitle();
+
+        if(figText.length === 0)
             logTxt.push(`${col.blue}${this.title}${col.rst}\n`);
+        else
+        {
+            figText.forEach(line => logTxt.push(line));
+            logTxt.push("");
+        }
 
         this.options.forEach((opt, i) => {
             logTxt.push(`${i == this.optIndex ? `${col.yellow}> ${opt}` : `  ${opt}`}${col.rst}`);
@@ -260,20 +306,17 @@ export class SelectionMenu extends Menu
     //     this.promiseRes(retObj);
     // }
 
-    close()
-    {
-        // let rmRes = this.removeAllListeners();
-        // let upRes = this.update();
+    // close(): void
+    // {
+    //     let rmRes = this.removeAllListeners();
+    //     let upRes = this.update();
 
-        // this.clearConsole();
+    //     this.clearConsole();
 
-        // return (rmRes && upRes);
-    }
+    //     return (rmRes && upRes);
+    // }
 
-    /**
-     * @private
-     */
-    clearConsole()
+    private clearConsole(): void
     {
         this.outStream.clearLine(0);
         this.outStream.cursorTo(0, 0);

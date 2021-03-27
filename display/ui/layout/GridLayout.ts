@@ -13,8 +13,8 @@ export class GridLayout extends UIElement
     /**
      * Creates an instance of the GridLayout class
      */
-    constructor()
+    constructor(zIndex: number)
     {
-        super();
+        super(zIndex);
     }
 }

@@ -59,7 +59,7 @@ export class MainMenu extends SelectionMenu
             {
                 await MainMenu.preloadFIGFont(this.titleFont);
 
-                this.setFIGTitle((await MainMenu.createFIGText(this.title, this.titleFont)).split(/\n/g));
+                this.setFIGTitle((await MainMenu.createFIGText(this.title, this.titleFont, "default")).split(/\n/g));
 
                 this.preloaded = true;
                 return res();
@@ -68,27 +68,6 @@ export class MainMenu extends SelectionMenu
             {
                 return rej(err);
             }
-        });
-    }
-
-    /**
-     * Displays the main menu.  
-     * Promise resolves with the selected option's index. Alternatively you can hook the `submit` event.
-     */
-    show(): Promise<ISelectionMenuResult>
-    {
-        return new Promise<ISelectionMenuResult>(async (res) => {
-            if(!this.preloaded)
-                await this.preload();
-
-            this.show();
-
-            this.on("submit", result => {
-                this.emit("submit", result);
-
-                res(result);
-                return;
-            });
         });
     }
 }
