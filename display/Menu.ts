@@ -28,7 +28,7 @@ export abstract class Menu extends TengObject
 
     toString(): string
     {
-        return `Menu <${this.objectName}> with title '${this.title}' - UID: ${this.uid.toString()}`;
+        return `Menu <${this.objectName}> with title '${TengObject.truncateDescriptor(this.title)}' - UID: ${this.uid.toString()}`;
     }
 
     //#MARKER other

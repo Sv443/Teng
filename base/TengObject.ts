@@ -112,5 +112,5 @@ export abstract class TengObject extends EventEmitter
     }
 }
 
-/** Generator function that generates a unique index number */
+/** Generator function that generates a unique, auto-incrementing, 0-based index number */
 const uniqueIdxGen = TengObject.uniqueIndexGenerator();
