@@ -2,18 +2,23 @@
 /* Teng - Displays a main menu */
 /*******************************/
 
-import { text, loadFont,  Fonts } from "figlet";
+import { Fonts } from "figlet";
 
 import { Menu, MenuOption } from "../Menu";
+import { ISelectionMenuResult, SelectionMenu } from "../SelectionMenu";
 
 
+export interface MainMenu
+{
+    /** Called when the user has selected an option */
+    on(event: "submit", listener: (result: ISelectionMenuResult) => void): this;
+}
 
 /**
  * Main menu of the game
  */
-export class MainMenu extends Menu
+export class MainMenu extends SelectionMenu
 {
-    private figTitle: string[] = [];
     private titleFont: Fonts;
 
     private preloaded = false;
@@ -27,10 +32,11 @@ export class MainMenu extends Menu
      */
     constructor(title: string, options?: MenuOption[], titleFont: Fonts = "Standard")
     {
-        super("MainMenu", title);
+        super("MainMenu", title, options);
 
         if(options)
             this.options = options;
+
         this.titleFont = titleFont;
     }
 
@@ -49,7 +55,7 @@ export class MainMenu extends Menu
             {
                 await MainMenu.preloadFIGFont(this.titleFont);
 
-                this.figTitle = (await MainMenu.createFIGText(this.title, this.titleFont)).split(/\n/g);
+                this.setFIGTitle((await MainMenu.createFIGText(this.title, this.titleFont)).split(/\n/g));
 
                 this.preloaded = true;
                 return res();
@@ -63,57 +69,21 @@ export class MainMenu extends Menu
 
     /**
      * Displays the main menu.  
-     * Promise resolves with the selected option's index
+     * Promise resolves with the selected option's index. Alternatively you can hook the `submit` event.
      */
-    show(): Promise<number>
+    show(): Promise<ISelectionMenuResult>
     {
-        return new Promise<number>(async (res, rej) => {
+        return new Promise<ISelectionMenuResult>(async (res) => {
             if(!this.preloaded)
                 await this.preload();
 
-            // TODO: display menu & hook keypress events
-            
-            return res(0);
-        });
-    }
+            this.show();
 
-    /**
-     * Returns the FIG title of this menu
-     */
-    getFIGTitle(): string[]
-    {
-        return this.figTitle;
-    }
+            this.on("submit", result => {
+                this.emit("submit", result);
 
-    //#MARKER static
-
-    /**
-     * Preloads a font so the menu can be created faster
-     * @param font Name of the FIGlet font
-     */
-    static preloadFIGFont(font: Fonts = "Standard")
-    {
-        return new Promise<void>((res, rej) => {
-            loadFont(font, (err: Error | null) => {
-                if(err != null)
-                    return rej(err);
-
-                return res();
-            });
-        });
-    }
-
-    /**
-     * Creates FIGText out of the passed text and font
-     */
-    static createFIGText(txt: string, font: Fonts): Promise<string>
-    {
-        return new Promise<string>(async (res, rej) => {
-            text(txt, font, (err, result) => {
-                if(err || typeof result == "undefined")
-                    return rej(err);
-                
-                return res(result);
+                res(result);
+                return;
             });
         });
     }

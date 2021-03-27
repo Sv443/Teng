@@ -27,6 +27,10 @@ const tengSettings = Object.freeze({
     menus: {
         /** The maximum length of menu descriptors */
         descriptorMaxLength: 16,
+        /** Cooldown in ms between accepting keypresses */
+        inputCooldown: 35,
+        /** Set to false to clear the console instead of shifting the content down */
+        preferShiftOutput: true,
     },
     objects: {
         /** The default maximum length of teng object descriptors */

@@ -3,6 +3,7 @@
 /******************************/
 
 import { TengObject } from "../base/TengObject";
+import { text, loadFont,  Fonts } from "figlet";
 
 
 /** A single option of a menu - set to empty string or `null` for a spacer */
@@ -71,7 +72,7 @@ export abstract class Menu extends TengObject
     /**
      * Checks if a value is a menu
      */
-    isMenu(value: any): value is Menu
+    static isMenu(value: any): value is Menu
     {
         value = (value as Menu);
 
@@ -79,5 +80,36 @@ export abstract class Menu extends TengObject
             return false;
 
         return true;
+    }
+
+    /**
+     * Preloads a font so the menu can be created faster
+     * @param font Name of the FIGlet font
+     */
+    static preloadFIGFont(font: Fonts = "Standard")
+    {
+        return new Promise<void>((res, rej) => {
+            loadFont(font, (err: Error | null) => {
+                if(err != null)
+                    return rej(err);
+
+                return res();
+            });
+        });
+    }
+ 
+    /**
+     * Creates FIGText out of the passed text and font
+     */
+    static createFIGText(txt: string, font: Fonts): Promise<string>
+    {
+        return new Promise<string>(async (res, rej) => {
+            text(txt, font, (err, result) => {
+                if(err || typeof result == "undefined")
+                    return rej(err);
+                
+                return res(result);
+            });
+        });
     }
 }
