@@ -5,6 +5,9 @@
 import { TengObject } from "../base/TengObject";
 
 
+/** A single option of a menu - set to empty string or `null` for a spacer */
+export type MenuOption = string | null;
+
 /**
  * Base class for all Teng menus
  */
@@ -12,6 +15,9 @@ export abstract class Menu extends TengObject
 {
     /** The title of this menu */
     protected title: string;
+
+    /** Selectable options of this menu */
+    protected options: MenuOption[] = [];
 
 
     /**
@@ -39,6 +45,25 @@ export abstract class Menu extends TengObject
     getTitle(): string
     {
         return this.title;
+    }
+
+    /**
+     * Adds an option to this menu
+     */
+    addOption(option: MenuOption)
+    {
+        if(this.options.includes(option))
+            throw new TypeError(`Can't add option "${option}" to the menu because it already exists!`);
+
+        this.options.push(option);
+    }
+
+    /**
+     * Returns the options that have been set on this menu
+     */
+    getOptions(): MenuOption[]
+    {
+        return this.options;
     }
 
     //#MARKER static

@@ -4,19 +4,16 @@
 
 import { text, loadFont,  Fonts } from "figlet";
 
-import { Menu } from "../Menu";
+import { Menu, MenuOption } from "../Menu";
 
 
-/** A single option of a menu - set to empty string or `null` for a spacer */
-export type MenuOption = (string|null);
 
 /**
  * Main menu of the game
  */
 export class MainMenu extends Menu
 {
-    private figTitle: string = "";
-    private options: MenuOption[];
+    private figTitle: string[] = [];
     private titleFont: Fonts;
 
     private preloaded = false;
@@ -28,16 +25,19 @@ export class MainMenu extends Menu
      * @param options The selectable options - add empty string or `null` for a spacer
      * @param titleFont The font of the 3D title
      */
-    constructor(title: string, options: MenuOption[], titleFont: Fonts = "Standard")
+    constructor(title: string, options?: MenuOption[], titleFont: Fonts = "Standard")
     {
         super("MainMenu", title);
 
-        this.options = options;
+        if(options)
+            this.options = options;
         this.titleFont = titleFont;
     }
 
+    //#MARKER other
+
     /**
-     * Preloads all dependencies of the menu, to improve performance
+     * Preloads all dependencies of the menu, to decrease render latency
      */
     preload(): Promise<void>
     {
@@ -49,7 +49,7 @@ export class MainMenu extends Menu
             {
                 await MainMenu.preloadFIGFont(this.titleFont);
 
-                this.figTitle = await MainMenu.createFIGText(this.title, this.titleFont);
+                this.figTitle = (await MainMenu.createFIGText(this.title, this.titleFont)).split(/\n/g);
 
                 this.preloaded = true;
                 return res();
@@ -65,7 +65,7 @@ export class MainMenu extends Menu
      * Displays the main menu.  
      * Promise resolves with the selected option's index
      */
-    display(): Promise<number>
+    show(): Promise<number>
     {
         return new Promise<number>(async (res, rej) => {
             if(!this.preloaded)
@@ -75,6 +75,14 @@ export class MainMenu extends Menu
             
             return res(0);
         });
+    }
+
+    /**
+     * Returns the FIG title of this menu
+     */
+    getFIGTitle(): string[]
+    {
+        return this.figTitle;
     }
 
     //#MARKER static
