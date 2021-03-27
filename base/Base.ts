@@ -22,7 +22,8 @@ export abstract class Stringifiable
 }
 
 /**
- * Describes a rectangular size in 2D space
+ * Describes a rectangular size in 2D space.  
+ * Note: width and height cannot be modified after instantiation.
  */
 export class Size extends Stringifiable
 {
@@ -55,6 +56,20 @@ export class Size extends Stringifiable
         const h = br.y - tl.y + 1;
 
         return new this(w, h);
+    }
+
+    /**
+     * Creates a new instance of the Size class by splitting it horizontally and/or vertically a set number of times.  
+     * 
+     */
+    split(horSplits?: number, verSplits?: number): Size
+    {
+        let { width, height } = this;
+
+        horSplits && (width /= (horSplits + 1));
+        verSplits && (height /= (verSplits + 1));
+
+        return new Size(width, height);
     }
 
     /**

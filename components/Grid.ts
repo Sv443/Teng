@@ -283,6 +283,7 @@ export class Grid extends TengObject
      */
     setCells(chunkIndex: Position, cells: Cell[][]): void
     {
+        // TODO: error if no chunks present yet: TypeError: Cannot read property 'setCells' of undefined
         this.chunks[chunkIndex.y][chunkIndex.x].setCells(cells);
     }
 
