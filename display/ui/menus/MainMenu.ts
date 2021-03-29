@@ -18,8 +18,11 @@ export interface MainMenu
 
 //#MARKER class
 
+// TODO: GIF instead of still image
 /**
- * Main menu of the game
+ * Main menu of the game.  
+ *   
+ * ![example image](../../../docs/img/MainMenu.png)
  */
 export class MainMenu extends SelectionMenu
 {
@@ -45,7 +48,7 @@ export class MainMenu extends SelectionMenu
 
 
         this.settings = {
-            cancelable: true,
+            cancelable: false,
             overflow: true,
             wasdEnabled: true
         }

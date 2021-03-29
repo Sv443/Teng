@@ -2,12 +2,12 @@
 /* Teng - SelectionMenu that doesn't clear the console */
 /*******************************************************/
 
-import { allOfType, unused, Errors, colors } from "svcorelib";
+import { Errors, colors } from "svcorelib";
 
 import { tengSettings } from "../../../settings";
 import { TengObject } from "../../../base/TengObject";
 import { Menu, MenuOption } from "./Menu";
-import { InputHandler } from "../../../input/InputHandler";
+import { InputHandler, IKeypressObject } from "../../../input/InputHandler";
 
 const col = colors.fg;
 
@@ -37,12 +37,12 @@ export interface ISelectionMenuResult
     /** If this is `true`, the user has canceled the SelectionMenu by pressing the Escape key */
     canceled: boolean;
 
-    /** An object containing the index and text of the selected option */
+    /** An object containing the index and text of the selected option, or in case the menu was canceled, the last highlighted option */
     option: {
         /** The zero-based index of the option the user has selected */
         index: number;
-        /** The description / text of the option the user has selected */
-        description: string;
+        /** Text of the option the user has selected - set to `null` or an empty string when a spacer has somehow been selected (even though it should be impossible) */
+        text: MenuOption;
     }
 }
 
@@ -71,14 +71,12 @@ export interface SelectionMenu
 //#MARKER class
 
 /**
- * A scrollable menu from which the user can select a single option.  
- *   
- * ![TODO: example image]()
+ * A scrollable menu from which the user can select a single option.
  */
 export class SelectionMenu extends Menu
 {
     protected settings: Partial<ISelectionMenuSettings> = {};
-    protected optIndex = 0;
+    protected cursorPos: number = 0;
     protected locale: ISelectionMenuLocale;
 
     protected figTitle: string[] = [];
@@ -220,37 +218,143 @@ export class SelectionMenu extends Menu
         this.draw();
     }
 
-    //#MARKER private / protected
+    //#MARKER private / protected / static
 
     /**
      * Registers the input handler
      */
     private registerInputHandler()
     {
-        this.inputHandler.on("key", (char, key) => {
-            // TODO:
+        /** How many steps the cursor still needs to move */
+        let cursorMoveSteps = NaN;
+        /** Used to temporarily store the cursor pos before it is applied */
+        let tempCursorPos = this.cursorPos;
+
+        let maxOptionIndex = this.options.length - 1;
+
+
+        const opts = this.getOptions();
+
+
+        // check that first and last option aren't spacers
+        if(SelectionMenu.isEmptyOption(opts[0]) || SelectionMenu.isEmptyOption(opts[maxOptionIndex]))
+            throw new Error(`SelectionMenu options can't start or end in spacers`);
+
+
+        /**
+         * Moves the cursor `by` a passed number of positions (can be a negative or positive number) and skips empty options.  
+         */
+        const moveCursor = (by: number) =>
+        {
+            if(isNaN(cursorMoveSteps))
+                cursorMoveSteps = by;
+
+            if(by === 0)
+                return;
+
+            if(by % 1 !== 0)
+                throw new TypeError(`Can't move SelectionMenu cursor by floating point number ${by} - only use an integer here`);
+
+            const moveDirection = cursorMoveSteps < 0 ? -1 : 1;
+
+            if(cursorMoveSteps !== 0)
+            {
+                if(!SelectionMenu.isEmptyOption(opts[(tempCursorPos + moveDirection)]))
+                    cursorMoveSteps -= moveDirection;
+
+                tempCursorPos += moveDirection;
+
+                if(tempCursorPos < 0)
+                {
+                    // cursor is trying to overflow
+                    if(this.settings.overflow)
+                        tempCursorPos = maxOptionIndex;
+                    else
+                        tempCursorPos -= moveDirection;
+                }
+
+                if(tempCursorPos > maxOptionIndex)
+                {
+                    // cursor is trying to overflow
+                    if(this.settings.overflow)
+                        tempCursorPos = 0;
+                    else
+                        tempCursorPos -= moveDirection;
+                }
+
+                moveCursor(by);
+            }
+            else
+            {
+                // cursor is on the desired position
+
+                // apply temp cursor pos to real cursor pos
+                this.cursorPos = tempCursorPos;
+
+                // reset variables
+                cursorMoveSteps = NaN;
+                maxOptionIndex = this.options.length - 1;
+
+                // redraw menu so that new cursor position is shown
+                this.draw();
+            }
+        }
+
+        const onKeyPress = (char: string, key?: IKeypressObject) => {
             switch(key?.name)
             {
                 case "w":
                     if(!this.settings.wasdEnabled)
                         break;
                 case "up":
-
+                    moveCursor(-1);
                 break;
                 case "s":
                     if(!this.settings.wasdEnabled)
                         break;
                 case "down":
-
+                    moveCursor(1);
                 break;
                 case "return":
+                {
+                    this.clearConsole();
 
+                    const result: ISelectionMenuResult = {
+                        canceled: false,
+                        option: {
+                            index: this.cursorPos,
+                            text: opts[this.cursorPos]
+                        }
+                    };
+
+                    this.inputHandler.removeListener("key", onKeyPress);
+
+                    this.emit("submit", result);
+                }
                 break;
                 case "escape":
+                    if(!this.settings.cancelable)
+                        break;
 
+                    this.inputHandler.removeListener("key", onKeyPress);
+
+                    // TODO:
+                    this.clearConsole();
+
+                    const result: ISelectionMenuResult = {
+                        canceled: true,
+                        option: {
+                            index: this.cursorPos,
+                            text: opts[this.cursorPos]
+                        }
+                    };
+
+                    this.emit("submit", result);
                 break;
             }
-        });
+        };
+
+        this.inputHandler.on("key", onKeyPress);
     }
 
     /**
@@ -262,22 +366,86 @@ export class SelectionMenu extends Menu
 
         const logTxt = [];
 
+
+        logTxt.push("");
+
+
         const figText = this.getFIGTitle();
 
         if(figText.length === 0)
-            logTxt.push(`${col.blue}${this.title}${col.rst}\n`);
+            logTxt.push(` ${col.blue}${this.title}${col.rst}\n`);
         else
         {
-            figText.forEach(line => logTxt.push(line));
+            figText.forEach(line => logTxt.push(` ${line}`));
             logTxt.push("");
         }
 
+
+        
+        let longestOptionLength = NaN;
+        
+        // find out longest option so the horizontal border length and variable option padding can be calculated
+        this.options.map(val => {
+            if(val && (val.length > longestOptionLength || isNaN(longestOptionLength)))
+            longestOptionLength = val?.length;
+        });
+        
+
+        const cursorCharL = "►";
+        const cursorCharR = "◄";
+        const verticalBorderChar = "║";
+
+
+        // calculate horizontal border
+        let horizontalBorder = "════════";
+
+        for(let i = 0; i < longestOptionLength; i++)
+            horizontalBorder += "═";
+
+        logTxt.push(`  ■${horizontalBorder}■`);
+
+
+        // insert empty line
+        const insEmptyLine = () => {
+            let line = `  ${verticalBorderChar}    `;
+
+            for(let i = 0; i < longestOptionLength; i++)
+                line += " ";
+
+            line += `    ${verticalBorderChar}`;
+
+            logTxt.push(line);
+        };
+
+        insEmptyLine();
+
+
         this.options.forEach((opt, i) => {
-            logTxt.push(`${i == this.optIndex ? `${col.yellow}> ${opt}` : `  ${opt}`}${col.rst}`);
+            if(opt == null)
+                opt = "";
+
+            const optionText = (i === this.cursorPos) ? `${col.yellow}${cursorCharL} ${opt}` : `  ${opt}  `;
+
+            const variableOptionPaddingLength = longestOptionLength - opt.length;
+
+            let variableOptionPadding = "";
+
+            for(let i = 0; i < variableOptionPaddingLength; i++)
+                variableOptionPadding += " ";
+
+            logTxt.push(`  ${verticalBorderChar}  ${optionText}${variableOptionPadding}${i === this.cursorPos ? ` ${cursorCharR}` : ""}${col.rst}  ${verticalBorderChar}`);
         });
 
-        logTxt.push(`\n\n${this.settings.cancelable ? `[${this.locale.escKey}] ${this.locale.cancel} - ` : ""}[▲ ▼] ${this.locale.scroll} - [${this.locale.returnKey}] ${this.locale.select} `);
+        insEmptyLine();
 
+        logTxt.push(`  ■${horizontalBorder}■`);
+
+
+        // print control help text
+        logTxt.push(`\n\n  ${this.settings.cancelable ? `[${this.locale.escKey}] ${this.locale.cancel} - ` : ""}[▲ ▼] ${this.locale.scroll} - [${this.locale.returnKey}] ${this.locale.select} `);
+
+
+        // concat array and write all at once to reduce flickering
         this.outStream.write(logTxt.join("\n"));
     }
 
@@ -377,21 +545,26 @@ export class SelectionMenu extends Menu
 
     private clearConsole(): void
     {
-        this.outStream.clearLine(0);
-        this.outStream.cursorTo(0, 0);
-        this.outStream.write("\n");
-
         try
         {
-            if(!tengSettings.menus.preferShiftOutput && console && this.outStream && this.outStream.isTTY)
-                console.clear();
-            else
-                for(let i = 0; i < this.outStream.rows; i++)
-                    process.stdout.write("\n");
+            console.clear();
         }
         catch(err)
         {
-            return;
+            let padding = [];
+
+            for(let i = 0; i < this.outStream.rows; i++)
+                padding.push("\n");
+
+            this.outStream.write(padding.join(""));
         }
+    }
+
+    /**
+     * Checks if a passed menu option is empty
+     */
+    static isEmptyOption(option: MenuOption): boolean
+    {
+        return (option === null || option === "");
     }
 }
