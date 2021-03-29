@@ -4,13 +4,13 @@
 
 import { Fonts } from "figlet";
 
-import { Menu, MenuOption } from "./Menu";
+import { MenuOption } from "./Menu";
 import { ISelectionMenuResult, SelectionMenu } from "./SelectionMenu";
 
 
 //#MARKER types
 
-export interface MainMenu
+export default interface MainMenu
 {
     /** Called when the user has selected an option */
     on(event: "submit", listener: (result: ISelectionMenuResult) => void): this;
@@ -24,7 +24,7 @@ export interface MainMenu
  *   
  * ![example image](../../../docs/img/MainMenu.png)
  */
-export class MainMenu extends SelectionMenu
+export default class MainMenu extends SelectionMenu
 {
     private titleFont: Fonts;
 

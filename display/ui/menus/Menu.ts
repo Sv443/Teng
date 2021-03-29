@@ -67,6 +67,14 @@ export abstract class Menu extends TengObject
         return this.options;
     }
 
+    /**
+     * Returns the option at the provided index
+     */
+    getOption(index: number): MenuOption
+    {
+        return this.options[index];
+    }
+
     //#MARKER static
 
     /**
@@ -107,7 +115,7 @@ export abstract class Menu extends TengObject
             const opts: Options = {
                 font,
                 horizontalLayout: kerning
-            }
+            };
 
             text(txt, opts, (err, result) => {
                 if(err || typeof result == "undefined")
@@ -116,5 +124,13 @@ export abstract class Menu extends TengObject
                 return res(result);
             });
         });
+    }
+
+    /**
+     * Checks if a passed menu option is empty
+     */
+    static isEmptyOption(option: MenuOption): boolean
+    {
+        return (option === null || option === "");
     }
 }

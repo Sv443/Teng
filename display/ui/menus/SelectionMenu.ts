@@ -559,12 +559,4 @@ export class SelectionMenu extends Menu
             this.outStream.write(padding.join(""));
         }
     }
-
-    /**
-     * Checks if a passed menu option is empty
-     */
-    static isEmptyOption(option: MenuOption): boolean
-    {
-        return (option === null || option === "");
-    }
 }
