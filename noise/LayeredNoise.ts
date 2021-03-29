@@ -2,7 +2,7 @@
 /* Teng - Creates noise maps from multiple layers of coherent noise */
 /********************************************************************/
 
-import { Position, Size } from "../base/Base";
+import { Index2, Size } from "../base/Base";
 import { TengObject } from "../base/TengObject";
 import { NoiseLayer, NoiseMap } from "./NoiseLayer";
 
@@ -236,93 +236,112 @@ export class LayeredNoise extends TengObject
     /**
      * Uses a smoothing algorithm to smoothen out anomalies in a noise map and make it look more organic
      */
-    static smoothMap(noiseMap: NoiseMap, algorithm: SmoothingAlgorithm): NoiseMap
+    static smoothMap(noiseMap: NoiseMap, algorithm: SmoothingAlgorithm, passes: number = 1): Promise<NoiseMap>
     {
-        switch(algorithm)
-        {
-            //#SECTION Cellular Automata
-            case SmoothingAlgorithm.CA_Coarse:
-            case SmoothingAlgorithm.CA_Smooth:
-            case SmoothingAlgorithm.CA_ExtraSmooth:
-                noiseMap.forEach((row, y) => {
-                    row.forEach((noiseVal, x) => {
-                        const adjacentCellIndexes: Position[] = [];
+        return new Promise<NoiseMap>((res) => {
+            for(let i = 0; i < passes; i++)
+            {
+                switch(algorithm)
+                {
+                    //#SECTION Cellular Automata
+                    case SmoothingAlgorithm.CA_Coarse:
+                    case SmoothingAlgorithm.CA_Smooth:
+                    case SmoothingAlgorithm.CA_ExtraSmooth:
+                        noiseMap.forEach((row, y) => {
+                            row.forEach((noiseVal, x) => {
+                                const adjacentCellIndexes: Index2[] = [];
 
 
-                        //  ▒ ▒ ▒ ▒ ▒
-                        //  ▒ ▒ ▒ ▒ ▒
-                        //  ▒ ▒ ■ ▒ ▒
-                        //  ▒ ▒ ▒ ▒ ▒
-                        //  ▒ ▒ ▒ ▒ ▒
-
-                        adjacentCellIndexes.push(new Position(x, y));
-
-
-                        switch(algorithm)
-                        {
-                            case SmoothingAlgorithm.CA_ExtraSmooth:
-                                //  ▒ ■ ■ ■ ▒
-                                //  ■ ▒ ▒ ▒ ■
-                                //  ■ ▒ ▒ ▒ ■
-                                //  ■ ▒ ▒ ▒ ■
-                                //  ▒ ■ ■ ■ ▒
-
-                                adjacentCellIndexes.push(new Position(x - 1, y - 2)); // NNW
-                                adjacentCellIndexes.push(new Position(x,     y - 2)); // NN
-                                adjacentCellIndexes.push(new Position(x + 1, y - 2)); // NNE
-
-                                adjacentCellIndexes.push(new Position(x + 2, y - 1)); // EEN
-                                adjacentCellIndexes.push(new Position(x + 2, y    )); // EE
-                                adjacentCellIndexes.push(new Position(x + 2, y + 1)); // EES
-
-                                adjacentCellIndexes.push(new Position(x + 1, y + 2)); // SSE
-                                adjacentCellIndexes.push(new Position(x    , y + 2)); // SS
-                                adjacentCellIndexes.push(new Position(x - 1, y + 2)); // SSW
-
-                                adjacentCellIndexes.push(new Position(x - 2, y + 1)); // WWS
-                                adjacentCellIndexes.push(new Position(x - 2, y    )); // WW
-                                adjacentCellIndexes.push(new Position(x - 2, y - 1)); // WWN
-
-
-                            case SmoothingAlgorithm.CA_Smooth:
                                 //  ▒ ▒ ▒ ▒ ▒
-                                //  ▒ ■ ▒ ■ ▒
-                                //  ▒ ▒ ▒ ▒ ▒
-                                //  ▒ ■ ▒ ■ ▒
-                                //  ▒ ▒ ▒ ▒ ▒
-
-                                adjacentCellIndexes.push(new Position(x - 1, y - 1)); // NW
-                                adjacentCellIndexes.push(new Position(x + 1, y - 1)); // NE
-                                adjacentCellIndexes.push(new Position(x + 1, y + 1)); // SE
-                                adjacentCellIndexes.push(new Position(x - 1, y + 1)); // SW
-
-
-                            case SmoothingAlgorithm.CA_Coarse:
                                 //  ▒ ▒ ▒ ▒ ▒
                                 //  ▒ ▒ ■ ▒ ▒
-                                //  ▒ ■ ▒ ■ ▒
-                                //  ▒ ▒ ■ ▒ ▒
+                                //  ▒ ▒ ▒ ▒ ▒
                                 //  ▒ ▒ ▒ ▒ ▒
 
-                                adjacentCellIndexes.push(new Position(x,     y - 1)); // N
-                                adjacentCellIndexes.push(new Position(x + 1, y    )); // E
-                                adjacentCellIndexes.push(new Position(x,     y + 1)); // S
-                                adjacentCellIndexes.push(new Position(x - 1, y    )); // W
+                                adjacentCellIndexes.push(new Index2(x, y));
 
 
-                            break;
-                        }
+                                switch(algorithm)
+                                {
+                                    case SmoothingAlgorithm.CA_ExtraSmooth:
+                                        //  ▒ ■ ■ ■ ▒
+                                        //  ■ ▒ ▒ ▒ ■
+                                        //  ■ ▒ ▒ ▒ ■
+                                        //  ■ ▒ ▒ ▒ ■
+                                        //  ▒ ■ ■ ■ ▒
+
+                                        adjacentCellIndexes.push(new Index2(x - 1, y - 2)); // NNW
+                                        adjacentCellIndexes.push(new Index2(x,     y - 2)); // NN
+                                        adjacentCellIndexes.push(new Index2(x + 1, y - 2)); // NNE
+
+                                        adjacentCellIndexes.push(new Index2(x + 2, y - 1)); // EEN
+                                        adjacentCellIndexes.push(new Index2(x + 2, y    )); // EE
+                                        adjacentCellIndexes.push(new Index2(x + 2, y + 1)); // EES
+
+                                        adjacentCellIndexes.push(new Index2(x + 1, y + 2)); // SSE
+                                        adjacentCellIndexes.push(new Index2(x    , y + 2)); // SS
+                                        adjacentCellIndexes.push(new Index2(x - 1, y + 2)); // SSW
+
+                                        adjacentCellIndexes.push(new Index2(x - 2, y + 1)); // WWS
+                                        adjacentCellIndexes.push(new Index2(x - 2, y    )); // WW
+                                        adjacentCellIndexes.push(new Index2(x - 2, y - 1)); // WWN
 
 
-                        //TODO: go through indexes, check if they exist and then apply cellular automata based algorithm:
-                        adjacentCellIndexes.forEach(pos => {
+                                    case SmoothingAlgorithm.CA_Smooth:
+                                        //  ▒ ▒ ▒ ▒ ▒
+                                        //  ▒ ■ ▒ ■ ▒
+                                        //  ▒ ▒ ▒ ▒ ▒
+                                        //  ▒ ■ ▒ ■ ▒
+                                        //  ▒ ▒ ▒ ▒ ▒
 
+                                        adjacentCellIndexes.push(new Index2(x - 1, y - 1)); // NW
+                                        adjacentCellIndexes.push(new Index2(x + 1, y - 1)); // NE
+                                        adjacentCellIndexes.push(new Index2(x + 1, y + 1)); // SE
+                                        adjacentCellIndexes.push(new Index2(x - 1, y + 1)); // SW
+
+
+                                    case SmoothingAlgorithm.CA_Coarse:
+                                        //  ▒ ▒ ▒ ▒ ▒
+                                        //  ▒ ▒ ■ ▒ ▒
+                                        //  ▒ ■ ▒ ■ ▒
+                                        //  ▒ ▒ ■ ▒ ▒
+                                        //  ▒ ▒ ▒ ▒ ▒
+
+                                        adjacentCellIndexes.push(new Index2(x,     y - 1)); // N
+                                        adjacentCellIndexes.push(new Index2(x + 1, y    )); // E
+                                        adjacentCellIndexes.push(new Index2(x,     y + 1)); // S
+                                        adjacentCellIndexes.push(new Index2(x - 1, y    )); // W
+
+
+                                    break;
+                                }
+
+
+                                // go through indexes, check if they exist and then apply cellular automata based algorithm:
+
+                                let accumulatedValues = 0;
+                                let valuesAmount = 0;
+
+                                adjacentCellIndexes.forEach(idx => {
+                                    if(Array.isArray(noiseMap[idx.y]))
+                                        if(typeof noiseMap[idx.y][idx.x] === "number")
+                                        {
+                                            accumulatedValues += noiseMap[idx.y][idx.x];
+                                            valuesAmount++;
+                                        }
+                                });
+
+
+                                const average = accumulatedValues / valuesAmount;
+
+                                noiseMap[y][x] = average;
+                            });
                         });
-                    });
-                });
-            break;
-        }
+                    break;
+                }
+            }
 
-        return []; // TODO:
+            return res(noiseMap);
+        });
     }
 }

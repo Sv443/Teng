@@ -125,6 +125,84 @@ export class Position extends Stringifiable
 }
 
 /**
+ * Describes an index in one-dimensional space
+ */
+export class Index extends Stringifiable
+{
+    readonly idx: number;
+
+
+    /**
+     * Creates an instance of the Index class
+     */
+    constructor(idx: number)
+    {
+        super();
+
+        this.idx = idx;
+    }
+
+    toString(): string
+    {
+        return `[${this.idx}]`;
+    }
+}
+
+/**
+ * Describes an index in two-dimensional space
+ */
+export class Index2 extends Stringifiable
+{
+    readonly x: number;
+    readonly y: number;
+
+
+    /**
+     * Creates an instance of the Index2 class
+     */
+    constructor(x: number, y: number)
+    {
+        super();
+
+        this.x = x;
+        this.y = y;
+    }
+
+    toString(): string
+    {
+        return `[${this.x},${this.y}]`;
+    }
+}
+
+/**
+ * Describes an index in three-dimensional space
+ */
+export class Index3 extends Stringifiable
+{
+    readonly x: number;
+    readonly y: number;
+    readonly z: number;
+
+
+    /**
+     * Creates an instance of the Index2 class
+     */
+    constructor(x: number, y: number, z: number)
+    {
+        super();
+
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    toString(): string
+    {
+        return `[${this.x},${this.y},${this.z}]`;
+    }
+}
+
+/**
  * Contains the corners of an area
  */
 declare interface IAreaCorners
