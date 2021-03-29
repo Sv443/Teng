@@ -42,6 +42,17 @@ export class MainMenu extends SelectionMenu
             this.options = options;
 
         this.titleFont = titleFont;
+
+
+        this.settings = {
+            cancelable: true,
+            overflow: true,
+            wasdEnabled: true
+        }
+
+        this.setLocale({
+            cancel: "Exit"
+        });
     }
 
     //#MARKER other

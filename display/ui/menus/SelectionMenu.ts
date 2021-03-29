@@ -18,16 +18,22 @@ const col = colors.fg;
  */
 export interface ISelectionMenuSettings
 {
+    [index: string]: boolean | NodeJS.WriteStream;
+
     /** Whether or not the user can cancel the prompt with the Esc key */
     cancelable: boolean;
     /** If the user scrolls past the end or beginning, should the SelectionMenu overflow to the other side? */
     overflow: boolean;
+    /** Whether the WASD keys can be used to scroll this menu, additionally to the arrow keys. Defaults to `true` */
+    wasdEnabled: boolean;
     /** Stream to write output to */
     outStream: NodeJS.WriteStream;
 }
 
 export interface ISelectionMenuResult
 {
+    [index: string]: boolean | object;
+
     /** If this is `true`, the user has canceled the SelectionMenu by pressing the Escape key */
     canceled: boolean;
 
@@ -42,6 +48,8 @@ export interface ISelectionMenuResult
 
 export interface ISelectionMenuLocale
 {
+    [index: string]: string;
+
     /** Shorthand name of the escape key - defaults to "Esc" */
     escKey: string;
     /** Cancel text - defaults to "Cancel" */
@@ -63,19 +71,21 @@ export interface SelectionMenu
 //#MARKER class
 
 /**
- * A scrollable menu from which the user can select a single option
+ * A scrollable menu from which the user can select a single option.  
+ *   
+ * ![TODO: example image]()
  */
 export class SelectionMenu extends Menu
 {
-    private settings: Partial<ISelectionMenuSettings> = {};
-    private optIndex = 0;
-    private locale: ISelectionMenuLocale;
+    protected settings: Partial<ISelectionMenuSettings> = {};
+    protected optIndex = 0;
+    protected locale: ISelectionMenuLocale;
 
     protected figTitle: string[] = [];
 
-    private outStream: NodeJS.WriteStream;
+    protected outStream: NodeJS.WriteStream;
 
-    private inputHandler: InputHandler;
+    protected inputHandler: InputHandler;
 
 
     /**
@@ -94,13 +104,16 @@ export class SelectionMenu extends Menu
 
         this.outStream = this.settings?.outStream || process.stdout;
 
+        if(this.settings.wasdEnabled == undefined)
+            this.settings.wasdEnabled = true;
+
 
         this.title = title;
         this.setOptions(options || []);
         
         this.locale = {
             escKey: "Esc",
-            cancel: "Exit",
+            cancel: "Cancel",
             scroll: "Scroll",
             returnKey: "Return",
             select: "Select"
@@ -122,6 +135,26 @@ export class SelectionMenu extends Menu
     }
 
     //#MARKER other
+
+    /**
+     * Sets the locale of this menu
+     * @param locale Partial locale object. Only the provided properties are overridden.
+     */
+    setLocale(locale: Partial<ISelectionMenuLocale>): void
+    {
+        Object.keys(locale).forEach(key => {
+            if(key != undefined && locale[key] != undefined)
+                this.locale[key] = locale[key] || this.locale[key];
+        });
+    }
+
+    /**
+     * Returns the locale of this menu
+     */
+    getLocale(): ISelectionMenuLocale
+    {
+        return this.locale;
+    }
 
     /**
      * Sets this menu's FIG title (banner title)
@@ -156,6 +189,28 @@ export class SelectionMenu extends Menu
     }
 
     /**
+     * Removes elements from this menu's options and, if necessary, inserts new elements in their place.
+     * @param start The zero-based location in the options from which to start removing options.
+     * @param deleteCount The number of options to remove.
+     * @param items New options to insert into the existing options in place of the deleted ones.
+     */
+    spliceOptions(start: number, deleteCount?: number, ...opts: MenuOption[]): void
+    {
+        if(!Array.isArray(opts) || (opts != undefined && opts.length > 0))
+            this.options.splice(start, deleteCount);
+        else if(deleteCount)
+            this.options.splice(start, deleteCount, ...opts);
+    }
+
+    /**
+     * Removes all options of this menu
+     */
+    removeOptions(): void
+    {
+        this.options = [];
+    }
+
+    /**
      * Shows this menu
      */
     show(): void
@@ -177,10 +232,14 @@ export class SelectionMenu extends Menu
             switch(key?.name)
             {
                 case "w":
+                    if(!this.settings.wasdEnabled)
+                        break;
                 case "up":
 
                 break;
                 case "s":
+                    if(!this.settings.wasdEnabled)
+                        break;
                 case "down":
 
                 break;
