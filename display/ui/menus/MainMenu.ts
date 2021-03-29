@@ -22,7 +22,7 @@ export default interface MainMenu
 /**
  * Main menu of the game.  
  *   
- * ![example image](https://raw.githubusercontent.com/Sv443/Teng/main/docs/img/MainMenu.png)
+ * ![example image](https://raw.githubusercontent.com/Sv443/Teng/main/docs/img/examples/MainMenu.png)
  */
 export default class MainMenu extends SelectionMenu
 {
