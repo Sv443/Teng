@@ -32,7 +32,8 @@ export interface ICellColors
 export abstract class Cell extends TengObject
 {
     private position: Position;
-    private char: string;
+
+    protected char: string;
 
     /** The colors of this cell */
     private colors: ICellColors = {
@@ -77,7 +78,7 @@ export abstract class Cell extends TengObject
     abstract update(): Promise<void>;
 
     /**
-     * Called when this cell is bulldozed.  
+     * Called to find out if this cell can be bulldozed.  
      *   
      * This method has to return a Promise.  
      * The Promise has to resolve with a boolean value.  
@@ -116,6 +117,17 @@ export abstract class Cell extends TengObject
                 this.colors.bgDim = dim;
             break;
         }
+    }
+
+    /**
+     * Sets this cell's char
+     */
+    setChar(char: string): void
+    {
+        if(char.length !== 1)
+            throw new TypeError(`Char is not exactly 1 in length`);
+
+        this.char = char;
     }
 
     //#MARKER getters

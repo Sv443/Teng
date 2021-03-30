@@ -9,7 +9,7 @@ import { TengObject } from "../base/TengObject";
 
 import { Cell, IRelativeCellPosition, IAbsoluteCellPosition } from "./Cell";
 import { Land } from "../../game/components/cells/Land";
-import { InputHandler, KeypressObject } from "../input/InputHandler";
+import { InputHandler, IKeypressObject } from "../input/InputHandler";
 import { Chunk } from "./Chunk";
 import { tengSettings } from "../settings";
 import { unused } from "svcorelib";
@@ -75,7 +75,7 @@ export class Grid extends TengObject
         {
             this.inputHandler = new InputHandler(options.inputStream || process.stdin);
 
-            this.inputHandler.on("key", (char: string, key: KeypressObject | undefined) => {
+            this.inputHandler.on("key", (char: string, key: IKeypressObject | undefined) => {
                 this.keyPress(char, key);
             });
         }
@@ -132,7 +132,7 @@ export class Grid extends TengObject
      * Handles the default inputs  
      * TODO: rewrite
      */
-    keyPress(char: string, key: KeypressObject | undefined): void
+    keyPress(char: string, key: IKeypressObject | undefined): void
     {
         // if(!this.getOptions().inputEnabled)
         //     return;
@@ -283,6 +283,7 @@ export class Grid extends TengObject
      */
     setCells(chunkIndex: Position, cells: Cell[][]): void
     {
+        // TODO: error if no chunks present yet: TypeError: Cannot read property 'setCells' of undefined
         this.chunks[chunkIndex.y][chunkIndex.x].setCells(cells);
     }
 

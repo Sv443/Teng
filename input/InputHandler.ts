@@ -13,7 +13,7 @@ declare type InputEvent = "key";
 /**
  * Contains data about a key press
  */
-export interface KeypressObject
+export interface IKeypressObject
 {
     [index: string]: string | boolean | undefined;
 
@@ -34,7 +34,7 @@ export interface KeypressObject
 export interface InputHandler
 {
     /** Event gets emitted when a key is pressed */
-    on(event: "key", listener: (char: string, key: KeypressObject | undefined) => void): this;
+    on(event: "key", listener: (char: string, key: IKeypressObject | undefined) => void): this;
 }
 
 /**
@@ -60,7 +60,7 @@ export class InputHandler extends TengObject
 
         // call `onKeypress()` 
         this.inStream.on("keypress", (ch, key) => {
-            this.onKeypress(ch, (key as KeypressObject));
+            this.onKeypress(ch, (key as IKeypressObject));
         });
     }
 
@@ -75,7 +75,7 @@ export class InputHandler extends TengObject
     /**
      * Called when a key is pressed
      */
-    private onKeypress(char: string, key: KeypressObject | undefined)
+    private onKeypress(char: string, key: IKeypressObject | undefined)
     {
         if(key !== undefined)
         {

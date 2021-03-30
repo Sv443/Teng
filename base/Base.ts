@@ -22,7 +22,8 @@ export abstract class Stringifiable
 }
 
 /**
- * Describes a rectangular size in 2D space
+ * Describes a rectangular size in 2D space.  
+ * Note: width and height cannot be modified after instantiation.
  */
 export class Size extends Stringifiable
 {
@@ -58,6 +59,20 @@ export class Size extends Stringifiable
     }
 
     /**
+     * Creates a new instance of the Size class by splitting it horizontally and/or vertically a set number of times.  
+     * 
+     */
+    split(horSplits?: number, verSplits?: number): Size
+    {
+        let { width, height } = this;
+
+        horSplits && (width /= (horSplits + 1));
+        verSplits && (height /= (verSplits + 1));
+
+        return new Size(width, height);
+    }
+
+    /**
      * Checks if this size is a multiple of the passed size
      */
     isMultipleOf(comparand: Size): boolean
@@ -66,6 +81,21 @@ export class Size extends Stringifiable
             return true;
 
         return false;
+    }
+
+    /**
+     * Runs a function for each position in this size instance.  
+     * The first position starts at 0. Offset it yourself if needed.
+     */
+    forEachPosition(callback: (pos: Position) => void): void
+    {
+        for(let y = 0; y < this.height; y++)
+        {
+            for(let x = 0; x < this.width; x++)
+            {
+                callback(new Position(x, y));
+            }
+        }
     }
 }
 
@@ -91,6 +121,84 @@ export class Position extends Stringifiable
     toString(): string
     {
         return `[${this.x},${this.y}]`;
+    }
+}
+
+/**
+ * Describes an index in one-dimensional space
+ */
+export class Index extends Stringifiable
+{
+    readonly idx: number;
+
+
+    /**
+     * Creates an instance of the Index class
+     */
+    constructor(idx: number)
+    {
+        super();
+
+        this.idx = idx;
+    }
+
+    toString(): string
+    {
+        return `[${this.idx}]`;
+    }
+}
+
+/**
+ * Describes an index in two-dimensional space
+ */
+export class Index2 extends Stringifiable
+{
+    readonly x: number;
+    readonly y: number;
+
+
+    /**
+     * Creates an instance of the Index2 class
+     */
+    constructor(x: number, y: number)
+    {
+        super();
+
+        this.x = x;
+        this.y = y;
+    }
+
+    toString(): string
+    {
+        return `[${this.x},${this.y}]`;
+    }
+}
+
+/**
+ * Describes an index in three-dimensional space
+ */
+export class Index3 extends Stringifiable
+{
+    readonly x: number;
+    readonly y: number;
+    readonly z: number;
+
+
+    /**
+     * Creates an instance of the Index2 class
+     */
+    constructor(x: number, y: number, z: number)
+    {
+        super();
+
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    toString(): string
+    {
+        return `[${this.x},${this.y},${this.z}]`;
     }
 }
 

@@ -6,7 +6,7 @@ import { createCipheriv, createDecipheriv } from "crypto";
 
 
 /**
- * Handles crypto stuff ¯\\_(ツ)_/¯
+ * Handles crypto stuff ¯\\\_(ツ)\_/¯
  */
 export abstract class Crypto
 {
