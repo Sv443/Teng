@@ -11,26 +11,17 @@
 import { DeepPartial } from "tsdef";
 
 import { TengObject } from "../base/TengObject";
+import { abbreviateNumber } from "../math/Numbers";
 
 
 //#MARKER types
-
-declare interface INumberSeparators
-{
-    [index: string]: string;
-
-    /** What character should be used as a decimal point, e.g. the dot in 0.5 (zero point five) */
-    decimalPoint: string;
-    /** What character should be used to separate digit groups, e.g. the comma in 10,000 (ten thousand) */
-    digitGroup: string;
-}
 
 /**
  * Settings for the Currency class
  */
 export interface ICurrencySettings
 {
-    [index: string]: boolean | number | string | INumberSeparators;
+    [index: string]: boolean | number | string;
 
     /** Whether the currency can go below zero */
     negativeAllowed: boolean;
@@ -42,8 +33,8 @@ export interface ICurrencySettings
     metricUnitPrefix: boolean;
     /** On which side the currency abbreviation should be put. (Example: left = `$ 420.69k`, right = `420.69 k$`)*/
     currencyAbbreviationPosition: "left" | "right";
-    /** How to render the number separators */
-    numberSeparators: INumberSeparators
+    /** What character should be used as a decimal point, e.g. the dot in 0.5 (zero point five) */
+    decimalPoint: string;
 }
 
 /**
@@ -55,18 +46,15 @@ const defaultICurrencySettings: ICurrencySettings = {
     maxThreshold: NaN,
     metricUnitPrefix: true,
     currencyAbbreviationPosition: "right",
-    numberSeparators: {
-        decimalPoint: ".",
-        digitGroup: ","
-    }
+    decimalPoint: ".",
 };
 
 
 /**
  * The [metric prefix](https://en.wikipedia.org/wiki/Metric_prefix#List_of_SI_prefixes) of a number / unit.  
- * Can be `undefined` if no prefix applies (the number is between `0.01` and `999.99…` or the number is set to the constant `NaN` or `Infinity`).
+ * Can be `undefined` if no prefix applies (the number is between `-999.99…` and `999.99…` or the number is set to the constant `NaN` or `Infinity`).
  */
-export type UnitPrefix = ( MultiplicativePrefix | FractionalPrefix | undefined );
+export type UnitPrefix = ( MetricPrefix | undefined );
 
 /**
  * These prefixes are multiplicative (describe a number larger than `999.99…`):
@@ -82,23 +70,7 @@ export type UnitPrefix = ( MultiplicativePrefix | FractionalPrefix | undefined )
  * | `M` | Mega- | `1000000`
  * | `k` | Kilo- | `1000`
  */
-export type MultiplicativePrefix = ( "k" | "M" | "G" | "T" | "P" | "E" | "Z" | "Y" );
-
-/**
- * These prefixes are fractional (describe a number smaller than `0.01`):
- *   
- * | Symbol | Name | Example Number |
- * | :-- | :-- | --: |
- * | `m` | Milli- | `0.001`
- * | `μ` | Micro- | `0.000001`
- * | `n` | Nano- | `0.000000001`
- * | `p` | Pico- | `0.000000000001`
- * | `f` | Femto- | `0.000000000000001`
- * | `a` | Atto- | `0.000000000000000001`
- * | `z` | Zepto- | `0.000000000000000000001`
- * | `y` | Yocto- | `0.000000000000000000000001`
- */
-export type FractionalPrefix = ( "m" | "μ" | "n" | "p" | "f" | "a" | "z" | "y" );
+export type MetricPrefix = ( "k" | "M" | "G" | "T" | "P" | "E" | "Z" | "Y" );
 
 
 /**
@@ -172,9 +144,28 @@ export class Currency extends TengObject
     {
         let valueStr = "";
 
-        const abbr = this.abbreviation;
+        const val = this.getValue();
+
+        const currencyAbbr = this.abbreviation;
+        
+        const abbrVal = abbreviateNumber(val);
 
 
+        if(this.settings.currencyAbbreviationPosition === "left")
+            valueStr += `${currencyAbbr} `;
+
+        valueStr += abbrVal.value.toString();
+
+        if(!isNaN(abbrVal.decimals) && abbrVal.decimals !== 0)
+        {
+            valueStr += this.settings.decimalPoint;
+            valueStr += abbrVal.decimals.toString().substr(0, 2).replace(/[0]$/, "");
+        }
+
+        if(this.settings.currencyAbbreviationPosition === "right")
+            valueStr += ` ${abbrVal.suffix}${currencyAbbr}`;
+        else
+            valueStr += abbrVal.suffix;
 
         return valueStr;
     }
@@ -269,78 +260,12 @@ export class Currency extends TengObject
         const val = this.getValue();
         const { minThreshold, maxThreshold } = (this.settings as ICurrencySettings);
 
-        if(val < minThreshold)
+        if(!isNaN(minThreshold) && val < minThreshold)
             this.emit("thresholdPassed", "min", val, minThreshold);
 
-        else if(val > maxThreshold)
+        else if(!isNaN(maxThreshold) && val > maxThreshold)
             this.emit("thresholdPassed", "max", val, maxThreshold);
 
         return;
-    }
-
-    //#MARKER static
-
-    /**
-     * Returns the metric prefix of a passed number. Also supports BigInt.  
-     * **Largest recognized number is `1e+24`, smallest is `1e-24`. Numbers smaller or larger than this will yield `undefined`!**  
-     *   
-     * Will return `undefined` if no metric prefix is needed (number is between `0.01` and `999.99…`)
-     */
-    static getMetricPrefix(num: number | BigInt): (MultiplicativePrefix | FractionalPrefix | undefined)
-    {
-        // other (NaN or Infinity):
-        if(num === Infinity || (!(num instanceof BigInt) && isNaN(num)))
-            return undefined;
-
-
-        // multiplicative:
-        if(num > 0)
-        {
-            if(num >= 100000000000000000000000000n)
-                return undefined;
-            else if(num >= 1000000000000000000000000n)
-                return "Y";
-            else if(num >= 1000000000000000000000n)
-                return "Z";
-            else if(num >= 1000000000000000000n)
-                return "E";
-            else if(num >= 1000000000000000)
-                return "P";
-            else if(num >= 1000000000000)
-                    return "T";
-            else if(num >= 1000000000)
-                return "G";
-            else if(num >= 1000000)
-                return "M";
-            else if(num >= 1000)
-                return "k";
-        }
-
-
-        // fractional:
-        // TODO: verify
-        if(num < 0)
-        {
-            if(num < 0.0000000000000000000000001)
-                return undefined;
-            else if(num < 0.00000000000000000000001)
-                return "y";
-            else if(num < 0.00000000000000000001)
-                return "z";
-            else if(num < 0.00000000000000001)
-                return "a";
-            else if(num < 0.00000000000001)
-                return "f";
-            else if(num < 0.00000000001)
-                return "p";
-            else if(num < 0.00000001)
-                return "n";
-            else if(num < 0.00001)
-                return "μ";
-            else if(num < 0.01)
-                return "m";
-        }
-
-        return undefined;
     }
 }
