@@ -1,40 +1,106 @@
-import EventEmitter from "events";
-import DiscordRPC from "discord-rich-presence";
-import { RP, PresenceInfo } from "discord-rich-presence";
+/**************************************************************/
+/* Teng - This handles Discord integration like Rich Presence */
+/**************************************************************/
+
+import { TengObject } from "../base/TengObject";
+import { Client, Presence } from "discord-rpc";
 
 
 
-export interface DiscordIntegration
+//#MARKER class
+
+export interface DiscordRPC
 {
-    on(event: "error", listener: (err: string) => void): this;
     on(event: "connected", listener: () => void): this;
+    on(event: "ready", listener: () => void): this;
 }
 
 /**
- * 
+ * This class handles Discord's Rich Presence
  */
-export class DiscordIntegration extends EventEmitter
+export class DiscordRPC extends TengObject
 {
-    private client: RP;
+    private client: Client;
 
     readonly clientID: string;
+    readonly clientSecret: string;
+
+    private loggedIn = false;
 
 
-    constructor(clientID: string)
+    /**
+     * Creates an instance of the DiscordRPC class
+     */
+    constructor(clientID: string, clientSecret: string)
     {
-        super();
+        super("DiscordRPC");
 
 
         this.clientID = clientID;
-        this.client = DiscordRPC(this.clientID);
-    }
+        this.clientSecret = clientSecret;
 
-    setPresence(presence: Partial<PresenceInfo>): void
-    {
-        console.log("updating");
-        this.client.updatePresence(presence);
+        this.client = new Client({
+            transport: "ipc"
+        });
 
         this.client.on("connected", () => this.emit("connected"));
-        this.client.on("error", (err) => this.emit("error", err));
+        this.client.on("ready", () => this.emit("ready"));
+    }
+
+    toString(): string
+    {
+        return `Discord RPC Integration with client ID "${this.clientID}"`;
+    }
+
+    //#MARKER other
+
+    /**
+     * Log the client in to the Discord API
+     */
+    login(): Promise<void>
+    {
+        return new Promise(async (res, rej) => {
+            try
+            {
+                await this.client.login({
+                    clientId: this.clientID,
+                });
+
+                this.loggedIn = true;
+
+                return res();
+            }
+            catch(err)
+            {
+                return rej(err);
+            }
+        });
+    }
+
+    /**
+     * Set the client's presence
+     */
+    setPresence(presence: Presence): Promise<void>
+    {
+        return new Promise(async (res, rej) => {
+            try
+            {
+                if(!this.loggedIn)
+                    await this.login();
+
+                console.log("updating"); //#DEBUG
+
+                await this.client.setActivity(presence);
+
+                this.client.on("connected", () => this.emit("connected"));
+                this.client.on("ready", () => this.emit("ready"));
+
+                return res();
+            }
+            catch(err)
+            {
+                return rej(err);
+            }
+        });
     }
 }
