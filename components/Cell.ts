@@ -60,12 +60,12 @@ export interface ICellColors
  */
 export abstract class Cell extends TengObject
 {
-    private position: Position;
+    protected position: Position;
 
     protected char: string;
 
     /** The colors of this cell */
-    private colors: ICellColors = {
+    protected colors: ICellColors = {
         fg: Color.White,
         fgDim: false,
         bg: Color.Black,
@@ -73,7 +73,7 @@ export abstract class Cell extends TengObject
         cursorActive: false
     };
 
-    private cursorActive: boolean = false;
+    protected cursorActive: boolean = false;
 
 
     /**
