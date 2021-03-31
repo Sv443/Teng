@@ -43,6 +43,7 @@ export class DiscordRPC extends TengObject
             transport: "ipc"
         });
 
+        // pass through events
         this.client.on("connected", () => this.emit("connected"));
         this.client.on("ready", () => this.emit("ready"));
     }
@@ -88,12 +89,7 @@ export class DiscordRPC extends TengObject
                 if(!this.loggedIn)
                     await this.login();
 
-                console.log("updating"); //#DEBUG
-
                 await this.client.setActivity(presence);
-
-                this.client.on("connected", () => this.emit("connected"));
-                this.client.on("ready", () => this.emit("ready"));
 
                 return res();
             }
