@@ -58,7 +58,7 @@ This class exposes these properties:
 > Symbol(TE~INDEX/OBJ_NAME/DESCRIPTOR)
 > ```
 > - `TE` is the Teng Engine prefix
-> - `INDEX` is a unique zero-based index that increments for each created teng object
+> - `INDEX` is a unique, zero-based index that increments for each created teng object
 > - `OBJ_NAME` is the name of the class
 > - `DESCRIPTOR` is a string that describes the class instance
 >   

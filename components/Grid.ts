@@ -98,7 +98,7 @@ export class Grid extends TengObject
     toString(): string
     {
         const size = this.getGridSize(), area = this.getArea();
-        return `${this.objectName} [${size.toString()}] - area: ${area.toString()} - UID: ${this.uid.toString()}`;
+        return `${this.objectName} [${size.toString()}] with area: ${area.toString()} - UID: ${this.uid.toString()}`;
     }
 
     //#MARKER methods
@@ -185,9 +185,14 @@ export class Grid extends TengObject
                     chunkSize: this.getChunkSize()
                 });
 
-                const bulldozedCell = await this.getCell(relativePos.chunkIdx, relativePos.relativePos).bulldoze();
+                let canBulldozeCell = this.getCell(relativePos.chunkIdx, relativePos.relativePos).bulldoze();
 
-                return res(bulldozedCell);
+                if(canBulldozeCell instanceof Promise)
+                    canBulldozeCell = await canBulldozeCell;
+
+                //TODO: actually bulldoze
+
+                return res(true);
             }
             catch(err)
             {

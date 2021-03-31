@@ -114,7 +114,7 @@ export abstract class Cell extends TengObject
      * `true` = the cell can be bulldozed.  
      * `false` = the cell can't be bulldozed.
      */
-    abstract bulldoze(): Promise<boolean>;
+    abstract bulldoze(): Promise<boolean> | boolean;
     
     //#MARKER methods / setters
     /**
