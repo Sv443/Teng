@@ -5,8 +5,9 @@
 import Perlin from "pf-perlin";
 import Simplex from "simplex-noise";
 import { seededRNG } from "svcorelib";
+import { DeepPartial } from "tsdef";
 
-import { RecursivePartial, Size } from "../base/Base";
+import { Size } from "../base/Base";
 import { TengObject } from "../base/TengObject";
 import { tengSettings } from "../settings";
 
@@ -54,7 +55,7 @@ export class NoiseLayer extends TengObject
 {
     readonly size: Size;
     readonly algorithm: Algorithm;
-    readonly settings: RecursivePartial<INoiseAlgorithmSettings>;
+    readonly settings: DeepPartial<INoiseAlgorithmSettings>;
 
     /** The noise map data. Created by calling the `generate()` method */
     private data: NoiseMap = [];
@@ -68,7 +69,7 @@ export class NoiseLayer extends TengObject
      * Creates an instance of the NoiseLayer class
      * @param size The size of this layer
      */
-    constructor(size: Size, algorithm: Algorithm, algorithmSettings?: RecursivePartial<INoiseAlgorithmSettings>)
+    constructor(size: Size, algorithm: Algorithm, algorithmSettings?: DeepPartial<INoiseAlgorithmSettings>)
     {
         super("NoiseLayer", `${size.toString()}`);
 

@@ -3,10 +3,11 @@
 /********************************/
 
 import NanoTimer from "nanotimer";
+import { DeepPartial } from "tsdef";
+
 import { tengSettings } from "../settings";
 
 import { TengObject } from "./TengObject";
-import { RecursivePartial } from "./Base";
 
 
 //#MARKER types
@@ -42,7 +43,7 @@ export class GameLoop extends TengObject
     private targetTps: number;
     private nanoTimer: NanoTimer;
 
-    private settings: RecursivePartial<IGameLoopSettings>;
+    private settings: DeepPartial<IGameLoopSettings>;
 
     /** Number of ticks that have passed since this game loop was created */
     private tickNum = 0;
@@ -60,7 +61,7 @@ export class GameLoop extends TengObject
      * Creates an instance of the GameLoop class
      * @param targetTps Sets a target for how many ticks there should be per second
      */
-    constructor(targetTps: number = tengSettings.loop.defaultTps, glSettings?: RecursivePartial<IGameLoopSettings>)
+    constructor(targetTps: number = tengSettings.loop.defaultTps, glSettings?: DeepPartial<IGameLoopSettings>)
     {
         super("GameLoop", targetTps.toString());
 

@@ -2,7 +2,7 @@
 /* Teng - Grids contain cells */
 /******************************/
 
-import { Size, Position, Area, dbg, Color, ColorType, RecursivePartial } from "../base/Base";
+import { Size, Position, Area, dbg, Color, ColorType } from "../base/Base";
 import { TengObject } from "../base/TengObject";
 
 import { Cell, IRelativeCellPosition, IAbsoluteCellPosition } from "./Cell";
@@ -10,6 +10,7 @@ import { Land } from "../../game/components/cells/Land";
 import { InputHandler, IKeypressObject } from "../input/InputHandler";
 import { Chunk } from "./Chunk";
 import { unused } from "svcorelib";
+import { DeepPartial } from "tsdef";
 
 
 //#MARKER types
@@ -27,7 +28,7 @@ export interface IGridOptions
     inputStream: NodeJS.ReadStream;
 }
 
-const defaultIGridOptions: RecursivePartial<IGridOptions> = {
+const defaultIGridOptions: DeepPartial<IGridOptions> = {
     inputEnabled: false,
     inputStream: process.stdin
 };
@@ -43,7 +44,7 @@ export class Grid extends TengObject
     private gridSize: Size;
     private chunkSize: Size;
     private area: Area;
-    private options: RecursivePartial<IGridOptions>;
+    private options: DeepPartial<IGridOptions>;
 
     private inputHandler: InputHandler | undefined;
 
@@ -58,7 +59,7 @@ export class Grid extends TengObject
      * @param options Grid options
      * @throws TypeError if the grid size is not a multiple of the chunk size
      */
-    constructor(gridSize: Size, chunkSize: Size, chunks?: Chunk[][], options?: RecursivePartial<IGridOptions>)
+    constructor(gridSize: Size, chunkSize: Size, chunks?: Chunk[][], options?: DeepPartial<IGridOptions>)
     {
         super("Grid", `${gridSize.toString()}`);
 
@@ -360,7 +361,7 @@ export class Grid extends TengObject
     /**
      * Returns the options of this grid
      */
-    getOptions(): RecursivePartial<IGridOptions>
+    getOptions(): DeepPartial<IGridOptions>
     {
         return this.options;
     }

@@ -9,20 +9,6 @@ import { colors } from "svcorelib";
 import { generalSettings } from "../../settings";
 
 
-//#MARKER base types
-
-/**
- * Makes all properties optional, like `Partial<T>`, but also recursively applies to nested objects.  
- * [Source](https://stackoverflow.com/a/51365037/8602926)
- */
-export type RecursivePartial<T> = {
-    [P in keyof T]?:
-        T[P] extends (infer U)[] ? RecursivePartial<U>[] :
-        T[P] extends object ? RecursivePartial<T[P]> :
-        T[P];
-};
-
-
 //#MARKER base components
 /**
  * Extended (derived) classes need to have a toString() method, making the instances of those classes stringifiable

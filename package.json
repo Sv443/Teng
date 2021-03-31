@@ -27,7 +27,8 @@
     "simplex-noise": "^2.4.0",
     "sound-play": "^1.1.0",
     "svcorelib": "^1.13.1",
-    "systeminformation": "^5.6.1"
+    "systeminformation": "^5.6.1",
+    "tsdef": "^0.0.14"
   },
   "devDependencies": {
     "@types/deep-diff": "^1.0.0",

@@ -3,12 +3,11 @@
 /*******************************************************/
 
 import { Errors, colors } from "svcorelib";
+import { DeepPartial } from "tsdef";
 
-import { tengSettings } from "../../../settings";
 import { TengObject } from "../../../base/TengObject";
 import { Menu, MenuOption } from "./Menu";
 import { InputHandler, IKeypressObject } from "../../../input/InputHandler";
-import { RecursivePartial } from "../../../base/Base";
 
 const col = colors.fg;
 
@@ -83,7 +82,7 @@ export interface SelectionMenu
  */
 export class SelectionMenu extends Menu
 {
-    protected settings: RecursivePartial<ISelectionMenuSettings> = {};
+    protected settings: DeepPartial<ISelectionMenuSettings> = {};
     protected cursorPos: number = 0;
     protected locale: ISelectionMenuLocale;
 
@@ -97,7 +96,7 @@ export class SelectionMenu extends Menu
     /**
      * Creates an instance of the SelectionMenu class
      */
-    constructor(objName: string, title: string, options?: MenuOption[], settings?: RecursivePartial<ISelectionMenuSettings>)
+    constructor(objName: string, title: string, options?: MenuOption[], settings?: DeepPartial<ISelectionMenuSettings>)
     {
         super(objName, TengObject.truncateDescriptor(title));
 

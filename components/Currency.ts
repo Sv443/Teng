@@ -7,7 +7,9 @@
  * - Add an inflation system
  */
 
-import { RecursivePartial } from "../base/Base";
+
+import { DeepPartial } from "tsdef";
+
 import { TengObject } from "../base/TengObject";
 
 
@@ -124,7 +126,7 @@ export class Currency extends TengObject
     /** The current currency value */
     private value: number = 0;
 
-    private settings: RecursivePartial<ICurrencySettings>;
+    private settings: DeepPartial<ICurrencySettings>;
 
 
     /**
@@ -132,7 +134,7 @@ export class Currency extends TengObject
      * @param name The full name of the currency
      * @param abbreviation An abbreviation of the currency (1-3 characters, shorter than `name`)
      */
-    constructor(name: string, abbreviation: string, initialValue: number = 0, settings?: RecursivePartial<ICurrencySettings>)
+    constructor(name: string, abbreviation: string, initialValue: number = 0, settings?: DeepPartial<ICurrencySettings>)
     {
         super("Currency", `${name}_[${abbreviation}]`);
 
@@ -265,7 +267,7 @@ export class Currency extends TengObject
     checkValidity(): void
     {
         const val = this.getValue();
-        const { minThreshold, maxThreshold } = this.settings;
+        const { minThreshold, maxThreshold } = (this.settings as ICurrencySettings);
 
         if(val < minThreshold)
             this.emit("thresholdPassed", "min", val, minThreshold);
