@@ -27,7 +27,7 @@ export enum Algorithm
  */
 export interface INoiseAlgorithmSettings
 {
-    [index: string]: string | number;
+    [index: string]: string | number | undefined;
 
     /** Using the same seed will yield the same noise map. Leave empty to generate a random seed. Use `getSeed()` to read the set or generated seed. */
     seed: number;
@@ -55,7 +55,7 @@ export class NoiseLayer extends TengObject
 {
     readonly size: Size;
     readonly algorithm: Algorithm;
-    readonly settings: DeepPartial<INoiseAlgorithmSettings>;
+    readonly settings: INoiseAlgorithmSettings;
 
     /** The noise map data. Created by calling the `generate()` method */
     private data: NoiseMap = [];

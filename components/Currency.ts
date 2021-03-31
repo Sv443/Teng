@@ -21,7 +21,7 @@ import { abbreviateNumber } from "../math/Numbers";
  */
 export interface ICurrencySettings
 {
-    [index: string]: boolean | number | string;
+    [index: string]: boolean | number | string | undefined;
 
     /** Whether the currency can go below zero */
     negativeAllowed: boolean;
@@ -98,7 +98,7 @@ export class Currency extends TengObject
     /** The current currency value */
     private value: number = 0;
 
-    private settings: DeepPartial<ICurrencySettings>;
+    private settings: ICurrencySettings;
 
 
     /**
