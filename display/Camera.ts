@@ -5,7 +5,7 @@
 import { colors, unused } from "svcorelib";
 
 import { TengObject } from "../base/TengObject";
-import { Area, ColorType, isColor, objectsEqual, Position, resolveColor, Size } from "../base/Base";
+import { Area, ColorType, Index2, isColor, objectsEqual, Position, resolveColor, Size } from "../base/Base";
 import { Cell, ICellColors } from "../components/Cell";
 import { Grid } from "../components/Grid";
 import { diff } from "deep-diff";
@@ -204,7 +204,7 @@ export class Camera extends TengObject
             {
                 for(let chx = 0; chx < maxChunkIdx.x; chx++)
                 {
-                    const chunkIndex = new Position(chx, chy);
+                    const chunkIndex = new Index2(chx, chy);
                     // console.log(`---\nDEBUG/RenderFrame: Chunk @ ${chunkIndex.toString()}\n---`);
 
                     const chunk = grid.getChunk(chunkIndex);
@@ -213,7 +213,7 @@ export class Camera extends TengObject
                     chunk.getCells().forEach((row, cellY) => {
                         const yOffset = (chunkIndex.y * chunkSize.height + cellY);
 
-                        if(renderedCells.length == yOffset)
+                        if(renderedCells.length === yOffset)
                             renderedCells.push([]);
 
                         row.forEach((cell, cellX) => {

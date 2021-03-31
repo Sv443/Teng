@@ -2,7 +2,7 @@
 /* Teng - Grids contain cells */
 /******************************/
 
-import { Size, Position, Area, dbg, Color, ColorType } from "../base/Base";
+import { Size, Position, Area, dbg, Color, ColorType, Index2 } from "../base/Base";
 import { TengObject } from "../base/TengObject";
 
 import { Cell, IRelativeCellPosition, IAbsoluteCellPosition } from "./Cell";
@@ -246,7 +246,7 @@ export class Grid extends TengObject
         {
             for(let chx = 0; chx <= chunkMaxIndex.x; chx++)
             {
-                const chunkIndex = new Position(chx, chy);
+                const chunkIndex = new Index2(chx, chy);
                 const chunkArea = Area.fromChunkIndex(chunkIndex, chunkSize);
 
                 // color chunks in a pattern
@@ -287,7 +287,7 @@ export class Grid extends TengObject
      * @param chunkIndex The index of the chunk
      * @param cells 2D array of cells
      */
-    setCells(chunkIndex: Position, cells: Cell[][]): void
+    setCells(chunkIndex: Index2, cells: Cell[][]): void
     {
         // TODO: error if no chunks present yet: TypeError: Cannot read property 'setCells' of undefined
         this.chunks[chunkIndex.y][chunkIndex.x].setCells(cells);
@@ -298,7 +298,7 @@ export class Grid extends TengObject
      * @param chunkIndex The index of the chunk
      * @param chunk The chunk to set
      */
-    setChunk(chunkIndex: Position, chunk: Chunk): void
+    setChunk(chunkIndex: Index2, chunk: Chunk): void
     {
         if(!this.chunks[chunkIndex.y] && chunkIndex.y === this.chunks.length)
             this.chunks.push([]);
@@ -312,7 +312,7 @@ export class Grid extends TengObject
      * @param cellPosition Position of the cell inside the chunk
      * @param cell The cell to set at the provided position
      */
-    setCell(chunkIndex: Position, cellPosition: Position, cell: Cell)
+    setCell(chunkIndex: Index2, cellPosition: Position, cell: Cell)
     {
         const size = this.getGridSize();
 
@@ -369,7 +369,7 @@ export class Grid extends TengObject
     /**
      * Returns the 2D array of cells of a chunk at the specified index
      */
-    getCells(chunkIdx: Position): Cell[][]
+    getCells(chunkIdx: Index2): Cell[][]
     {
         return this.chunks[chunkIdx.y][chunkIdx.x].getCells();
     }
@@ -377,7 +377,7 @@ export class Grid extends TengObject
     /**
      * Returns the chunk at the specified index
      */
-    getChunk(chunkIdx: Position): Chunk
+    getChunk(chunkIdx: Index2): Chunk
     {
         return this.chunks[chunkIdx.y][chunkIdx.x];
     }
@@ -395,7 +395,7 @@ export class Grid extends TengObject
      * @param chunkIdx The index of the chunk
      * @param cellPosition Position of the cell within the chunk
      */
-    getCell(chunkIdx: Position, cellPosition: Position): Cell
+    getCell(chunkIdx: Index2, cellPosition: Position): Cell
     {
         const size = this.getGridSize();
 

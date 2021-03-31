@@ -249,7 +249,7 @@ export class Area extends Stringifiable
     /**
      * Returns a new instance of the Area class based on the passed chunk index and chunk size
      */
-    static fromChunkIndex(chunkIdx: Position, chunkSize: Size): Area
+    static fromChunkIndex(chunkIdx: Index2, chunkSize: Size): Area
     {
         /** TL corner is always just a multiple of the chunk idx and its size */
         const tl = new Position((chunkIdx.x * chunkSize.width), (chunkIdx.y * chunkSize.height));

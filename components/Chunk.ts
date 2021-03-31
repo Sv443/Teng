@@ -3,7 +3,7 @@
 /**********************************************************************/
 
 import { TengObject } from "../base/TengObject";
-import { Area, Position, Size } from "../base/Base";
+import { Area, Index2, Position, Size } from "../base/Base";
 import { Cell } from "./Cell";
 
 
@@ -15,7 +15,7 @@ import { Cell } from "./Cell";
 export class Chunk extends TengObject
 {
     /** The index of this chunk inside a parent grid */
-    readonly chunkIndex: Position;
+    readonly chunkIndex: Index2;
     readonly size: Size;
     readonly area: Area;
 
@@ -29,7 +29,7 @@ export class Chunk extends TengObject
      * @param area The area that spans the contained cells - also determines the size of this chunk
      * @param cells Optional - initial value of the cells
      */
-    constructor(chunkIndex: Position, area: Area, cells?: Cell[][])
+    constructor(chunkIndex: Index2, area: Area, cells?: Cell[][])
     {
         super("Chunk", `${chunkIndex.toString()}/${area.toString()}`);
 
