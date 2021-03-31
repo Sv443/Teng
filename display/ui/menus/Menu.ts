@@ -2,12 +2,14 @@
 /* Teng - Base class of menus */
 /******************************/
 
-import { TengObject } from "../../../base/TengObject";
+import { Nullable } from "tsdef";
 import { text, loadFont,  Fonts, Options, KerningMethods } from "figlet";
+
+import { TengObject } from "../../../base/TengObject";
 
 
 /** A single option of a menu - set to empty string or `null` for a spacer */
-export type MenuOption = string | null;
+export type MenuOption = Nullable<string>;
 
 /**
  * Base class for all Teng menus
@@ -97,7 +99,7 @@ export abstract class Menu extends TengObject
     static preloadFIGFont(font: Fonts = "Standard")
     {
         return new Promise<void>((res, rej) => {
-            loadFont(font, (err: Error | null) => {
+            loadFont(font, (err: Nullable<Error>) => {
                 if(err != null)
                     return rej(err);
 

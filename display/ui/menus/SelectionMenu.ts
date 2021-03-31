@@ -427,7 +427,7 @@ export class SelectionMenu extends Menu
 
 
         this.options.forEach((opt, i) => {
-            if(opt == null)
+            if(opt === null)
                 opt = "";
 
             const optionText = (i === this.cursorPos) ? `${col.yellow}${cursorCharL} ${opt}` : `  ${opt}  `;
