@@ -1,6 +1,6 @@
 import EventEmitter from "events";
 import DiscordRPC from "discord-rich-presence";
-import { IPresenceInfo, RP } from "discord-rich-presence";
+import { RP, PresenceInfo } from "discord-rich-presence";
 
 
 
@@ -10,6 +10,9 @@ export interface DiscordIntegration
     on(event: "connected", listener: () => void): this;
 }
 
+/**
+ * 
+ */
 export class DiscordIntegration extends EventEmitter
 {
     private client: RP;
@@ -26,7 +29,7 @@ export class DiscordIntegration extends EventEmitter
         this.client = DiscordRPC(this.clientID);
     }
 
-    setPresence(presence: Partial<IPresenceInfo>): void
+    setPresence(presence: Partial<PresenceInfo>): void
     {
         console.log("updating");
         this.client.updatePresence(presence);

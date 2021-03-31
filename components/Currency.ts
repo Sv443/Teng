@@ -13,12 +13,22 @@ import { TengObject } from "../base/TengObject";
 
 //#MARKER types
 
+declare interface INumberSeparators
+{
+    [index: string]: string;
+
+    /** What character should be used as a decimal point, e.g. the dot in 0.5 (zero point five) */
+    decimalPoint: string;
+    /** What character should be used to separate digit groups, e.g. the comma in 10,000 (ten thousand) */
+    digitGroup: string;
+}
+
 /**
  * Settings for the Currency class
  */
 export interface ICurrencySettings
 {
-    [index: string]: boolean | number | string | object;
+    [index: string]: boolean | number | string | INumberSeparators;
 
     /** Whether the currency can go below zero */
     negativeAllowed: boolean;
@@ -31,18 +41,13 @@ export interface ICurrencySettings
     /** On which side the currency abbreviation should be put. (Example: left = `$ 420.69k`, right = `420.69 k$`)*/
     currencyAbbreviationPosition: "left" | "right";
     /** How to render the number separators */
-    numberSeparators: {
-        /** What character should be used as a decimal point, e.g. the dot in 0.5 (zero point five) */
-        decimalPoint: string;
-        /** What character should be used to separate digit groups, e.g. the comma in 10,000 (ten thousand) */
-        digitGroup: string;
-    }
+    numberSeparators: INumberSeparators
 }
 
 /**
  * Default values for the Currency class settings
  */
-const defaultICurrencySettings: RecursivePartial<ICurrencySettings> = {
+const defaultICurrencySettings: ICurrencySettings = {
     negativeAllowed: true,
     minThreshold: NaN,
     maxThreshold: NaN,
@@ -119,7 +124,7 @@ export class Currency extends TengObject
     /** The current currency value */
     private value: number = 0;
 
-    private settings: ICurrencySettings;
+    private settings: RecursivePartial<ICurrencySettings>;
 
 
     /**
@@ -144,7 +149,7 @@ export class Currency extends TengObject
         if(initialValue)
             this.value = initialValue;
 
-        this.settings = ({ ...defaultICurrencySettings, ...settings } as ICurrencySettings);
+        this.settings = { ...defaultICurrencySettings, ...settings };
     }
 
     /**

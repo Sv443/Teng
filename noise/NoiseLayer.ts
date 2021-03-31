@@ -6,7 +6,7 @@ import Perlin from "pf-perlin";
 import Simplex from "simplex-noise";
 import { seededRNG } from "svcorelib";
 
-import { Size } from "../base/Base";
+import { RecursivePartial, Size } from "../base/Base";
 import { TengObject } from "../base/TengObject";
 import { tengSettings } from "../settings";
 
@@ -30,9 +30,14 @@ export interface INoiseAlgorithmSettings
 
     /** Using the same seed will yield the same noise map. Leave empty to generate a random seed. Use `getSeed()` to read the set or generated seed. */
     seed: number;
-    /** Higher number = more zoomed in / smooth noise - Base level is around 20-50 */
+    /** Higher number = more zoomed in / smooth noise - Base level is around 30-100 */
     resolution: number;
 }
+
+const defaultINoiseAlgorithmSettings: INoiseAlgorithmSettings = {
+    seed: seededRNG.generateRandomSeed(tengSettings.game.noise.defaultSeedLength),
+    resolution: 75
+};
 
 declare type CoherentRNG = Perlin | Simplex;
 
@@ -49,7 +54,7 @@ export class NoiseLayer extends TengObject
 {
     readonly size: Size;
     readonly algorithm: Algorithm;
-    readonly settings: Partial<INoiseAlgorithmSettings>;
+    readonly settings: RecursivePartial<INoiseAlgorithmSettings>;
 
     /** The noise map data. Created by calling the `generate()` method */
     private data: NoiseMap = [];
@@ -63,19 +68,16 @@ export class NoiseLayer extends TengObject
      * Creates an instance of the NoiseLayer class
      * @param size The size of this layer
      */
-    constructor(size: Size, algorithm: Algorithm, algorithmSettings?: Partial<INoiseAlgorithmSettings>)
+    constructor(size: Size, algorithm: Algorithm, algorithmSettings?: RecursivePartial<INoiseAlgorithmSettings>)
     {
         super("NoiseLayer", `${size.toString()}`);
 
         this.size = size;
         this.algorithm = algorithm;
 
-        if(algorithmSettings)
-            this.settings = algorithmSettings;
-        else
-            this.settings = {};
+        this.settings = { ...defaultINoiseAlgorithmSettings, ...algorithmSettings };
 
-        // randomly generate seed if it isn't set:
+        // randomly generate seed if it isn't set for some reason even though it should:
         this.settings.seed = (this.settings.seed || seededRNG.generateRandomSeed(tengSettings.game.noise.defaultSeedLength));
 
         // set up noise generator based on algorithm:

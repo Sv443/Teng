@@ -8,6 +8,7 @@ import { tengSettings } from "../../../settings";
 import { TengObject } from "../../../base/TengObject";
 import { Menu, MenuOption } from "./Menu";
 import { InputHandler, IKeypressObject } from "../../../input/InputHandler";
+import { RecursivePartial } from "../../../base/Base";
 
 const col = colors.fg;
 
@@ -24,11 +25,18 @@ export interface ISelectionMenuSettings
     cancelable: boolean;
     /** If the user scrolls past the end or beginning, should the SelectionMenu overflow to the other side? */
     overflow: boolean;
-    /** Whether the WASD keys can be used to scroll this menu, additionally to the arrow keys. Defaults to `true` */
+    /** Whether the WASD keys can be used to scroll this menu, additionally to the arrow keys. */
     wasdEnabled: boolean;
     /** Stream to write output to */
     outStream: NodeJS.WriteStream;
 }
+
+const defaultISelectionMenuSettings: ISelectionMenuSettings = {
+    cancelable: true,
+    overflow: true,
+    wasdEnabled: true,
+    outStream: process.stdout
+};
 
 export interface ISelectionMenuResult
 {
@@ -75,7 +83,7 @@ export interface SelectionMenu
  */
 export class SelectionMenu extends Menu
 {
-    protected settings: Partial<ISelectionMenuSettings> = {};
+    protected settings: RecursivePartial<ISelectionMenuSettings> = {};
     protected cursorPos: number = 0;
     protected locale: ISelectionMenuLocale;
 
@@ -89,7 +97,7 @@ export class SelectionMenu extends Menu
     /**
      * Creates an instance of the SelectionMenu class
      */
-    constructor(objName: string, title: string, options?: MenuOption[], settings?: Partial<ISelectionMenuSettings>)
+    constructor(objName: string, title: string, options?: MenuOption[], settings?: RecursivePartial<ISelectionMenuSettings>)
     {
         super(objName, TengObject.truncateDescriptor(title));
 
@@ -97,10 +105,9 @@ export class SelectionMenu extends Menu
         if(!process.stdin || !process.stdin.isTTY || typeof process.stdin.setRawMode != "function")
             throw new Errors.NoStdinError(`The current terminal doesn't have a stdin stream or is not a compatible TTY terminal.`);
 
-        if(settings)
-            this.settings = settings;
+        this.settings = { ...defaultISelectionMenuSettings, ...settings };
 
-        this.outStream = this.settings?.outStream || process.stdout;
+        this.outStream = (this.settings.outStream as NodeJS.WriteStream);
 
         if(this.settings.wasdEnabled == undefined)
             this.settings.wasdEnabled = true;

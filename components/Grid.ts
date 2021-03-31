@@ -2,18 +2,17 @@
 /* Teng - Grids contain cells */
 /******************************/
 
-import {  } from "../../settings";
-
-import { Size, Position, Area, dbg, Color, ColorType } from "../base/Base";
+import { Size, Position, Area, dbg, Color, ColorType, RecursivePartial } from "../base/Base";
 import { TengObject } from "../base/TengObject";
 
 import { Cell, IRelativeCellPosition, IAbsoluteCellPosition } from "./Cell";
 import { Land } from "../../game/components/cells/Land";
 import { InputHandler, IKeypressObject } from "../input/InputHandler";
 import { Chunk } from "./Chunk";
-import { tengSettings } from "../settings";
 import { unused } from "svcorelib";
 
+
+//#MARKER types
 
 /**
  * Options that can be set on a Grid
@@ -28,6 +27,13 @@ export interface IGridOptions
     inputStream: NodeJS.ReadStream;
 }
 
+const defaultIGridOptions: RecursivePartial<IGridOptions> = {
+    inputEnabled: false,
+    inputStream: process.stdin
+};
+
+//#MARKER class
+
 /**
  * A Grid is the 2D area that contains the game.  
  * It contains all chunks and cells.
@@ -37,7 +43,7 @@ export class Grid extends TengObject
     private gridSize: Size;
     private chunkSize: Size;
     private area: Area;
-    private options: Partial<IGridOptions> = {};
+    private options: RecursivePartial<IGridOptions>;
 
     private inputHandler: InputHandler | undefined;
 
@@ -52,7 +58,7 @@ export class Grid extends TengObject
      * @param options Grid options
      * @throws TypeError if the grid size is not a multiple of the chunk size
      */
-    constructor(gridSize: Size, chunkSize: Size, chunks?: Chunk[][], options?: Partial<IGridOptions>)
+    constructor(gridSize: Size, chunkSize: Size, chunks?: Chunk[][], options?: RecursivePartial<IGridOptions>)
     {
         super("Grid", `${gridSize.toString()}`);
 
@@ -63,8 +69,7 @@ export class Grid extends TengObject
         this.gridSize = gridSize;
         this.chunkSize = chunkSize;
 
-        if(options)
-            this.options = options;
+        this.options = { ...defaultIGridOptions, ...options };
 
         this.area = Grid.calculateArea(this.gridSize);
 
@@ -73,7 +78,7 @@ export class Grid extends TengObject
 
         if(options?.inputEnabled === true)
         {
-            this.inputHandler = new InputHandler(options.inputStream || process.stdin);
+            this.inputHandler = new InputHandler((options.inputStream as NodeJS.ReadStream) || process.stdin);
 
             this.inputHandler.on("key", (char: string, key: IKeypressObject | undefined) => {
                 this.keyPress(char, key);
@@ -355,7 +360,7 @@ export class Grid extends TengObject
     /**
      * Returns the options of this grid
      */
-    getOptions(): Partial<IGridOptions>
+    getOptions(): RecursivePartial<IGridOptions>
     {
         return this.options;
     }

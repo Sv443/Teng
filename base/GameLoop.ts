@@ -3,11 +3,13 @@
 /********************************/
 
 import NanoTimer from "nanotimer";
-import { EventEmitter } from "events";
 import { tengSettings } from "../settings";
 
 import { TengObject } from "./TengObject";
+import { RecursivePartial } from "./Base";
 
+
+//#MARKER types
 
 /**
  * Settings for the game loop
@@ -17,6 +19,12 @@ export interface IGameLoopSettings
     /** Tick desyncs that don't pass this threshold in milliseconds will not emit the "desync" event */
     desyncEventThreshold: number;
 }
+
+const defaultIGameLoopSettings: IGameLoopSettings = {
+    desyncEventThreshold: 50
+};
+
+//#MARKER class
 
 export interface GameLoop
 {
@@ -34,7 +42,7 @@ export class GameLoop extends TengObject
     private targetTps: number;
     private nanoTimer: NanoTimer;
 
-    private settings: Partial<IGameLoopSettings> = {};
+    private settings: RecursivePartial<IGameLoopSettings>;
 
     /** Number of ticks that have passed since this game loop was created */
     private tickNum = 0;
@@ -52,12 +60,11 @@ export class GameLoop extends TengObject
      * Creates an instance of the GameLoop class
      * @param targetTps Sets a target for how many ticks there should be per second
      */
-    constructor(targetTps: number = tengSettings.loop.defaultTps, glSettings?: Partial<IGameLoopSettings>)
+    constructor(targetTps: number = tengSettings.loop.defaultTps, glSettings?: RecursivePartial<IGameLoopSettings>)
     {
         super("GameLoop", targetTps.toString());
 
-        if(glSettings)
-            this.settings = glSettings;
+        this.settings = { ...defaultIGameLoopSettings, ...glSettings };
 
         this.targetTps = targetTps;
 
