@@ -226,25 +226,6 @@ export class Grid extends TengObject
         let cellsAmount = 0;
         let chunksAmount = 0;
 
-        let chunkColor = Color.Green;
-        const cycleColor = () => {
-            switch(chunkColor)
-            {
-                case Color.Green:
-                    chunkColor = Color.Blue;
-                break;
-                case Color.Blue:
-                    chunkColor = Color.Red;
-                break;
-                case Color.Red:
-                    chunkColor = Color.Yellow;
-                break;
-                case Color.Yellow:
-                    chunkColor = Color.Green;
-                break;
-            }
-        };
-
 
         // create chunks
         for(let chy = 0; chy <= chunkMaxIndex.y; chy++)
@@ -253,9 +234,6 @@ export class Grid extends TengObject
             {
                 const chunkIndex = new Index2(chx, chy);
                 const chunkArea = Area.fromChunkIndex(chunkIndex, chunkSize);
-
-                // color chunks in a pattern
-                cycleColor();
 
 
                 // create cells inside chunk
@@ -268,8 +246,6 @@ export class Grid extends TengObject
                     for(let cellX = 0; cellX < chunkSize.width; cellX++)
                     {
                         const cell = new Land(new Position(cellX, cellY));
-
-                        cell.setColor(ColorType.Foreground, chunkColor);
 
                         cells[cellY].push(cell);
                         cellsAmount++;
@@ -325,7 +301,7 @@ export class Grid extends TengObject
             cellPosition.x < 0 || cellPosition.y < 0
             || cellPosition.x > size.width || cellPosition.y > size.height
         )
-            throw new TypeError(`Passed cell position is out of range - got [${cellPosition.x},${cellPosition.y}] - expected between [0,0] and [${size.width},${size.height}]`);
+            throw new TypeError(`Passed cell position is out of range - got [${cellPosition.x},${cellPosition.y}] - expected between [0,0] and [${size.width - 1},${size.height - 1}]`);
 
         this.chunks[chunkIndex.y][chunkIndex.x].setCell(cell, cellPosition);
     }
@@ -408,7 +384,7 @@ export class Grid extends TengObject
             cellPosition.x < 0 || cellPosition.y < 0
             || cellPosition.x > size.width || cellPosition.y > size.height
         )
-            throw new TypeError(`Passed cell position is out of range - got [${cellPosition.x},${cellPosition.y}] - expected between [0,0] and [${size.width},${size.height}]`);
+            throw new TypeError(`Passed cell position is out of range - got [${cellPosition.x},${cellPosition.y}] - expected between [0,0] and [${size.width - 1},${size.height - 1}]`);
 
         return this.chunks[chunkIdx.y][chunkIdx.x].getCell(cellPosition);
     }
