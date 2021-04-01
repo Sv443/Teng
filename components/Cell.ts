@@ -109,8 +109,8 @@ export abstract class Cell extends TengObject
     /**
      * Called to find out if this cell can be bulldozed.  
      *   
-     * This method has to return a Promise.  
-     * The Promise has to resolve with a boolean value.  
+     * This method has to return a Promise (needs to resolve with a boolean value) or a boolean.  
+     * This makes it support both asynchronous and synchronous execution.  
      * `true` = the cell can be bulldozed.  
      * `false` = the cell can't be bulldozed.
      */
