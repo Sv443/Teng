@@ -6,7 +6,7 @@ import { unused } from "svcorelib";
 import { DeepPartial } from "tsdef";
 
 import { TengObject } from "../base/TengObject";
-import { Size, Position, Area, dbg, Index2 } from "../base/Base";
+import { Size, Position, Area, dbg, Index2, Newable } from "../base/Base";
 import { Cell, IRelativeCellPosition, IAbsoluteCellPosition } from "./Cell";
 import { InputHandler, IKeypressObject } from "../input/InputHandler";
 import { Chunk } from "./Chunk";
@@ -213,8 +213,9 @@ export class Grid extends TengObject
 
     /**
      * Developer method: Fills the grid with empty cells
+     * @param CellClass A non-abstract class that inherits from Cell
      */
-    devFill(): void
+    devFill(CellClass: Newable<Cell>): void
     {
         const gridSize = this.getGridSize();
         const chunkSize = this.getChunkSize();
@@ -224,17 +225,6 @@ export class Grid extends TengObject
 
         let cellsAmount = 0;
         let chunksAmount = 0;
-
-
-        /**
-         * Needed because Cell is an abstract class
-         */
-        class DevCell extends Cell
-        {
-            constructor(pos: Position) { super(pos, "T"); }
-            bulldoze() { return false; }
-            update(): Promise<void> { return new Promise(res => res()); }
-        }
 
 
         // create chunks
@@ -255,7 +245,7 @@ export class Grid extends TengObject
 
                     for(let cellX = 0; cellX < chunkSize.width; cellX++)
                     {
-                        const cell = new DevCell(new Position(cellX, cellY));
+                        const cell = new CellClass(new Position(cellX, cellY));
 
                         cells[cellY].push(cell);
                         cellsAmount++;

@@ -9,6 +9,9 @@ import { colors } from "svcorelib";
 import { generalSettings } from "../../settings";
 
 
+export type Newable<T> = { new (...args: any[]): T; };
+
+
 //#MARKER base components
 /**
  * Extended (derived) classes need to have a toString() method, making the instances of those classes stringifiable
