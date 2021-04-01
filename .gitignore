@@ -5,3 +5,6 @@ node_modules/
 ~$*.doc*
 ~$*.xls*
 ~$*.ppt*
+
+# Dependency Graph
+dependency_graph.html

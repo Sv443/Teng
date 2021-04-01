@@ -2,15 +2,14 @@
 /* Teng - Grids contain cells */
 /******************************/
 
-import { Size, Position, Area, dbg, Color, ColorType, Index2 } from "../base/Base";
-import { TengObject } from "../base/TengObject";
-
-import { Cell, IRelativeCellPosition, IAbsoluteCellPosition } from "./Cell";
-import { Land } from "../../game/components/cells/Land";
-import { InputHandler, IKeypressObject } from "../input/InputHandler";
-import { Chunk } from "./Chunk";
 import { unused } from "svcorelib";
 import { DeepPartial } from "tsdef";
+
+import { TengObject } from "../base/TengObject";
+import { Size, Position, Area, dbg, Index2 } from "../base/Base";
+import { Cell, IRelativeCellPosition, IAbsoluteCellPosition } from "./Cell";
+import { InputHandler, IKeypressObject } from "../input/InputHandler";
+import { Chunk } from "./Chunk";
 
 
 //#MARKER types
@@ -196,7 +195,7 @@ export class Grid extends TengObject
             }
             catch(err)
             {
-                unused(err);
+                unused(err); // TODO: do something with the error
 
                 // some error occurred so better not bulldoze this cell
                 return res(false);
@@ -227,6 +226,17 @@ export class Grid extends TengObject
         let chunksAmount = 0;
 
 
+        /**
+         * Needed because Cell is an abstract class
+         */
+        class DevCell extends Cell
+        {
+            constructor(pos: Position) { super(pos, "T"); }
+            bulldoze() { return false; }
+            update(): Promise<void> { return new Promise(res => res()); }
+        }
+
+
         // create chunks
         for(let chy = 0; chy <= chunkMaxIndex.y; chy++)
         {
@@ -245,7 +255,7 @@ export class Grid extends TengObject
 
                     for(let cellX = 0; cellX < chunkSize.width; cellX++)
                     {
-                        const cell = new Land(new Position(cellX, cellY));
+                        const cell = new DevCell(new Position(cellX, cellY));
 
                         cells[cellY].push(cell);
                         cellsAmount++;
