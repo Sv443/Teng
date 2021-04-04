@@ -94,6 +94,8 @@ export class SelectionMenu extends Menu
 
     protected inputHandler: InputHandler;
 
+    protected inputPaused = false;
+
 
     /**
      * Creates an instance of the SelectionMenu class
@@ -221,6 +223,8 @@ export class SelectionMenu extends Menu
      */
     show(): void
     {
+        this.inputPaused = false;
+
         this.registerInputHandler();
 
         this.draw();
@@ -232,7 +236,7 @@ export class SelectionMenu extends Menu
      */
     hide(): void
     {
-        this.removeAllListeners();
+        this.inputPaused = true;
 
         this.clearConsole();
 
@@ -332,6 +336,9 @@ export class SelectionMenu extends Menu
         }
 
         const onKeyPress = (char: string, key?: IKeypressObject) => {
+            if(this.inputPaused)
+                return;
+
             switch(key?.name)
             {
                 case "w":
@@ -394,8 +401,6 @@ export class SelectionMenu extends Menu
      */
     protected draw(): void
     {
-        this.clearConsole();
-
         const logTxt = [];
 
 
@@ -477,7 +482,8 @@ export class SelectionMenu extends Menu
         logTxt.push(`\n\n  ${this.settings.cancelable ? `[${this.locale.escKey}] ${this.locale.cancel} - ` : ""}[▲ ▼] ${this.locale.scroll} - [${this.locale.returnKey}] ${this.locale.select} `);
 
 
-        // concat array and write all at once to reduce flickering
+        // concat array, clear console and write all at once to reduce flickering
+        this.clearConsole();
         this.outStream.write(logTxt.join("\n"));
     }
 

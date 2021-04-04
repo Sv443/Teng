@@ -27,7 +27,7 @@ export default interface SettingsMenu
  * // TODO: new image  
  * ![example image](https://raw.githubusercontent.com/Sv443/Teng/main/docs/img/examples/MainMenu.png)
  */
-export default class SettingsMenu extends SelectionMenu
+export default abstract class SettingsMenu extends SelectionMenu
 {
     private titleFont: Fonts;
 

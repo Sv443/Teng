@@ -19,6 +19,8 @@ const tengSettings = Object.freeze({
         versionStr: packageJson.version,
         /** Teng's main author */
         author: packageJson.author,
+        /** Teng's homepage */
+        homepage: packageJson.homepage,
     },
     loop: {
         /** Default ticks per second */
