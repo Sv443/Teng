@@ -73,6 +73,8 @@ export interface SelectionMenu
 {
     /** Called when the user has selected an option */
     on(event: "submit", listener: (result: ISelectionMenuResult) => void): this;
+    /** Called when the user cancels the menu */
+    on(event: "canceled", listener: () => void): this;
 }
 
 //#MARKER class
@@ -224,12 +226,35 @@ export class SelectionMenu extends Menu
         this.draw();
     }
 
+    /**
+     * Removes all listeners and cancels the menu. Emits both "canceled" and "submit".  
+     * Make sure to call listeners (`.on("event")` methods) again if you need them.
+     */
+    hide(): void
+    {
+        this.removeAllListeners();
+
+        this.clearConsole();
+
+        this.emit("canceled");
+
+        const result: ISelectionMenuResult = {
+            canceled: true,
+            option: {
+                index: this.cursorPos,
+                text: this.options[this.cursorPos]
+            }
+        }
+
+        this.emit("submit", result);
+    }
+
     //#MARKER private / protected / static
 
     /**
      * Registers the input handler
      */
-    private registerInputHandler()
+    protected registerInputHandler()
     {
         /** How many steps the cursor still needs to move */
         let cursorMoveSteps = NaN;
@@ -355,6 +380,7 @@ export class SelectionMenu extends Menu
                         }
                     };
 
+                    this.emit("canceled");
                     this.emit("submit", result);
                 break;
             }
@@ -549,7 +575,16 @@ export class SelectionMenu extends Menu
     //     return (rmRes && upRes);
     // }
 
-    private clearConsole(): void
+    protected clearConsole(): void
+    {
+        SelectionMenu.clearConsole(this.outStream);
+    }
+
+    /**
+     * Clears the console
+     * @param outStream Output stream - defaults to `process.stdout`
+     */
+    static clearConsole(outStream: NodeJS.WriteStream = process.stdout): void
     {
         try
         {
@@ -559,10 +594,10 @@ export class SelectionMenu extends Menu
         {
             let padding = [];
 
-            for(let i = 0; i < this.outStream.rows; i++)
+            for(let i = 0; i < outStream.rows; i++)
                 padding.push("\n");
 
-            this.outStream.write(padding.join(""));
+            outStream.write(padding.join(""));
         }
     }
 }

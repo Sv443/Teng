@@ -395,11 +395,11 @@ export function dbg(section: string, message: string, level: LogLevel = LogLevel
         {
             case LogLevel.Success:
                 consoleCol = colors.fg.green;
-                logType = "Debug";
+                logType = "Info";
             break;
             case LogLevel.Info:
                 consoleCol = colors.fg.cyan;
-                logType = "Debug";
+                logType = "Info";
             break;
             case LogLevel.Warning:
                 consoleCol = colors.fg.yellow;
