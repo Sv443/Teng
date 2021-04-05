@@ -8,7 +8,7 @@ import { TengObject } from "../base/TengObject";
 import { Area, ColorType, Index2, isColor, objectsEqual, Position, resolveColor, Size } from "../base/Base";
 import { Cell, ICellColors } from "../components/Cell";
 import { Grid } from "../components/Grid";
-import { diff } from "deep-diff";
+import { Diff, diff } from "deep-diff";
 import { tengSettings } from "../settings";
 
 
@@ -148,7 +148,7 @@ export class Camera extends TengObject
                     else if(diffRes != undefined)
                     {
                         // go over each change
-                        diffRes.forEach((change, i) => {
+                        diffRes.forEach((change: Diff<ICellColors, ICellColors>, i: number) => {
                             // get the key of the changes ("fg", "bg", "fgDim", "bgDim")
                             const key: string = change.path?.[0];
                             // get the actual changed value
