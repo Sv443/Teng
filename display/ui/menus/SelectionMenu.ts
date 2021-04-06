@@ -1,3 +1,4 @@
+/* eslint-disable no-fallthrough */
 /*******************************************************/
 /* Teng - SelectionMenu that doesn't clear the console */
 /*******************************************************/
@@ -371,24 +372,26 @@ export class SelectionMenu extends Menu
                 }
                 break;
                 case "escape":
-                    if(!this.settings.cancelable)
-                        break;
+                    {
+                        if(!this.settings.cancelable)
+                            break;
 
-                    this.inputHandler.removeListener("key", onKeyPress);
+                        this.inputHandler.removeListener("key", onKeyPress);
 
-                    // TODO:
-                    this.clearConsole();
+                        // TODO:
+                        this.clearConsole();
 
-                    const result: ISelectionMenuResult = {
-                        canceled: true,
-                        option: {
-                            index: this.cursorPos,
-                            text: opts[this.cursorPos]
-                        }
-                    };
+                        const result: ISelectionMenuResult = {
+                            canceled: true,
+                            option: {
+                                index: this.cursorPos,
+                                text: opts[this.cursorPos]
+                            }
+                        };
 
-                    this.emit("canceled");
-                    this.emit("submit", result);
+                        this.emit("canceled");
+                        this.emit("submit", result);
+                    }
                 break;
             }
         };
@@ -592,18 +595,11 @@ export class SelectionMenu extends Menu
      */
     static clearConsole(outStream: NodeJS.WriteStream = process.stdout): void
     {
-        try
-        {
-            console.clear();
-        }
-        catch(err)
-        {
-            let padding = [];
+        const padding = [];
 
-            for(let i = 0; i < outStream.rows; i++)
-                padding.push("\n");
+        for(let i = 0; i < outStream.rows; i++)
+            padding.push("\n");
 
-            outStream.write(padding.join(""));
-        }
+        outStream.write(padding.join(""));
     }
 }
