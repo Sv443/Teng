@@ -2,6 +2,8 @@
 /* Teng - Base classes, interfaces and functions */
 /*************************************************/
 
+/* eslint-disable no-unused-vars */
+
 
 import { diff } from "deep-diff";
 import { colors } from "svcorelib";
@@ -281,7 +283,7 @@ export enum Color
     Magenta,
     Cyan,
     White
-};
+}
 
 /**
  * Describes the type of color

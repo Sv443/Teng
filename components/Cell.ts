@@ -76,6 +76,7 @@ export abstract class Cell extends TengObject
     protected cursorActive: boolean = false;
 
 
+    // TODO: make position of cell optional (settable at a later time)
     /**
      * Constructs a new instance of the Cell class
      * @param position The position of the cell inside its parent container
