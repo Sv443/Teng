@@ -4,7 +4,7 @@
 
 import { Fonts } from "figlet";
 
-import { MenuOption } from "./Menu";
+import { MenuOptionOrSpacer } from "./Menu";
 import { ISelectionMenuResult, SelectionMenu } from "./SelectionMenu";
 
 
@@ -40,7 +40,7 @@ export default abstract class SettingsMenu extends SelectionMenu
      * @param options The selectable options - add empty string or `null` for a spacer
      * @param titleFont The font of the title banner
      */
-    constructor(title: string, options?: MenuOption[], titleFont: Fonts = "Standard")
+    constructor(title: string, options?: MenuOptionOrSpacer[], titleFont: Fonts = "Standard")
     {
         super("SettingsMenu", title, options);
 

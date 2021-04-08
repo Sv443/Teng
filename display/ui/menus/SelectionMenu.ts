@@ -7,7 +7,7 @@ import { Errors, colors } from "svcorelib";
 import { DeepPartial } from "tsdef";
 
 import { TengObject } from "../../../base/TengObject";
-import { Menu, MenuOption } from "./Menu";
+import { Menu, MenuOptionOrSpacer } from "./Menu";
 import { InputHandler, IKeypressObject } from "../../../input/InputHandler";
 
 const col = colors.fg;
@@ -50,7 +50,7 @@ export interface ISelectionMenuResult
         /** The zero-based index of the option the user has selected */
         index: number;
         /** Text of the option the user has selected - set to `null` or an empty string when a spacer has somehow been selected (even though it should be impossible) */
-        text: MenuOption;
+        text: MenuOptionOrSpacer;
     }
 }
 
@@ -101,7 +101,7 @@ export class SelectionMenu extends Menu
     /**
      * Creates an instance of the SelectionMenu class
      */
-    constructor(objName: string, title: string, options?: MenuOption[], settings?: DeepPartial<ISelectionMenuSettings>)
+    constructor(objName: string, title: string, options?: MenuOptionOrSpacer[], settings?: DeepPartial<ISelectionMenuSettings>)
     {
         super(objName, TengObject.truncateDescriptor(title));
 
@@ -184,7 +184,7 @@ export class SelectionMenu extends Menu
     /**
      * Sets this menu's options
      */
-    setOptions(options: MenuOption[]): void
+    setOptions(options: MenuOptionOrSpacer[]): void
     {
         this.options = options;
     }
@@ -192,7 +192,7 @@ export class SelectionMenu extends Menu
     /**
      * Adds an option to this menu
      */
-    addOption(option: MenuOption): void
+    addOption(option: MenuOptionOrSpacer): void
     {
         this.options.push(option);
     }
@@ -203,7 +203,7 @@ export class SelectionMenu extends Menu
      * @param deleteCount The number of options to remove.
      * @param items New options to insert into the existing options in place of the deleted ones.
      */
-    spliceOptions(start: number, deleteCount?: number, ...opts: MenuOption[]): void
+    spliceOptions(start: number, deleteCount?: number, ...opts: MenuOptionOrSpacer[]): void
     {
         if(!Array.isArray(opts) || (opts != undefined && opts.length > 0))
             this.options.splice(start, deleteCount);

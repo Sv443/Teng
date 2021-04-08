@@ -8,8 +8,15 @@ import { text, loadFont,  Fonts, Options, KerningMethods } from "figlet";
 import { TengObject } from "../../../base/TengObject";
 
 
+//#MARKER types
+
 /** A single option of a menu - set to empty string or `null` for a spacer */
-export type MenuOption = Nullable<string>;
+export type MenuOptionOrSpacer = Nullable<string>;
+
+/** A single option of a menu - no spacers allowed */
+export type MenuOption = string;
+
+//#MARKER class
 
 /**
  * Base class for all Teng menus
@@ -20,7 +27,7 @@ export abstract class Menu extends TengObject
     protected title: string;
 
     /** Selectable options of this menu */
-    protected options: MenuOption[] = [];
+    protected options: MenuOptionOrSpacer[] = [];
 
 
     /**
@@ -53,7 +60,7 @@ export abstract class Menu extends TengObject
     /**
      * Adds an option to this menu
      */
-    addOption(option: MenuOption)
+    addOption(option: MenuOptionOrSpacer)
     {
         if(this.options.includes(option))
             throw new TypeError(`Can't add option "${option}" to the menu because it already exists!`);
@@ -64,7 +71,7 @@ export abstract class Menu extends TengObject
     /**
      * Returns the options that have been set on this menu
      */
-    getOptions(): MenuOption[]
+    getOptions(): MenuOptionOrSpacer[]
     {
         return this.options;
     }
@@ -72,7 +79,7 @@ export abstract class Menu extends TengObject
     /**
      * Returns the option at the provided index
      */
-    getOption(index: number): MenuOption
+    getOption(index: number): MenuOptionOrSpacer
     {
         return this.options[index];
     }
@@ -131,7 +138,7 @@ export abstract class Menu extends TengObject
     /**
      * Checks if a passed menu option is empty
      */
-    static isEmptyOption(option: MenuOption): boolean
+    static isEmptyOption(option: MenuOptionOrSpacer): boolean
     {
         return (option === null || option === "");
     }
