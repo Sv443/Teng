@@ -3,9 +3,8 @@
 /************************************************/
 
 import { DeepPartial } from "tsdef";
-import { Index2 } from "../../../base/Base";
 import { IKeypressObject, InputHandler } from "../../../input/InputHandler";
-import { Menu, MenuOption, MenuOptionOrSpacer } from "./Menu";
+import { Menu, MenuOption } from "./Menu";
 import { SelectionMenu, ISelectionMenuResult } from "./SelectionMenu";
 
 
@@ -46,7 +45,7 @@ const defaultIListMenuSettings: IListMenuSettings = {
 
 //#MARKER class
 
-export interface ListMenu
+export default interface ListMenu
 {
     /** Called when the user has selected an option */
     on(event: "submit", listener: (result: ISelectionMenuResult) => void): this;
@@ -57,7 +56,7 @@ export interface ListMenu
 /**
  * Displays a scrollable list of options
  */
-export class ListMenu extends Menu
+export default class ListMenu extends Menu
 {
     protected settings: DeepPartial<IListMenuSettings>;
 
@@ -93,6 +92,16 @@ export class ListMenu extends Menu
     addOption(opt: MenuOption): void
     {
         this.options.push(opt);
+    }
+
+    addOptions(opts: MenuOption[]): void
+    {
+        opts.forEach(o => this.addOption(o));
+    }
+
+    setOptions(opts: MenuOption[]): void
+    {
+        this.options = opts;
     }
 
     getOption(index: number): MenuOption
@@ -180,12 +189,18 @@ export class ListMenu extends Menu
                 case "w":
                     if(!this.settings.wasdEnabled)
                         break;
+
+                    // falls through
+
                 case "up":
                     moveCursor(-1);
                 break;
                 case "s":
                     if(!this.settings.wasdEnabled)
                         break;
+
+                    // falls through
+
                 case "down":
                     moveCursor(1);
                 break;
@@ -193,12 +208,18 @@ export class ListMenu extends Menu
                 case "a":
                     if(!this.settings.wasdEnabled)
                         break;
+
+                    // falls through
+
                 case "left":
                     moveCursor(undefined, -1);
                 break;
                 case "d":
                     if(!this.settings.wasdEnabled)
                         break;
+
+                    // falls through
+
                 case "right":
                     moveCursor(undefined, 1);
                 break;
