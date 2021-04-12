@@ -3,6 +3,7 @@
 /************************************************/
 
 import { DeepPartial } from "tsdef";
+import { Size } from "../../../base/Base";
 import { IKeypressObject, InputHandler } from "../../../input/InputHandler";
 import { Menu, MenuOption } from "./Menu";
 import { SelectionMenu, ISelectionMenuResult } from "./SelectionMenu";
@@ -60,13 +61,21 @@ export default class ListMenu extends Menu
 {
     protected settings: DeepPartial<IListMenuSettings>;
 
+    /** Position of the cursor within the one-dimensional options array */
     protected cursorPos: number = 0;
-    protected pageIndex: number = 0;
-    protected options: MenuOption[] = [];
-    protected pages: MenuOption[][] = [];
 
+    /** One-dimensional array of menu options */
+    protected options: MenuOption[] = [];
+
+    /** Whether input by keystroke should be paused */
     protected inputPaused = true;
+    /** An instance of the input handler class */
     protected inputHandler: InputHandler;
+
+    /** The size of the output stream / terminal - initially set to `-1 x -1` - determined by calling `onResize()` */
+    protected termSize: Size = new Size(-1, -1);
+    /** The amount of options that fit into a single page - determined by calling `onResize()` */
+    protected optionsPerPage: number = 0;
 
 
     /**
@@ -115,6 +124,14 @@ export default class ListMenu extends Menu
     }
 
     /**
+     * Returns the size of the outStream
+     */
+    getOutStreamSize(): Size
+    {
+        return this.termSize;
+    }
+
+    /**
      * Shows this menu and hooks keypress events
      */
     show(): void
@@ -134,6 +151,8 @@ export default class ListMenu extends Menu
     {
         this.inputPaused = true;
 
+        this.removeInputListeners();
+
         this.clearConsole();
 
         this.emit("canceled");
@@ -152,14 +171,6 @@ export default class ListMenu extends Menu
     //#MARKER protected
 
     /**
-     * After `show()` was called, this will get called each time the set stdout changes its size
-     */
-    protected onResize(): void
-    {
-        //TODO:
-    }
-
-    /**
      * TODO: Draw shit
      */
     protected draw(): void
@@ -168,11 +179,14 @@ export default class ListMenu extends Menu
     }
 
     /**
-     * Register keypress events n stuff
+     * Register keypress and terminal resize events n stuff
      */
     protected registerInputHandler(): void
     {
         const opts = this.getOptions();
+
+
+        (this.settings.outStream as NodeJS.WriteStream).on("resize", () => this.onResize());
 
 
         const moveCursor = (vert?: number, hor?: number) => {
@@ -238,6 +252,8 @@ export default class ListMenu extends Menu
 
                     this.inputHandler.removeListener("key", onKeyPress);
 
+                    this.removeInputListeners();
+
                     this.emit("submit", result);
                 }
                 break;
@@ -247,6 +263,8 @@ export default class ListMenu extends Menu
                             break;
 
                         this.inputHandler.removeListener("key", onKeyPress);
+
+                        this.removeInputListeners();
 
                         this.clearConsole();
 
@@ -266,7 +284,32 @@ export default class ListMenu extends Menu
         };
 
         this.inputHandler.on("key", onKeyPress);
-        (this.settings.outStream as NodeJS.WriteStream).on("resize", () => this.onResize());
+    }
+
+    /**
+     * Removes all input listeners that have been registered with `registerInputHandler()`
+     */
+    protected removeInputListeners(): void
+    {
+        this.inputHandler.removeAllListeners("key");
+
+        (this.settings.outStream as NodeJS.WriteStream).removeAllListeners("resize");
+    }
+
+    /**
+     * Gets called when the outStream is resized
+     */
+    protected onResize(): void
+    {
+        const termSize = new Size(process.stdout.columns, process.stdout.rows);
+
+        this.termSize = termSize;
+
+        // TODO: some-the-fuck-how calculate the amount of options per page:
+        this.optionsPerPage = 5;
+
+        // re-draw menu with newly set `termSize` and `optionsPerPage` properties
+        this.draw();
     }
 
     /**
