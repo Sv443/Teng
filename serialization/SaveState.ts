@@ -24,7 +24,7 @@ const encryptionKey = "TODO: figure this out";
 /**
  * Keeps track of a save state and is responsible for saving and loading from save state files
  */
-export class SaveState<T> extends TengObject
+export class SaveState<T_SaveData> extends TengObject
 {
     /** The data that should be saved to disk or that was read from disk */
     private data: {};
@@ -47,7 +47,7 @@ export class SaveState<T> extends TengObject
      * @param fileExtension The file extension to save the file as (don't prefix this with a dot)
      * @param initialData An optional initial value of the data
      */
-    constructor(saveDirectory: string, stateName: string, saveEncrypted: boolean = false, fileExtension: string = tengSettings.game.saveStates.defaultFileExtension, initialData?: T)
+    constructor(saveDirectory: string, stateName: string, saveEncrypted: boolean = false, fileExtension: string = tengSettings.game.saveStates.defaultFileExtension, initialData?: T_SaveData)
     {
         const sanitizedStateName = SaveState.sanitizeFileName(stateName);
 
@@ -114,7 +114,7 @@ export class SaveState<T> extends TengObject
      * Sets the data for this save state
      * @param data JSON-compatible object to save to the save state file
      */
-    setData(data: T): Promise<void>
+    setData(data: T_SaveData): Promise<void>
     {
         return new Promise<void>((res, rej) => {
             try

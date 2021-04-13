@@ -375,7 +375,7 @@ export class SelectionMenu extends Menu
                         }
                     };
 
-                    this.inputHandler.removeListener("key", onKeyPress);
+                    this.inputHandler.removeAllListeners("key");
 
                     this.emit("submit", result);
                 }
@@ -385,9 +385,8 @@ export class SelectionMenu extends Menu
                         if(!this.settings.cancelable)
                             break;
 
-                        this.inputHandler.removeListener("key", onKeyPress);
+                        this.inputHandler.removeAllListeners("key");
 
-                        // TODO:
                         this.clearConsole();
 
                         const result: ISelectionMenuResult = {
