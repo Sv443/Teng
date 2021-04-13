@@ -6,6 +6,7 @@ import { Nullable } from "tsdef";
 import { text, loadFont,  Fonts, Options, KerningMethods } from "figlet";
 
 import { TengObject } from "../../../base/TengObject";
+import { Size } from "../../../base/Base";
 
 
 //#MARKER types
@@ -18,10 +19,16 @@ export type MenuOption = string;
 
 //#MARKER class
 
+export default interface Menu
+{
+    /** Called whenever the outStream is resized */
+    on(event: "resize", listener: (oldSize: Size, newSize: Size) => void): this;
+}
+
 /**
  * Base class for all Teng menus
  */
-export abstract class Menu extends TengObject
+export default abstract class Menu extends TengObject
 {
     /** The title of this menu */
     protected title: string;
@@ -29,22 +36,52 @@ export abstract class Menu extends TengObject
     /** Selectable options of this menu */
     protected options: MenuOptionOrSpacer[] = [];
 
+    /** The stream to write to */
+    protected outStream: NodeJS.WriteStream;
+
+    /** The size of the output stream */
+    protected outStreamSize: Size;
+
 
     /**
      * Creates an instance of the Menu class
      * @param objectName The name of the object (usually the class or menu name)
      * @param title Title of this menu
+     * @param outStream The stream to write to - defaults to `process.stdout`
      */
-    constructor(objectName: string, title: string)
+    constructor(objectName: string, title: string, outStream: NodeJS.WriteStream = process.stdout)
     {
         super(objectName, TengObject.truncateDescriptor(title));
 
         this.title = title;
+
+        this.outStream = outStream;
+
+
+        this.outStreamSize = Menu.getStreamSize(this.outStream);
+
+        this.registerResizeEvent();
+
+        this.on("resize", (o, n) => this.onResize(o, n));
     }
 
     toString(): string
     {
         return `Menu <${this.objectName}> with title '${TengObject.truncateDescriptor(this.title)}' - UID: ${this.uid.toString()}`;
+    }
+
+    //#MARKER private
+
+    private registerResizeEvent(): void
+    {
+        this.outStream.on("resize", () => {
+            const oldSize = Size.fromSize(this.outStreamSize);
+            const newSize = Menu.getStreamSize(this.outStream);
+
+            this.outStreamSize = newSize;
+
+            this.emit("resize", oldSize, newSize);
+        });
     }
 
     //#MARKER other
@@ -83,6 +120,15 @@ export abstract class Menu extends TengObject
     {
         return this.options[index];
     }
+
+    //#MARKER abstract
+
+    /**
+     * Should be called whenever the outStream was resized
+     * @param oldSize The old size of the stream
+     * @param newSize The new size of the stream
+     */
+    protected abstract onResize(oldSize: Size, newSize: Size): void;
 
     //#MARKER static
 
@@ -141,5 +187,14 @@ export abstract class Menu extends TengObject
     static isEmptyOption(option: MenuOptionOrSpacer): boolean
     {
         return (option === null || option === "");
+    }
+
+    /**
+     * Returns the size of a stream.  
+     * Returns the size of `process.stdout` if `stream` is not set.
+     */
+    static getStreamSize(stream: NodeJS.WriteStream = process.stdout): Size
+    {
+        return new Size(stream.columns, stream.rows);
     }
 }

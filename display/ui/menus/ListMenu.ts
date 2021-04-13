@@ -5,7 +5,7 @@
 import { DeepPartial } from "tsdef";
 import { Size } from "../../../base/Base";
 import { IKeypressObject, InputHandler } from "../../../input/InputHandler";
-import { Menu, MenuOption } from "./Menu";
+import Menu, { MenuOption } from "./Menu";
 import { SelectionMenu, ISelectionMenuResult } from "./SelectionMenu";
 
 
@@ -46,8 +46,10 @@ const defaultIListMenuSettings: IListMenuSettings = {
 
 //#MARKER class
 
-export default interface ListMenu
+export default interface ListMenu extends Menu
 {
+    /** Called whenever the outStream is resized */
+    on(event: "resize", listener: (oldSize: Size, newSize: Size) => void): this;
     /** Called when the user has selected an option */
     on(event: "submit", listener: (result: ISelectionMenuResult) => void): this;
     /** Called when the user cancels the menu */
@@ -93,7 +95,9 @@ export default class ListMenu extends Menu
         if(options)
             this.options = options;
 
+
         this.settings = { ...defaultIListMenuSettings, ...settings };
+
 
         this.inputHandler = new InputHandler();
     }
@@ -184,9 +188,6 @@ export default class ListMenu extends Menu
     protected registerInputHandler(): void
     {
         const opts = this.getOptions();
-
-
-        (this.settings.outStream as NodeJS.WriteStream).on("resize", () => this.onResize());
 
 
         const moveCursor = (vert?: number, hor?: number) => {
@@ -296,14 +297,9 @@ export default class ListMenu extends Menu
         (this.settings.outStream as NodeJS.WriteStream).removeAllListeners("resize");
     }
 
-    /**
-     * Gets called when the outStream is resized
-     */
-    protected onResize(): void
+    protected onResize(oldSize: Size, newSize: Size): void
     {
-        const termSize = new Size(process.stdout.columns, process.stdout.rows);
-
-        this.termSize = termSize;
+        this.termSize = newSize;
 
         // TODO: some-the-fuck-how calculate the amount of options per page:
         this.optionsPerPage = 5;

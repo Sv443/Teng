@@ -3,6 +3,8 @@
 /*******************************/
 
 import { Fonts } from "figlet";
+import { unused } from "svcorelib";
+import { Size } from "../../../base/Base";
 
 import { MenuOptionOrSpacer } from "./Menu";
 import { ISelectionMenuResult, SelectionMenu } from "./SelectionMenu";
@@ -12,6 +14,8 @@ import { ISelectionMenuResult, SelectionMenu } from "./SelectionMenu";
 
 export default interface MainMenu
 {
+    /** Called whenever the outStream is resized */
+    on(event: "resize", listener: (oldSize: Size, newSize: Size) => void): this;
     /** Called when the user has selected an option */
     on(event: "submit", listener: (result: ISelectionMenuResult) => void): this;
     /** Called when the user cancels the menu */
@@ -58,6 +62,11 @@ export default class MainMenu extends SelectionMenu
         this.setLocale({
             cancel: "Exit"
         });
+    }
+
+    onResize(oldSize: Size, newSize: Size): void
+    {
+        unused(oldSize, newSize);
     }
 
     //#MARKER other

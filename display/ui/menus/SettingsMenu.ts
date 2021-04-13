@@ -3,6 +3,7 @@
 /*******************************/
 
 import { Fonts } from "figlet";
+import { Size } from "../../../base/Base";
 
 import { MenuOptionOrSpacer } from "./Menu";
 import { ISelectionMenuResult, SelectionMenu } from "./SelectionMenu";
@@ -12,6 +13,8 @@ import { ISelectionMenuResult, SelectionMenu } from "./SelectionMenu";
 
 export default interface SettingsMenu
 {
+    /** Called whenever the outStream is resized */
+    on(event: "resize", listener: (oldSize: Size, newSize: Size) => void): this;
     /** Called when the user has selected an option */
     on(event: "submit", listener: (result: ISelectionMenuResult) => void): this;
     /** Called when the user cancels the menu */

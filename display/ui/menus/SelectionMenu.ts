@@ -3,12 +3,13 @@
 /* Teng - SelectionMenu that doesn't clear the console */
 /*******************************************************/
 
-import { Errors, colors } from "svcorelib";
+import { Errors, colors, unused } from "svcorelib";
 import { DeepPartial } from "tsdef";
 
 import { TengObject } from "../../../base/TengObject";
-import { Menu, MenuOptionOrSpacer } from "./Menu";
+import Menu, { MenuOptionOrSpacer } from "./Menu";
 import { InputHandler, IKeypressObject } from "../../../input/InputHandler";
+import { Size } from "../../../base/Base";
 
 const col = colors.fg;
 
@@ -70,15 +71,18 @@ export interface ISelectionMenuLocale
     select: string;
 }
 
-export interface SelectionMenu
+//#MARKER class
+
+export interface SelectionMenu extends Menu
 {
+    /** Called whenever the outStream is resized */
+    on(event: "resize", listener: (oldSize: Size, newSize: Size) => void): this;
     /** Called when the user has selected an option */
     on(event: "submit", listener: (result: ISelectionMenuResult) => void): this;
     /** Called when the user cancels the menu */
     on(event: "canceled", listener: () => void): this;
 }
 
-//#MARKER class
 
 /**
  * A scrollable menu from which the user can select a single option.
@@ -141,6 +145,11 @@ export class SelectionMenu extends Menu
             extraInfo.push("overflowing");
 
         return `SelectionMenu <${this.objectName}> with title "${this.title}" ${extraInfo.length > 0 ? `(Settings: ${extraInfo.join(", ")}) ` : ""}- UID: ${this.uid.toString()}`;
+    }
+
+    onResize(oldSize: Size, newSize: Size): void
+    {
+        unused(oldSize, newSize);
     }
 
     //#MARKER other

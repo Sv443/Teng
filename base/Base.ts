@@ -64,6 +64,14 @@ export class Size extends Stringifiable
     }
 
     /**
+     * Clones an instance of the Size class by value
+     */
+    static fromSize(size: Size): Size
+    {
+        return new this(size.width, size.height);
+    }
+
+    /**
      * Creates a new instance of the Size class by splitting it horizontally and/or vertically a set number of times.  
      * 
      */
