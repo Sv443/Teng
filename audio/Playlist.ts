@@ -3,7 +3,7 @@
 /**********************************************************************************/
 
 import { IAudioMetadata } from "music-metadata";
-import { PromiseState, StatePromise } from "../base/StatePromise";
+import StatePromise, { PromiseState } from "../base/StatePromise";
 import { TengObject } from "../base/TengObject";
 import { Track } from "./Audio";
 
@@ -111,7 +111,7 @@ export class Playlist extends TengObject
         }
 
 
-        let foundTrack = this.tracks.find(t => t.name == indexOrName);
+        const foundTrack = this.tracks.find(t => t.name == indexOrName);
 
         if(!foundTrack)
             return false;

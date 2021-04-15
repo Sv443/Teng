@@ -19,7 +19,7 @@ export enum PromiseState
  * This class is a wrapper for the Promise class.  
  * It keeps track of the state of the promise, allowing
  */
-export class StatePromise<T> extends TengObject
+export default class StatePromise<T> extends TengObject
 {
     private intPromise: Promise<T>;
     private state = PromiseState.Pending;

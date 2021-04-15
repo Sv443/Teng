@@ -5,11 +5,10 @@
 import { colors, unused } from "svcorelib";
 
 import { TengObject } from "../base/TengObject";
-import { Area, ColorType, Index2, isColor, objectsEqual, Position, resolveColor, Size } from "../base/Base";
+import { Area, ColorType, Index2, isColor, Position, resolveColor, Size } from "../base/Base";
 import { Cell, ICellColors } from "../components/Cell";
 import { Grid } from "../components/Grid";
 import { Diff, diff } from "deep-diff";
-import { tengSettings } from "../settings";
 
 
 // TODO: make changeable in game settings menu
@@ -91,7 +90,7 @@ export class Camera extends TengObject
                     if(!this.isRenderingFrame)
                     {
                         // this is the first call to draw() since instantiation of the camera, so the frame has to be rendered
-                        let renderGrid = await this.renderFrame(grid);
+                        const renderGrid = await this.renderFrame(grid);
 
                         await this.drawFrame(renderGrid);
 

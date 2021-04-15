@@ -286,6 +286,7 @@ export class LayeredNoise extends TengObject
                                         adjacentCellIndexes.push(new Index2(x - 2, y    )); // WW
                                         adjacentCellIndexes.push(new Index2(x - 2, y - 1)); // WWN
 
+                                        // falls through
 
                                     case SmoothingAlgorithm.CA_Smooth:
                                         //  ▒ ▒ ▒ ▒ ▒
@@ -299,6 +300,7 @@ export class LayeredNoise extends TengObject
                                         adjacentCellIndexes.push(new Index2(x + 1, y + 1)); // SE
                                         adjacentCellIndexes.push(new Index2(x - 1, y + 1)); // SW
 
+                                        // falls through
 
                                     case SmoothingAlgorithm.CA_Coarse:
                                         //  ▒ ▒ ▒ ▒ ▒

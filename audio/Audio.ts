@@ -8,7 +8,7 @@ import * as sound from "sound-play";
 
 import { TengObject } from "../base/TengObject";
 import { IAudioMetadata, parseFile } from "music-metadata";
-import { StatePromise } from "../base/StatePromise";
+import StatePromise from "../base/StatePromise";
 
 
 /**
@@ -33,7 +33,7 @@ export enum AudioState
     Playing,
     Paused,
     Stopped
-};
+}
 
 /**
  * Contains an audio file and offers an interface to play it
