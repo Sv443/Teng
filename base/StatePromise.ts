@@ -5,6 +5,8 @@
 import { TengObject } from "./TengObject";
 
 
+//#MARKER types
+
 /**
  * Describes the state of a Promise
  */
@@ -14,6 +16,8 @@ export enum PromiseState
     Fulfilled,
     Rejected,
 }
+
+//#MARKER class
 
 /**
  * This class is a wrapper for the Promise class.  
