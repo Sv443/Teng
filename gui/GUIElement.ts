@@ -21,11 +21,7 @@ export enum TextAlign
 /**
  * Describes the content of a UI element
  */
-export interface IGUIElementContent
-{
-    type: "";
-    widget: GUIElement;
-}
+export type IGUIElementContent = GUIElement[];
 
 //#MARKER class
 
@@ -59,6 +55,9 @@ export default abstract class GUIElement extends TengObject
 
         this.zIndex = zIndex;
         this.size = size;
+
+        if(this.content)
+            this.content = content;
     }
 
     toString(): string
