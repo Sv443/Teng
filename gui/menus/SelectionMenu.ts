@@ -6,10 +6,10 @@
 import { Errors, colors, unused } from "svcorelib";
 import { DeepPartial } from "tsdef";
 
-import { TengObject } from "../../../base/TengObject";
+import { TengObject } from "../../base/TengObject";
 import Menu, { MenuOptionOrSpacer } from "./Menu";
-import { InputHandler, IKeypressObject } from "../../../input/InputHandler";
-import { Size } from "../../../base/Base";
+import { InputHandler, IKeypressObject } from "../../input/InputHandler";
+import { Size } from "../../base/Base";
 
 const col = colors.fg;
 

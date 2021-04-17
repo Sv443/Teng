@@ -3,8 +3,7 @@
 /*******************************/
 
 import { Fonts } from "figlet";
-import { unused } from "svcorelib";
-import { Size } from "../../../base/Base";
+import { Size } from "../../base/Base";
 
 import { MenuOptionOrSpacer } from "./Menu";
 import { ISelectionMenuResult, SelectionMenu } from "./SelectionMenu";
@@ -12,7 +11,7 @@ import { ISelectionMenuResult, SelectionMenu } from "./SelectionMenu";
 
 //#MARKER types
 
-export default interface MainMenu
+export default interface SettingsMenu
 {
     /** Called whenever the outStream is resized */
     on(event: "resize", listener: (oldSize: Size, newSize: Size) => void): this;
@@ -26,11 +25,12 @@ export default interface MainMenu
 
 // TODO: GIF instead of still image
 /**
- * Main menu of the game.  
+ * Main settings menu of the game.  
  *   
+ * // TODO: new image  
  * ![example image](https://raw.githubusercontent.com/Sv443/Teng/main/docs/img/examples/MainMenu.png)
  */
-export default class MainMenu extends SelectionMenu
+export default abstract class SettingsMenu extends SelectionMenu
 {
     private titleFont: Fonts;
 
@@ -45,7 +45,7 @@ export default class MainMenu extends SelectionMenu
      */
     constructor(title: string, options?: MenuOptionOrSpacer[], titleFont: Fonts = "Standard")
     {
-        super("MainMenu", title, options);
+        super("SettingsMenu", title, options);
 
         if(options)
             this.options = options;
@@ -64,11 +64,6 @@ export default class MainMenu extends SelectionMenu
         });
     }
 
-    onResize(oldSize: Size, newSize: Size): void
-    {
-        unused(oldSize, newSize);
-    }
-
     //#MARKER other
 
     /**
@@ -82,9 +77,9 @@ export default class MainMenu extends SelectionMenu
 
             try
             {
-                await MainMenu.preloadFIGFont(this.titleFont);
+                await SettingsMenu.preloadFIGFont(this.titleFont);
 
-                this.setFIGTitle((await MainMenu.createFIGText(this.title, this.titleFont, "default")).split(/\n/g));
+                this.setFIGTitle((await SettingsMenu.createFIGText(this.title, this.titleFont, "default")).split(/\n/g));
 
                 this.preloaded = true;
                 return res();
