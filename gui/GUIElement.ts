@@ -1,6 +1,6 @@
-/**********************************************************/
-/* Teng - Contains information to render a user interface */
-/**********************************************************/
+/*********************************************************/
+/* Teng - A single element of a graphical user interface */
+/*********************************************************/
 
 import { TengObject } from "../base/TengObject";
 import { Size } from "../base/Base";
@@ -19,7 +19,7 @@ export enum TextAlign
 }
 
 /**
- * Describes the content of a UI element
+ * Describes the content of a GUI element
  */
 export type IGUIElementContent = GUIElement[];
 
@@ -32,7 +32,7 @@ export default interface GUIElement
 }
 
 /**
- * Contains information to render an element to the user interface
+ * A single element of a graphical user interface
  */
 export default abstract class GUIElement extends TengObject
 {
