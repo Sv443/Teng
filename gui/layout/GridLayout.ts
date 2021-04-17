@@ -2,19 +2,20 @@
 /* Teng - UI element that aligns its sub-elements in a grid pattern */
 /****************************************/
 
-import { UIElement } from "../UIElement";
+import { Size } from "../../base/Base";
+import GUIElement from "../GUIElement";
 
 
 /**
  * UI element that aligns its sub-elements in a grid pattern
  */
-export class GridLayout extends UIElement
+export default class GridLayout extends GUIElement
 {
     /**
      * Creates an instance of the GridLayout class
      */
-    constructor(zIndex: number)
+    constructor(zIndex: number, size: Size)
     {
-        super(zIndex);
+        super(zIndex, size, undefined, "GridLayout");
     }
 }

@@ -46,6 +46,9 @@ export class Size extends Stringifiable
         this.height = height;
     }
 
+    /**
+     * Returns a string representation of this Size instance in the format `WxH`
+     */
     toString(): string
     {
         return `${this.width}x${this.height}`;
@@ -72,8 +75,7 @@ export class Size extends Stringifiable
     }
 
     /**
-     * Creates a new instance of the Size class by splitting it horizontally and/or vertically a set number of times.  
-     * 
+     * Creates a new instance of the Size class by splitting it horizontally and/or vertically a set number of times
      */
     split(horSplits?: number, verSplits?: number): Size
     {
@@ -131,6 +133,9 @@ export class Position extends Stringifiable
         this.y = y;
     }
 
+    /**
+     * Returns a string representation of this Position instance in the format `[X,Y]`
+     */
     toString(): string
     {
         return `[${this.x},${this.y}]`;
@@ -155,6 +160,9 @@ export class Index extends Stringifiable
         this.idx = idx;
     }
 
+    /**
+     * Returns a string representation of this Index instance in the format `[X]`
+     */
     toString(): string
     {
         return `[${this.idx}]`;
@@ -181,6 +189,9 @@ export class Index2 extends Stringifiable
         this.y = y;
     }
 
+    /**
+     * Returns a string representation of this Index2 instance in the format `[X,Y]`
+     */
     toString(): string
     {
         return `[${this.x},${this.y}]`;
@@ -209,9 +220,54 @@ export class Index3 extends Stringifiable
         this.z = z;
     }
 
+    /**
+     * Returns a string representation of this Index3 instance in the format `[X,Y,Z]`
+     */
     toString(): string
     {
         return `[${this.x},${this.y},${this.z}]`;
+    }
+}
+
+/**
+ * Describes an index in n-dimensional space
+ */
+export class IndexN extends Stringifiable
+{
+    private indexes: number[];
+
+    /**
+     * Creates an instance of the Index2 class
+     */
+    constructor(...numbers: number[])
+    {
+        super();
+
+        this.indexes = numbers;
+    }
+
+    /**
+     * Returns a number of this index at the specified `position`
+     */
+    get(position: number): number | undefined
+    {
+        return this.indexes[position] || undefined;
+    }
+
+    /**
+     * Returns all numbers that make up this index
+     */
+    all(): number[]
+    {
+        return this.indexes;
+    }
+
+    /**
+     * Returns a string representation of this IndexN instance in the format `[A,B,C,D,...]`
+     */
+    toString(): string
+    {
+        return `[${this.indexes.join(",")}]`;
     }
 }
 
