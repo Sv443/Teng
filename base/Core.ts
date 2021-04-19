@@ -5,6 +5,24 @@
 import { tengSettings } from "../settings";
 
 
+//#MARKER types
+
+export interface IInitOptions
+{
+    outStream?: NodeJS.WritableStream;
+}
+
+const defaultIInitOptions: IInitOptions = {
+    outStream: process.stdout,
+}
+
+const coreProps = {
+    introPlayed: false,
+    initialized: false,
+};
+
+//#MARKER class
+
 /**
  * Core module that handles integral engine stuff
  */
@@ -13,12 +31,17 @@ export default abstract class Core
     /**
      * Initializes Teng
      */
-    public static init(outStream: NodeJS.WritableStream = process.stdout): Promise<void>
+    public static init(initOptions: IInitOptions): Promise<void>
     {
+        const options = { ...defaultIInitOptions, ...initOptions };
+
         return new Promise(async (res, rej) => {
             try
             {
-                await Core.displayIntro(outStream);
+                if(!coreProps.introPlayed)
+                    await Core.displayIntro(options.outStream);
+
+                coreProps.initialized = true;
 
                 return res();
             }
@@ -41,7 +64,11 @@ export default abstract class Core
                 outStream.write(`${tengSettings.info.name} v${tengSettings.info.versionStr}`);
                 outStream.write("\n\n\n\n\n\n");
 
-                setTimeout(() => res(), 3000);
+                setTimeout(() => {
+                    coreProps.introPlayed = true;
+
+                    return res();
+                }, 3000);
             }
             catch(err)
             {
