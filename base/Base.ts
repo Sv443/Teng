@@ -11,26 +11,49 @@ import { colors } from "svcorelib";
 import { generalSettings } from "../../settings";
 
 
+//#SECTION Custom Types
+
 export type Newable<T> = { new (...args: any[]): T; };
 
 
-//#MARKER base components
+//#SECTION Base Class
 /**
- * Extended (derived) classes need to have a toString() method, making the instances of those classes stringifiable
+ * Extended (derived) classes need to have certain methods to convert the data.  
+ *   
+ * ![Convertible](https://cdn.sv443.net/teng/dababy.png)
  */
-export abstract class Stringifiable
+export abstract class Convertable
 {
     /**
      * Turns this object into a string representation
      */
     abstract toString(): string;
+
+    /**
+     * Turns this object into a JSON representation
+     */
+    abstract toJSON(): any;
+}
+
+//#SECTION Size
+
+/**
+ * Describes a rectangular size in 2D space.  
+ * Note: width and height cannot be modified after instantiation.
+ */
+export interface ISizeObject
+{
+    [key: string]: number;
+
+    width: number;
+    height: number;
 }
 
 /**
  * Describes a rectangular size in 2D space.  
  * Note: width and height cannot be modified after instantiation.
  */
-export class Size extends Stringifiable
+export class Size extends Convertable
 {
     readonly width: number;
     readonly height: number;
@@ -52,6 +75,16 @@ export class Size extends Stringifiable
     toString(): string
     {
         return `${this.width}x${this.height}`;
+    }
+
+    /**
+     * Returns a JSON representation of this Size instance
+     */
+    toJSON(): ISizeObject
+    {
+        const { width, height } = this;
+
+        return { width, height };
     }
 
     /**
@@ -114,23 +147,47 @@ export class Size extends Stringifiable
     }
 }
 
+//#SECTION Position
+
 /**
  * Describes a position or coordinate in 2D space
  */
-export class Position extends Stringifiable
+export interface IPositionObject
+{
+    [key: string]: number;
+
+    x: number;
+    y: number;
+}
+
+/**
+ * Describes a position or coordinate in 2D space
+ * Note: position cannot be modified after instantiation.
+ */
+export class Position extends Convertable
 {
     readonly x: number;
     readonly y: number;
 
+
     /**
-     * Creates a new instance of the Position class
+     * Creates a new instance of the Position class.  
+     * Negative positions aren't allowed - if either `x` or `y` are negative, they will be set to the default of `0`  
+     * The passed values `x` and `y` will be rounded in case they are floating point values.  
+     *   
+     * **Note:** position cannot be modified after instantiation.
      */
     constructor(x: number, y: number)
     {
         super();
 
-        this.x = x;
-        this.y = y;
+
+        if(x < 0) x = 0;
+        if(y < 0) y = 0;
+
+        // make sure floats are converted to int
+        this.x = (x % 1 != 0) ? Math.round(x) : x;
+        this.y = (y % 1 != 0) ? Math.round(y) : y;
     }
 
     /**
@@ -140,12 +197,34 @@ export class Position extends Stringifiable
     {
         return `[${this.x},${this.y}]`;
     }
+
+    /**
+     * Returns a JSON representation of this Position instance
+     */
+    toJSON(): IPositionObject
+    {
+        const { x, y } = this;
+
+        return { x, y };
+    }
+}
+
+//#SECTION Index
+
+/**
+ * Describes an index in one-dimensional space
+ */
+export interface IIndexObject
+{
+    [key: string]: number;
+
+    idx: number;
 }
 
 /**
  * Describes an index in one-dimensional space
  */
-export class Index extends Stringifiable
+export class Index extends Convertable
 {
     readonly idx: number;
 
@@ -167,12 +246,35 @@ export class Index extends Stringifiable
     {
         return `[${this.idx}]`;
     }
+
+    /**
+     * Returns a JSON representation of this Index instance
+     */
+    toJSON(): IIndexObject
+    {
+        const { idx } = this;
+
+        return { idx };
+    }
+}
+
+//#SECTION Index2
+
+/**
+ * Describes an index in two-dimensional space
+ */
+export interface IIndex2Object
+{
+    [key: string]: number;
+
+    x: number;
+    y: number;
 }
 
 /**
  * Describes an index in two-dimensional space
  */
-export class Index2 extends Stringifiable
+export class Index2 extends Convertable
 {
     readonly x: number;
     readonly y: number;
@@ -196,12 +298,36 @@ export class Index2 extends Stringifiable
     {
         return `[${this.x},${this.y}]`;
     }
+
+    /**
+     * Returns a JSON representation of this Index2 instance
+     */
+    toJSON(): IIndex2Object
+    {
+        const { x, y } = this;
+
+        return { x, y };
+    }
+}
+
+//#SECTION Index3
+
+/**
+ * Describes an index in three-dimensional space
+ */
+export interface IIndex3Object
+{
+    [key: string]: number;
+
+    x: number;
+    y: number;
+    z: number;
 }
 
 /**
  * Describes an index in three-dimensional space
  */
-export class Index3 extends Stringifiable
+export class Index3 extends Convertable
 {
     readonly x: number;
     readonly y: number;
@@ -215,6 +341,7 @@ export class Index3 extends Stringifiable
     {
         super();
 
+
         this.x = x;
         this.y = y;
         this.z = z;
@@ -227,12 +354,34 @@ export class Index3 extends Stringifiable
     {
         return `[${this.x},${this.y},${this.z}]`;
     }
+
+    /**
+     * Returns a JSON representation of this Index3 instance
+     */
+    toJSON(): IIndex3Object
+    {
+        const { x, y, z } = this;
+
+        return { x, y, z };
+    }
+}
+
+//#SECTION IndexN
+
+/**
+ * Describes an index in n-dimensional space
+ */
+export interface IIndexNObject
+{
+    [key: string]: number[];
+
+    indexes: number[];
 }
 
 /**
  * Describes an index in n-dimensional space
  */
-export class IndexN extends Stringifiable
+export class IndexN extends Convertable
 {
     private indexes: number[];
 
@@ -244,6 +393,24 @@ export class IndexN extends Stringifiable
         super();
 
         this.indexes = numbers;
+    }
+
+    /**
+     * Returns a string representation of this IndexN instance in the format `[A,B,C,D,...]`
+     */
+    toString(): string
+    {
+        return `[${this.indexes.join(",")}]`;
+    }
+
+    /**
+     * Returns a JSON representation of this IndexN instance
+     */
+    toJSON(): IIndexNObject
+    {
+        const { indexes } = this;
+
+        return { indexes };
     }
 
     /**
@@ -261,20 +428,14 @@ export class IndexN extends Stringifiable
     {
         return this.indexes;
     }
-
-    /**
-     * Returns a string representation of this IndexN instance in the format `[A,B,C,D,...]`
-     */
-    toString(): string
-    {
-        return `[${this.indexes.join(",")}]`;
-    }
 }
+
+//#SECTION Area
 
 /**
  * Contains the corners of an area
  */
-declare interface IAreaCorners
+export interface IAreaCorners
 {
     [index: string]: Position;
 
@@ -287,12 +448,24 @@ declare interface IAreaCorners
 /**
  * Describes a rectangular 2D area in a 2D space
  */
-export class Area extends Stringifiable
+export interface IAreaObject
+{
+    [index: string]: IAreaCorners | Size;
+
+    corners: IAreaCorners;
+    size: Size;
+}
+
+/**
+ * Describes a rectangular 2D area in a 2D space
+ */
+export class Area extends Convertable
 {
     /** The corners that make up this area */
     readonly corners: IAreaCorners;
     /** The size of this area */
     readonly size: Size;
+
 
     /**
      * Creates a new instance of the Area class
@@ -300,6 +473,7 @@ export class Area extends Stringifiable
     constructor(cornerTL: Position, cornerBR: Position)
     {
         super();
+
 
         this.corners = {
             tl: cornerTL,
@@ -309,10 +483,23 @@ export class Area extends Stringifiable
         this.size = Size.fromArea(this);
     }
 
+    /**
+     * Returns a string representation of this Area instance in the format `⠋[X_tl,Y_tl] ⠴[X_br,Y_br]` (where tl = top left and br = bottom right)
+     */
     toString(): string
     {
         const { tl, br } = this.corners;
         return `⠋[${tl.x},${tl.y}] ⠴[${br.x},${br.y}]`;
+    }
+
+    /**
+     * Returns a JSON representation of this Area instance
+     */
+    toJSON(): IAreaObject
+    {
+        const { corners, size } = this;
+
+        return { corners, size };
     }
 
     /**
@@ -329,7 +516,7 @@ export class Area extends Stringifiable
     }
 }
 
-//#SECTION colors
+//#SECTION Color
 
 /**
  * Describes a foreground or background color that can be rendered to a terminal / command line
@@ -425,7 +612,7 @@ export function isColor(val: any): val is Color
 }
 
 
-//#MARKER logging
+//#SECTION Logging
 
 /**
  * Describes the log level
@@ -484,6 +671,8 @@ export function dbg(section: string, message: string, level: LogLevel = LogLevel
         console.log(`${consoleCol}[${logType}/${colors.fg.blue}${section}${consoleCol}]: ${colors.rst}${message}${colors.rst}`);
     }
 }
+
+//#SECTION Deep Diff
 
 /**
  * Checks if two objects are equal (recursively searches through them / deep-diffs them)
