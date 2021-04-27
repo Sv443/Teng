@@ -2,7 +2,7 @@
 /* Teng - This handles Discord integration like Rich Presence */
 /**************************************************************/
 
-import { TengObject } from "../base/TengObject";
+import TengObject from "../base/TengObject";
 import { Client, Presence } from "discord-rpc";
 
 

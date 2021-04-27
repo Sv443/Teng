@@ -5,7 +5,7 @@
 import { Nullable } from "tsdef";
 import { text, loadFont,  Fonts, Options, KerningMethods } from "figlet";
 
-import { TengObject } from "../../base/TengObject";
+import TengObject from "../../base/TengObject";
 import { Size } from "../../base/Base";
 
 

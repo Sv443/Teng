@@ -8,10 +8,10 @@ import { tengSettings } from "../settings";
 
 /**
  * Base class of all instantiatable Teng classes.  
- * All instantiatable classes in Teng should inherit this class.  
+ * All instantiatable classes in Teng should aim to inherit this class, unless it's not feasible.  
  * As this class inherits Node's `EventEmitter` class, every TengObject can emit and hook events.
  */
-export abstract class TengObject extends EventEmitter
+export default abstract class TengObject extends EventEmitter
 {
     /** 1000% unique identification of type `Symbol` that's assigned to each Teng object at instantiation - you literally can't get more unique than this */
     readonly uid: Symbol;
@@ -21,14 +21,22 @@ export abstract class TengObject extends EventEmitter
     readonly objectName: string;
     /** Timestamp at which this object was created (with millisecond accuracy) - assigned at instantiation */
     readonly creationTime: number;
+    /** The descriptor of this TengObject - assigned at instantiation but doesn't have to have a value */
+    readonly descriptor: string;
+
+    /**
+     * Generator function that generates a unique, 0-based, auto-incrementing index number.  
+     * Used to assign a unique index to TengObjects at instantiation.
+     */
+    private uniqueIdxGen = TengObject.uniqueIndexGenerator();
 
 
     /**
      * Creates an instance of the TengObject class.  
-     * All instantiatable classes in Teng should inherit this class.  
+     * All instantiatable classes in Teng should aim to inherit this class, unless it's not feasible.  
      * As this class inherits Node's `EventEmitter` class, every TengObject can emit and hook events.
      * @param objectName The name of the object (usually the class name)
-     * @param descriptor Something to more precisely describe this object. To separate passed properties, you should use a `/` character.
+     * @param descriptor Something to more precisely describe this object. To separate passed properties, you should use a `/` character. Also try to avoid whitespaces.
      */
     constructor(objectName: string, descriptor?: string)
     {
@@ -36,29 +44,13 @@ export abstract class TengObject extends EventEmitter
 
 
         descriptor = (typeof descriptor === "string" ? `/${descriptor}` : "");
+        const uIdx = this.uniqueIdxGen.next().value;
 
-        this.uniqueIdx = uniqueIdxGen.next().value;
+        this.uid = Symbol(`${tengSettings.info.abbreviation}~${uIdx}/${objectName}${descriptor}`);
+        this.uniqueIdx = uIdx;
         this.objectName = objectName;
-        this.uid = Symbol(`${tengSettings.info.abbreviation}~${this.uniqueIdx}/${objectName}${descriptor}`);
         this.creationTime = Date.now();
-    }
-
-    //#MARKER getters
-
-    /**
-     * Returns the timestamp at which this object was created - with millisecond accuracy
-     */
-    getCreationTime(): number
-    {
-        return this.creationTime;
-    }
-
-    /**
-     * Returns the unique index number that is assigned to this object at instantiation
-     */
-    getUniqueIndex(): number
-    {
-        return this.uniqueIdx;
+        this.descriptor = descriptor;
     }
 
     //#MARKER abstract
@@ -102,7 +94,7 @@ export abstract class TengObject extends EventEmitter
         if(typeof value.uid !== "symbol")
             return false;
 
-        if(!(value.creationTime instanceof Date))
+        if(typeof value.creationTime !== "number")
             return false;
 
         return true;
@@ -112,7 +104,7 @@ export abstract class TengObject extends EventEmitter
      * Generator function that returns a number that starts at `0` and incrementing by `1` each time `next()` is called
      * @generator
      */
-    static *uniqueIndexGenerator(): Generator<number>
+    private static *uniqueIndexGenerator(): Generator<number>
     {
         let idx = 0;
 
@@ -120,10 +112,3 @@ export abstract class TengObject extends EventEmitter
             yield idx++;
     }
 }
-
-
-/**
- * Generator function that generates a unique, 0-based, auto-incrementing index number.  
- * Used to assign a unique index to TengObjects at instantiation.
- */
-const uniqueIdxGen = TengObject.uniqueIndexGenerator();

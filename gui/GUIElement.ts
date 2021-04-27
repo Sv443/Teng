@@ -2,7 +2,7 @@
 /* Teng - A single element of a graphical user interface */
 /*********************************************************/
 
-import { TengObject } from "../base/TengObject";
+import TengObject from "../base/TengObject";
 import { Size } from "../base/Base";
 
 
@@ -51,7 +51,8 @@ export default abstract class GUIElement extends TengObject
      */
     constructor(zIndex: number, size: Size, content?: IGUIElementContent, objectName?: string)
     {
-        super(objectName || "UI_Element", `z#${zIndex}/${size.toString()}`);
+        super(objectName || "GUI_Element", `z#${zIndex}/${size.toString()}`);
+
 
         this.zIndex = zIndex;
         this.size = size;

@@ -3,7 +3,7 @@
 /********************************************************************/
 
 import { Index2, Size } from "../base/Base";
-import { TengObject } from "../base/TengObject";
+import TengObject from "../base/TengObject";
 import { NoiseLayer, NoiseMap } from "./NoiseLayer";
 
 

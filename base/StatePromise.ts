@@ -2,7 +2,7 @@
 /* Teng - Wrapper for the Promise class that keeps track of the state of the Promise */
 /*************************************************************************************/
 
-import { TengObject } from "./TengObject";
+import TengObject from "./TengObject";
 
 
 //#MARKER types
