@@ -7,29 +7,33 @@ import { tengSettings } from "../settings";
 
 
 /**
- * Base class of all instantiatable Teng classes
+ * Base class of all instantiatable Teng classes.  
+ * All instantiatable classes in Teng should inherit this class.  
+ * As this class inherits Node's `EventEmitter` class, every TengObject can emit and hook events.
  */
 export abstract class TengObject extends EventEmitter
 {
-    /** Unique identification of type `Symbol` that's assigned to each Teng object at instantiation */
+    /** 1000% unique identification of type `Symbol` that's assigned to each Teng object at instantiation - you literally can't get more unique than this */
     readonly uid: Symbol;
-    /** Unique index number that is assigned to each Teng object at instantiation */
+    /** Unique index number that is assigned to each Teng object at instantiation. Note that as an index, this number increments with each instantiated object */
     readonly uniqueIdx: number;
-    /** The name of this Teng object */
+    /** The name of this TengObject - assigned at instantiation */
     readonly objectName: string;
-    /** Timestamp at which this object was created (with millisecond accuracy) */
+    /** Timestamp at which this object was created (with millisecond accuracy) - assigned at instantiation */
     readonly creationTime: number;
 
 
     /**
-     * Creates an instance of the TengObject class  
-     * All instantiatable classes in Teng should inherit this class and should have a call to `super()`
+     * Creates an instance of the TengObject class.  
+     * All instantiatable classes in Teng should inherit this class.  
+     * As this class inherits Node's `EventEmitter` class, every TengObject can emit and hook events.
      * @param objectName The name of the object (usually the class name)
-     * @param descriptor Something to more precisely describe this object
+     * @param descriptor Something to more precisely describe this object. To separate passed properties, you should use a `/` character.
      */
     constructor(objectName: string, descriptor?: string)
     {
         super();
+
 
         descriptor = (typeof descriptor === "string" ? `/${descriptor}` : "");
 
