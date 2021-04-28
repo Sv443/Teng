@@ -1,6 +1,6 @@
-/***********************************************************/
-/* Teng - The Core module handles Teng's integral features */
-/***********************************************************/
+/****************************************************/
+/* Teng - Handles Teng's startup and initialization */
+/****************************************************/
 
 import { tengSettings } from "../settings";
 
@@ -9,14 +9,18 @@ import { tengSettings } from "../settings";
 
 export interface IInitOptions
 {
+    /** Stream to write the Teng intro to - defaults to `process.stdout` */
     outStream?: NodeJS.WritableStream;
+    /** TODO: Debug mode makes Teng send out a lot of debug messages to the `outStream` */
+    debugMode?: boolean;
 }
 
 const defaultIInitOptions: IInitOptions = {
     outStream: process.stdout,
+    debugMode: false,
 }
 
-const coreProps = {
+const initFlags = {
     introPlayed: false,
     initialized: false,
 };
@@ -24,9 +28,9 @@ const coreProps = {
 //#MARKER class
 
 /**
- * Core module that handles integral engine stuff
+ * Handles Teng's startup and initialization
  */
-export default abstract class Core
+export default abstract class TengInit
 {
     /**
      * Initializes Teng
@@ -38,10 +42,10 @@ export default abstract class Core
         return new Promise(async (res, rej) => {
             try
             {
-                if(!coreProps.introPlayed)
-                    await Core.displayIntro(options.outStream);
+                if(!initFlags.introPlayed)
+                    await TengInit.displayIntro(options.outStream);
 
-                coreProps.initialized = true;
+                initFlags.initialized = true;
 
                 return res();
             }
@@ -65,7 +69,7 @@ export default abstract class Core
                 outStream.write("\n\n\n\n\n\n");
 
                 setTimeout(() => {
-                    coreProps.introPlayed = true;
+                    initFlags.introPlayed = true;
 
                     return res();
                 }, 3000);
