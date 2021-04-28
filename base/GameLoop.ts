@@ -7,7 +7,7 @@ import { DeepPartial } from "tsdef";
 
 import { tengSettings } from "../settings";
 
-import { TengObject } from "./TengObject";
+import TengObject from "./TengObject";
 
 
 //#MARKER types

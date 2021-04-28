@@ -5,7 +5,7 @@
 import { unused } from "svcorelib";
 import { DeepPartial } from "tsdef";
 
-import { TengObject } from "../base/TengObject";
+import TengObject from "../base/TengObject";
 import { Size, Position, Area, dbg, Index2, Newable } from "../base/Base";
 import { Cell, IRelativeCellPosition, IAbsoluteCellPosition } from "./Cell";
 import { InputHandler, IKeypressObject } from "../input/InputHandler";

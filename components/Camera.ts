@@ -4,7 +4,7 @@
 
 import { colors, unused } from "svcorelib";
 
-import { TengObject } from "../base/TengObject";
+import TengObject from "../base/TengObject";
 import { Area, ColorType, Index2, isColor, Position, resolveColor, Size } from "../base/Base";
 import { Cell, ICellColors } from "./Cell";
 import { Grid } from "./Grid";

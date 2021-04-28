@@ -11,7 +11,7 @@ import { unused } from "svcorelib";
 import { tengSettings } from "../settings";
 
 import { Crypto } from "../base/Crypto";
-import { TengObject } from "../base/TengObject";
+import TengObject from "../base/TengObject";
 
 
 export type SaveStateData<T> = object;

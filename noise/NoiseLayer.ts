@@ -8,7 +8,7 @@ import { seededRNG } from "svcorelib";
 import { DeepPartial } from "tsdef";
 
 import { Size } from "../base/Base";
-import { TengObject } from "../base/TengObject";
+import TengObject from "../base/TengObject";
 import { tengSettings } from "../settings";
 
 

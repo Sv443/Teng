@@ -5,7 +5,7 @@
 import keypress from "keypress";
 import { EventEmitter } from "events";
 
-import { TengObject } from "../base/TengObject";
+import TengObject from "../base/TengObject";
 
 
 declare type InputEvent = "key";

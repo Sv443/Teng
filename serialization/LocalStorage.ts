@@ -4,7 +4,7 @@
 
 import { readFile, writeFile } from "fs-extra";
 import { resolve } from "path";
-import { TengObject } from "../base/TengObject";
+import TengObject from "../base/TengObject";
 
 
 /**

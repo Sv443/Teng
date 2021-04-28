@@ -3,7 +3,7 @@
 /*************************************************************/
 
 import { Position, Color, ColorType, Size, Index2 } from "../base/Base";
-import { TengObject } from "../base/TengObject";
+import TengObject from "../base/TengObject";
 
 
 /**
