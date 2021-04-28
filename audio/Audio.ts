@@ -28,12 +28,8 @@ export interface Track
 /**
  * Describes the state of an audio
  */
-export enum AudioState
-{
-    Playing,
-    Paused,
-    Stopped
-}
+export type AudioState = "playing" | "paused" | "stopped";
+
 
 /**
  * Contains an audio file and offers an interface to play it
@@ -45,7 +41,7 @@ export class Audio extends TengObject
     private currentTime = 0.0;
     private volume = 1.0;
 
-    private state = AudioState.Stopped;
+    private state: AudioState = "stopped";
 
     private meta?: IAudioMetadata;
 
@@ -110,9 +106,9 @@ export class Audio extends TengObject
             {
                 const state = this.getState();
 
-                if(state === AudioState.Paused || state === AudioState.Stopped)
+                if(state === "paused" || state === "stopped")
                 {
-                    this.state = AudioState.Playing;
+                    this.state = "playing";
                     await sound.play(this.filePath, this.volume);
 
                     return res();

@@ -8,7 +8,7 @@ import { createCipheriv, createDecipheriv } from "crypto";
 /**
  * Handles crypto stuff ¯\\\_(ツ)\_/¯
  */
-export abstract class Crypto
+export default abstract class Crypto
 {
     /**
      * TODO: Encrypts some data with AES, using a provided encryption key

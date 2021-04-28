@@ -6,6 +6,8 @@ import { Position, Color, ColorType, Size, Index2 } from "../base/Base";
 import TengObject from "../base/TengObject";
 
 
+//#MARKER types
+
 /**
  * Describes a position of a specific cell inside a specific chunk of a grid
  */
@@ -54,11 +56,13 @@ export interface ICellColors
     cursorActive: boolean;
 }
 
+//#MARKER class
+
 /**
  * Describes a single cell.  
  * Cells have to be contained in a Grid or Chunk.
  */
-export abstract class Cell extends TengObject
+export default abstract class Cell extends TengObject
 {
     protected position: Position;
 
@@ -138,11 +142,11 @@ export abstract class Cell extends TengObject
     {
         switch(type)
         {
-            case ColorType.Foreground:
+            case "foreground":
                 this.colors.fg = color;
                 this.colors.fgDim = dim;
             break;
-            case ColorType.Background:
+            case "background":
                 this.colors.bg = color;
                 this.colors.bgDim = dim;
             break;

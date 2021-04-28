@@ -27,7 +27,7 @@ const defaultIGameLoopSettings: IGameLoopSettings = {
 
 //#MARKER class
 
-export interface GameLoop
+export default interface GameLoop
 {
     /** Event gets emitted on each tick of the game */
     on(event: "tick", listener: (tickNum: number, deltaTime: number) => void): this;
@@ -38,7 +38,7 @@ export interface GameLoop
 /**
  * This class handles the game loop, aka the ticks / FPS and maybe other stuff, idk yet
  */
-export class GameLoop extends TengObject
+export default class GameLoop extends TengObject
 {
     private targetTps: number;
     private nanoTimer: NanoTimer;

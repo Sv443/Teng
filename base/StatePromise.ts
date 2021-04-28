@@ -10,12 +10,7 @@ import TengObject from "./TengObject";
 /**
  * Describes the state of a Promise
  */
-export enum PromiseState
-{
-    Pending,
-    Fulfilled,
-    Rejected,
-}
+export type PromiseState = "pending" | "fulfilled" | "rejected";
 
 //#MARKER class
 
@@ -26,7 +21,7 @@ export enum PromiseState
 export default class StatePromise<T> extends TengObject
 {
     private intPromise: Promise<T>;
-    private state = PromiseState.Pending;
+    private state: PromiseState = "pending";
 
 
     /**
@@ -42,7 +37,7 @@ export default class StatePromise<T> extends TengObject
     toString(): string
     {
         const state = this.getState();
-        return `${this.objectName} with state ${PromiseState[state]} (${state})`;
+        return `StatePromise [${state}] - UID: ${this.uid.toString()}`;
     }
 
     /**
@@ -53,10 +48,10 @@ export default class StatePromise<T> extends TengObject
     {
         return new Promise<T>((res, rej) => {
             this.intPromise.then((...args) => {
-                this.state = PromiseState.Fulfilled;
+                this.state = "fulfilled";
                 return res(...args);
             }).catch((...args) => {
-                this.state = PromiseState.Rejected;
+                this.state = "rejected";
                 return rej(...args);
             });
         });

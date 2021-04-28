@@ -3,12 +3,11 @@
 /*********************************/
 
 import keypress from "keypress";
-import { EventEmitter } from "events";
 
 import TengObject from "../base/TengObject";
 
 
-declare type InputEvent = "key";
+//#MARKER types
 
 /**
  * Contains data about a key press
@@ -31,7 +30,9 @@ export interface IKeypressObject
     code?: string;
 }
 
-export interface InputHandler
+//#MARKER class
+
+export default interface InputHandler
 {
     /** Event gets emitted when a key is pressed */
     on(event: "key", listener: (char: string, key: IKeypressObject | undefined) => void): this;
@@ -40,7 +41,7 @@ export interface InputHandler
 /**
  * This class handles keyboard input
  */
-export class InputHandler extends TengObject
+export default class InputHandler extends TengObject
 {
     private inStream: NodeJS.ReadStream;
 

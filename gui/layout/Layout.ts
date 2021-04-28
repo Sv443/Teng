@@ -7,15 +7,7 @@ import GUIElement from "../GUIElement";
 
 
 /**  */
-export enum LayoutType
-{
-    /** Stacks UI elements vertically */
-    Vertical,
-    /** Stacks UI elements horizontally */
-    Horizontal,
-    /** Lays out UI elements in a grid */
-    Grid
-}
+export type LayoutType = "vertical" | "horizontal" | "grid";
 
 /**
  * UI element that aligns its sub-elements in a grid pattern

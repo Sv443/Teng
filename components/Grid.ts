@@ -7,9 +7,9 @@ import { DeepPartial } from "tsdef";
 
 import TengObject from "../base/TengObject";
 import { Size, Position, Area, dbg, Index2, Newable } from "../base/Base";
-import { Cell, IRelativeCellPosition, IAbsoluteCellPosition } from "./Cell";
-import { InputHandler, IKeypressObject } from "../input/InputHandler";
-import { Chunk } from "./Chunk";
+import Cell, { IRelativeCellPosition, IAbsoluteCellPosition } from "./Cell";
+import InputHandler, { IKeypressObject } from "../input/InputHandler";
+import Chunk from "./Chunk";
 
 
 //#MARKER types
@@ -38,7 +38,7 @@ const defaultIGridOptions: DeepPartial<IGridOptions> = {
  * A Grid is the 2D area that contains the game.  
  * It contains all chunks and cells.
  */
-export class Grid extends TengObject
+export default class Grid extends TengObject
 {
     private gridSize: Size;
     private chunkSize: Size;

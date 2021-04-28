@@ -3,12 +3,12 @@
 /*********************************************/
 
 import { colors, unused } from "svcorelib";
+import { Diff, diff } from "deep-diff"; // why this shitty naming :angery:
 
 import TengObject from "../base/TengObject";
-import { Area, ColorType, Index2, isColor, Position, resolveColor, Size } from "../base/Base";
-import { Cell, ICellColors } from "./Cell";
-import { Grid } from "./Grid";
-import { Diff, diff } from "deep-diff";
+import { Area, Index2, isColor, Position, resolveColor, Size } from "../base/Base";
+import Cell, { ICellColors } from "./Cell";
+import Grid from "./Grid";
 
 
 // TODO: make changeable in game settings menu
@@ -141,8 +141,8 @@ export class Camera extends TengObject
                         // first cell doesn't have a comparand so its color should always be printed
                         first = false;
 
-                        drawChars.push(resolveColor(ColorType.Foreground, colors.fg, colors.fgDim));
-                        drawChars.push(resolveColor(ColorType.Background, colors.bg, colors.bgDim));
+                        drawChars.push(resolveColor("foreground", colors.fg, colors.fgDim));
+                        drawChars.push(resolveColor("background", colors.bg, colors.bgDim));
                     }
                     else if(diffRes != undefined)
                     {
@@ -153,14 +153,13 @@ export class Camera extends TengObject
                             // get the actual changed value
                             const changedVal = colors[key];
 
-                            // I'm positive this should work? but I didn't test it at all
                             switch(key)
                             {
                                 case "fg":
-                                    drawChars.push(resolveColor(ColorType.Foreground, isColor(changedVal) ? changedVal : lastColors[key], colors.fgDim));
+                                    drawChars.push(resolveColor("foreground", isColor(changedVal) ? changedVal : lastColors[key], colors.fgDim));
                                 break;
                                 case "bg":
-                                    drawChars.push(resolveColor(ColorType.Background, isColor(changedVal) ? changedVal : lastColors[key], colors.bgDim));
+                                    drawChars.push(resolveColor("background", isColor(changedVal) ? changedVal : lastColors[key], colors.bgDim));
                                 break;
                                 default: break;
                             }

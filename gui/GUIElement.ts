@@ -11,12 +11,7 @@ import { Size } from "../base/Base";
 /**
  * Text alignment ¯\\\_(ツ)\_/¯
  */
-export enum TextAlign
-{
-    Left,
-    Center,
-    Right
-}
+export type TextAlign = "left" | "center" | "right";
 
 /**
  * Describes the content of a GUI element

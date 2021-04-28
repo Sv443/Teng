@@ -10,7 +10,7 @@ import { unused } from "svcorelib";
 
 import { tengSettings } from "../settings";
 
-import { Crypto } from "../base/Crypto";
+import Crypto from "../base/Crypto";
 import TengObject from "../base/TengObject";
 
 
@@ -24,7 +24,7 @@ const encryptionKey = "TODO: figure this out";
 /**
  * Keeps track of a save state and is responsible for saving and loading from save state files
  */
-export class SaveState<T_SaveData> extends TengObject
+export default class SaveState<T_SaveData> extends TengObject
 {
     /** The data that should be saved to disk or that was read from disk */
     private data: {};
