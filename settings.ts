@@ -2,7 +2,7 @@
 /* Teng - Engine Settings */
 /**************************/
 
-import { Color, Size } from "./base/Base";
+import { Color } from "./base/Base";
 import * as packageJson from "./package.json";
 
 
@@ -39,9 +39,6 @@ const tengSettings = Object.freeze({
     game: {
         /** The color of the cursor - has to be a value in the Color enum from `Base.ts` */
         cursorColor: Color.Magenta,
-        chunks: {
-
-        },
         noise: {
             /** Default resolution value for layered noise generation */
             defaultResolution: 30,

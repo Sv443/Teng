@@ -33,7 +33,9 @@ const initFlags = {
 export default abstract class TengInit
 {
     /**
-     * Initializes Teng
+     * Initializes Teng by doing the following:
+     * 1. Show Teng intro sequence
+     * 2. Initialize some of Teng's modules
      */
     public static init(initOptions: IInitOptions): Promise<void>
     {
@@ -42,10 +44,16 @@ export default abstract class TengInit
         return new Promise(async (res, rej) => {
             try
             {
-                if(!initFlags.introPlayed)
-                    await TengInit.displayIntro(options.outStream);
+                if(!initFlags.introPlayed && !initFlags.initialized)
+                    await Promise.all([TengInit.playIntro(options.outStream), TengInit.initModules()]);
+                else
+                {
+                    if(!initFlags.introPlayed)
+                        await TengInit.playIntro(options.outStream);
 
-                initFlags.initialized = true;
+                    if(!initFlags.initialized)
+                        await TengInit.initModules();
+                }
 
                 return res();
             }
@@ -57,9 +65,27 @@ export default abstract class TengInit
     }
 
     /**
-     * Displays the Teng intro, then resolves the returned Promise
+     * Returns the state of Teng's initialization
      */
-    protected static displayIntro(outStream: NodeJS.WritableStream = process.stdout): Promise<void>
+    public static isInitialized(): boolean
+    {
+        return initFlags.initialized;
+    }
+
+    /**
+     * Tells you if Teng's intro sequence was already played or not
+     */
+    public static introPlayed(): boolean
+    {
+        return initFlags.introPlayed;
+    }
+
+    //#MARKER protected
+
+    /**
+     * Plays the Teng intro
+     */
+    protected static playIntro(outStream: NodeJS.WritableStream = process.stdout): Promise<void>
     {
         return new Promise(async (res, rej) => {
             try
@@ -78,6 +104,19 @@ export default abstract class TengInit
             {
                 return rej(err);
             }
+        });
+    }
+
+    /**
+     * Initializes some of Teng's modules that need one-time initialization
+     */
+    protected static initModules(): Promise<void>
+    {
+        return new Promise(async (res) => {
+            // (todo)
+
+            initFlags.initialized = true;
+            return res();
         });
     }
 }
