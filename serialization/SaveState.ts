@@ -10,7 +10,7 @@ import { unused } from "svcorelib";
 
 import { tengSettings } from "../settings";
 
-import Crypto from "../base/Crypto";
+import Encryption from "../crypto/Encryption";
 import TengObject from "../base/TengObject";
 
 
@@ -130,7 +130,7 @@ export default class SaveState<T_SaveData> extends TengObject
                         stateName: this.stateName,
                         encrypted: this.saveEncrypted
                     },
-                    data: (this.saveEncrypted ? Crypto.encrypt(strData, encryptionKey) : strData)
+                    data: (this.saveEncrypted ? Encryption.encrypt(strData, encryptionKey) : strData)
                 };
 
                 this.data = sData;

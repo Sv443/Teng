@@ -51,6 +51,10 @@ const tengSettings = Object.freeze({
             /** File extension to save save states as (don't prefix this with a dot) */
             defaultFileExtension: "tes",
         }
+    },
+    crypto: {
+        /** Length of the [initialization vector](https://en.wikipedia.org/wiki/Initialization_vector) in bytes */
+        initVectorLength: 16,
     }
 });
 
