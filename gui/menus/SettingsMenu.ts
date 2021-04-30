@@ -6,7 +6,7 @@ import { Fonts } from "figlet";
 import { Size } from "../../base/Base";
 
 import { MenuOptionOrSpacer } from "./Menu";
-import { ISelectionMenuResult, SelectionMenu } from "./SelectionMenu";
+import SelectionMenu, { ISelectionMenuResult } from "./SelectionMenu";
 
 
 //#MARKER types

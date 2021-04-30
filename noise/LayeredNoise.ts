@@ -4,7 +4,7 @@
 
 import { Index2, Size } from "../base/Base";
 import TengObject from "../base/TengObject";
-import { NoiseLayer, NoiseMap } from "./NoiseLayer";
+import NoiseLayer, { NoiseMap } from "./NoiseLayer";
 
 
 //#MARKER types
@@ -20,21 +20,16 @@ export type LayerImportanceFormula = (currentIdx: number, lastVal: number, layer
 /**
  * The algorithm to use when smoothing a noise map.  
  *   
- * Algorithm Types:  
+ * Algorithms:  
  * 
- * | Prefix | Type |
- * | :-- | :-- |
- * | `CA_` | Cellular Automata |
+ * | Name | Type | Description |
+ * | :-- | :-- | :-- |
+ * | `CA_Coarse` | Cellular Automata | Algorithm only looks at the 4 adjacent cells |
+ * | `CA_Smooth` | Cellular Automata | Algorithm looks at the 8 adjacent cells |
+ * | `CA_ExtraSmooth` | Cellular Automata | Algorithm looks at 20 adjacent cells |
  */
-export enum SmoothingAlgorithm
-{
-    /** Very coarse filter - only looks at the 4 adjacent cells */
-    CA_Coarse,
-    /** Pretty smooth filter - looks at the 8 adjacent cells */
-    CA_Smooth,
-    /** Very smooth filter - looks at 20 adjacent cells */
-    CA_ExtraSmooth
-}
+export type SmoothingAlgorithm = "CA_Coarse" | "CA_Smooth" | "CA_ExtraSmooth";
+
 
 const defaultLayerImportanceFormula: LayerImportanceFormula = (currentIdx, lastVal, layerAmount) => {
     if(isNaN(lastVal))
@@ -47,7 +42,7 @@ const defaultLayerImportanceFormula: LayerImportanceFormula = (currentIdx, lastV
 /**
  * This class layers multiple instances of the NoiseLayer class on top of each other, producing a coherent noise map
  */
-export class LayeredNoise extends TengObject
+export default class LayeredNoise extends TengObject
 {
     private importanceFormula: LayerImportanceFormula = defaultLayerImportanceFormula;
 
@@ -244,9 +239,9 @@ export class LayeredNoise extends TengObject
                 switch(algorithm)
                 {
                     //#SECTION Cellular Automata
-                    case SmoothingAlgorithm.CA_Coarse:
-                    case SmoothingAlgorithm.CA_Smooth:
-                    case SmoothingAlgorithm.CA_ExtraSmooth:
+                    case "CA_Coarse":
+                    case "CA_Smooth":
+                    case "CA_ExtraSmooth":
                         noiseMap.forEach((row, y) => {
                             row.forEach((noiseVal, x) => {
                                 const adjacentCellIndexes: Index2[] = [];
@@ -263,7 +258,7 @@ export class LayeredNoise extends TengObject
 
                                 switch(algorithm)
                                 {
-                                    case SmoothingAlgorithm.CA_ExtraSmooth:
+                                    case "CA_ExtraSmooth":
                                         //  ▒ ■ ■ ■ ▒
                                         //  ■ ▒ ▒ ▒ ■
                                         //  ■ ▒ ▒ ▒ ■
@@ -288,7 +283,7 @@ export class LayeredNoise extends TengObject
 
                                         // falls through
 
-                                    case SmoothingAlgorithm.CA_Smooth:
+                                    case "CA_Smooth":
                                         //  ▒ ▒ ▒ ▒ ▒
                                         //  ▒ ■ ▒ ■ ▒
                                         //  ▒ ▒ ▒ ▒ ▒
@@ -302,7 +297,7 @@ export class LayeredNoise extends TengObject
 
                                         // falls through
 
-                                    case SmoothingAlgorithm.CA_Coarse:
+                                    case "CA_Coarse":
                                         //  ▒ ▒ ▒ ▒ ▒
                                         //  ▒ ▒ ■ ▒ ▒
                                         //  ▒ ■ ▒ ■ ▒

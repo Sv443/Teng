@@ -8,7 +8,7 @@ import { DeepPartial } from "tsdef";
 
 import TengObject from "../../base/TengObject";
 import Menu, { MenuOptionOrSpacer } from "./Menu";
-import { InputHandler, IKeypressObject } from "../../input/InputHandler";
+import InputHandler, { IKeypressObject } from "../../input/InputHandler";
 import { Size } from "../../base/Base";
 
 const col = colors.fg;
@@ -73,7 +73,7 @@ export interface ISelectionMenuLocale
 
 //#MARKER class
 
-export interface SelectionMenu extends Menu
+export default interface SelectionMenu extends Menu
 {
     /** Called whenever the outStream is resized */
     on(event: "resize", listener: (oldSize: Size, newSize: Size) => void): this;
@@ -87,7 +87,7 @@ export interface SelectionMenu extends Menu
 /**
  * A scrollable menu from which the user can select a single option.
  */
-export class SelectionMenu extends Menu
+export default class SelectionMenu extends Menu
 {
     protected settings: DeepPartial<ISelectionMenuSettings> = {};
     protected cursorPos: number = 0;

@@ -7,20 +7,18 @@ import Simplex from "simplex-noise";
 import { seededRNG } from "svcorelib";
 import { DeepPartial } from "tsdef";
 
-import { Size } from "../base/Base";
 import TengObject from "../base/TengObject";
+import { Size } from "../base/Base";
+
 import { tengSettings } from "../settings";
 
 
 //#MARKER types
+
 /**
  * Describes the coherent noise algorithm to use
  */
-export enum Algorithm
-{
-    Perlin,
-    Simplex
-}
+export type NoiseAlgorithm = "Perlin" | "Simplex";
 
 /**
  * Settings for the coherent noise generation
@@ -51,10 +49,10 @@ export type NoiseMap = number[][];
 /**
  * A two-dimensional layer of noise to be used in coherent noise layering
  */
-export class NoiseLayer extends TengObject
+export default class NoiseLayer extends TengObject
 {
     readonly size: Size;
-    readonly algorithm: Algorithm;
+    readonly algorithm: NoiseAlgorithm;
     readonly settings: INoiseAlgorithmSettings;
 
     /** The noise map data. Created by calling the `generate()` method */
@@ -69,7 +67,7 @@ export class NoiseLayer extends TengObject
      * Creates an instance of the NoiseLayer class
      * @param size The size of this layer
      */
-    constructor(size: Size, algorithm: Algorithm, algorithmSettings?: DeepPartial<INoiseAlgorithmSettings>)
+    constructor(size: Size, algorithm: NoiseAlgorithm, algorithmSettings?: DeepPartial<INoiseAlgorithmSettings>)
     {
         super("NoiseLayer", `${size.toString()}`);
 
@@ -84,13 +82,13 @@ export class NoiseLayer extends TengObject
         // set up noise generator based on algorithm:
         switch(algorithm)
         {
-            case Algorithm.Perlin:
+            case "Perlin":
                 this.generator = new Perlin({
                     dimensions: 2,
                     seed: this.settings.seed.toString()
                 });
             break;
-            case Algorithm.Simplex:
+            case "Simplex":
                 this.generator = new Simplex(this.settings.seed.toString());
             break;
         }
@@ -101,7 +99,7 @@ export class NoiseLayer extends TengObject
      */
     toString(): string
     {
-        return `${this.objectName} <${Algorithm[this.algorithm]}> [${this.size.toString()}] - UID: ${this.uid.toString()}`;
+        return `${this.objectName} <${this.algorithm}> [${this.size.toString()}] - UID: ${this.uid.toString()}`;
     }
 
     //#MARKER other
@@ -127,10 +125,10 @@ export class NoiseLayer extends TengObject
 
                         switch(this.algorithm)
                         {
-                            case Algorithm.Perlin:
+                            case "Perlin":
                                 value = (this.generator as Perlin).get([ x / resolution, y / resolution ]);
                             break;
-                            case Algorithm.Simplex:
+                            case "Simplex":
                                 value = (this.generator as Simplex).noise2D(x / resolution, y / resolution);
                             break;
                         }

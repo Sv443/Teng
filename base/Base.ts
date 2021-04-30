@@ -18,7 +18,7 @@ export type Newable<T> = { new (...args: any[]): T; };
 
 //#SECTION Base Class
 /**
- * Extended (derived) classes need to have certain methods to convert the data.  
+ * Extended (derived) classes need to have certain methods to convert their data.  
  *   
  * ![Convertible](https://cdn.sv443.net/teng/dababy.png)
  */
@@ -537,15 +537,12 @@ export enum Color
 }
 
 /**
- * Describes the type of color
+ * Describes the type of color.  
+ *   
+ * Foreground = text color  
+ * Background = background color
  */
-export enum ColorType
-{
-    /** Text / foreground color */
-    Foreground,
-    /** Background color */
-    Background
-}
+export type ColorType = "foreground" | "background";
 
 /**
  * Resolves a color type and name to a string representation that can be used to color the terminal / command line
@@ -561,7 +558,7 @@ export function resolveColor(type: ColorType, col: Color, dim: boolean = false):
 
     switch(type)
     {
-        case ColorType.Foreground:
+        case "foreground":
             colorMapping = {
                 Reset:   "\x1b[0m",
                 Black:   "\x1b[30m",
@@ -574,7 +571,7 @@ export function resolveColor(type: ColorType, col: Color, dim: boolean = false):
                 White:   "\x1b[37m",
             };
         break;
-        case ColorType.Background:
+        case "background":
             colorMapping = {
                 Reset:   "\x1b[0m",
                 Black:   "\x1b[40m",
@@ -617,19 +614,8 @@ export function isColor(val: any): val is Color
 /**
  * Describes the log level
  */
-export enum LogLevel
-{
-    /** Success */
-    Success,
-    /** Information */
-    Info,
-    /** Warning */
-    Warning,
-    /** Something errored, but the process can keep running */
-    Error,
-    /** Something vital errored, so the process has to exit */
-    Fatal
-}
+export type LogLevel = "success" | "info" | "warning" | "error" | "fatal";
+
 
 /**
  * Logs a debug message to the console
@@ -637,7 +623,7 @@ export enum LogLevel
  * @param message
  * @param color
  */
-export function dbg(section: string, message: string, level: LogLevel = LogLevel.Info)
+export function dbg(section: string, message: string, level: LogLevel = "info")
 {
     if(generalSettings.debug.verboseLogging)
     {
@@ -646,23 +632,23 @@ export function dbg(section: string, message: string, level: LogLevel = LogLevel
 
         switch(level)
         {
-            case LogLevel.Success:
+            case "success":
                 consoleCol = colors.fg.green;
                 logType = "Info";
             break;
-            case LogLevel.Info:
+            case "info":
                 consoleCol = colors.fg.cyan;
                 logType = "Info";
             break;
-            case LogLevel.Warning:
+            case "warning":
                 consoleCol = colors.fg.yellow;
                 logType = "Warning";
             break;
-            case LogLevel.Error:
+            case "error":
                 consoleCol = colors.fg.red;
                 logType = "Error";
             break;
-            case LogLevel.Fatal:
+            case "fatal":
                 consoleCol = colors.fg.magenta;
                 logType = "FATAL";
             break;

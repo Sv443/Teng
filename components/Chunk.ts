@@ -4,7 +4,7 @@
 
 import TengObject from "../base/TengObject";
 import { Area, Index2, Position, Size } from "../base/Base";
-import { Cell } from "./Cell";
+import Cell from "./Cell";
 
 
 /**
@@ -12,7 +12,7 @@ import { Cell } from "./Cell";
  * They are used to improve the performance.  
  * More info [here.](https://sites.google.com/site/letsmakeavoxelengine/home/chunks)
  */
-export class Chunk extends TengObject
+export default class Chunk extends TengObject
 {
     /** The index of this chunk inside a parent grid */
     readonly chunkIndex: Index2;

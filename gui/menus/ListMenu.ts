@@ -4,9 +4,9 @@
 
 import { DeepPartial } from "tsdef";
 import { Size } from "../../base/Base";
-import { IKeypressObject, InputHandler } from "../../input/InputHandler";
+import InputHandler, { IKeypressObject } from "../../input/InputHandler";
 import Menu, { MenuOption } from "./Menu";
-import { SelectionMenu, ISelectionMenuResult } from "./SelectionMenu";
+import SelectionMenu, { ISelectionMenuResult } from "./SelectionMenu";
 
 
 //#MARKER types
