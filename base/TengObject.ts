@@ -56,9 +56,7 @@ export default abstract class TengObject extends EventEmitter
     //#MARKER abstract
 
     /**
-     * Returns a string representation of this TengObject.  
-     *   
-     * @abstract This is an abstract method that needs to be implemented in every extended class or in some common ancestor of an "inheritance chain"
+     * Returns a string representation of this TengObject
      */
     abstract toString(): string;
 
