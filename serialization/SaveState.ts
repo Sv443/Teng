@@ -2,7 +2,7 @@
 /* Teng - Keeps track of a save state and is responsible for saving and loading from save state files */
 /******************************************************************************************************/
 
-import { access, readFile, writeFile } from "fs-extra";
+import { readFile, writeFile } from "fs-extra";
 import { statSync, accessSync } from "fs-extra";
 import { join, resolve } from "path";
 import sanitize from "sanitize-filename";
@@ -10,14 +10,13 @@ import { unused, filesystem } from "svcorelib";
 
 import { tengSettings } from "../settings";
 
+import { JSONCompatible } from "../base/Base";
 import Encryption from "../crypto/Encryption";
 import TengObject from "../base/TengObject";
 
 
 //#MARKER other
 
-// TODO:
-export type SaveStateData<T_SaveData> = object;
 
 const encryptionKey = "TODO: figure this out";
 
@@ -29,10 +28,10 @@ const encryptionKey = "TODO: figure this out";
 /**
  * Keeps track of a save state and is responsible for saving and loading from save state files
  */
-export default class SaveState<T_SaveData> extends TengObject
+export default class SaveState<T extends JSONCompatible> extends TengObject
 {
     /** The data that should be saved to disk or that was read from disk */
-    private data: {};
+    private data: JSONCompatible;
     /** String representation of the data to be saved */
     private stringData: string;
 
@@ -52,7 +51,7 @@ export default class SaveState<T_SaveData> extends TengObject
      * @param fileExtension The file extension to save the file as (don't prefix this with a dot). Defaults to `tes`
      * @param initialData An optional initial value of the data
      */
-    constructor(saveDirectory: string, stateName: string, saveEncrypted: boolean = false, fileExtension: string = tengSettings.game.saveStates.defaultFileExtension, initialData?: T_SaveData)
+    constructor(saveDirectory: string, stateName: string, saveEncrypted: boolean = false, fileExtension: string = tengSettings.game.saveStates.defaultFileExtension, initialData?: T)
     {
         const sanitizedStateName = SaveState.sanitizeFileName(stateName);
 
@@ -103,7 +102,7 @@ export default class SaveState<T_SaveData> extends TengObject
     /**
      * Returns the data that has been set on this state as an object
      */
-    public getData(): object
+    public getData(): JSONCompatible
     {
         return this.data;
     }
@@ -140,7 +139,7 @@ export default class SaveState<T_SaveData> extends TengObject
      * **WARNING:** Only use JSON-compatible objects! Self-referencing (circular) objects and objects containing non-primitive types will cause unexpected behavior.
      * @param data JSON-compatible object to save to the save state file
      */
-    public setData(data: T_SaveData): Promise<void>
+    public setData(data: T): Promise<void>
     {
         return new Promise<void>((res, rej) => {
             try
@@ -156,7 +155,7 @@ export default class SaveState<T_SaveData> extends TengObject
                         stateName: this.stateName,
                         encrypted: this.saveEncrypted
                     },
-                    data: (this.saveEncrypted ? Encryption.encrypt(strData, this.getEncryptionKey()) : data)
+                    data: (this.saveEncrypted ? Encryption.encrypt(strData, this.getEncryptionKey()).toString() : data)
                 };
 
                 this.data = sData;

@@ -13,7 +13,24 @@ import { generalSettings } from "../../settings";
 
 //#SECTION Custom Types
 
+/**
+ * Makes sure the type `T` is a class that can be instantiated (is not abstract)
+ */
 export type Newable<T> = { new (...args: any[]): T; };
+
+/**
+ * Makes sure the type `T` is a class that can be instantiated (is not abstract)  
+ * (This is just an alias for `Newable<T>`)
+ */
+export type NonAbstract<T> = Newable<T>;
+
+/**
+ * Describes an object that is JSON-compatible, aka doesn't contain self- / circular references or non-primitive JS properties  
+ * [Source](https://github.com/microsoft/TypeScript/issues/1897#issuecomment-338650717)
+ */
+export type JSONCompatible =  boolean | number | string | null | JSONArray | JSONMap;
+interface JSONMap {  [key: string]: JSONCompatible; }
+interface JSONArray extends Array<JSONCompatible> {}
 
 
 //#SECTION Base Class
