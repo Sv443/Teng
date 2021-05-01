@@ -6,7 +6,7 @@ import { access, readFile, writeFile } from "fs-extra";
 import { statSync, accessSync } from "fs-extra";
 import { join, resolve } from "path";
 import sanitize from "sanitize-filename";
-import { unused } from "svcorelib";
+import { unused, filesystem } from "svcorelib";
 
 import { tengSettings } from "../settings";
 
@@ -14,10 +14,15 @@ import Encryption from "../crypto/Encryption";
 import TengObject from "../base/TengObject";
 
 
-export type SaveStateData<T> = object;
+//#MARKER other
+
+// TODO:
+export type SaveStateData<T_SaveData> = object;
 
 const encryptionKey = "TODO: figure this out";
 
+
+//#MARKER class
 
 // TODO: add compression
 
@@ -44,7 +49,7 @@ export default class SaveState<T_SaveData> extends TengObject
      * @param saveDirectory The directory to save the save state file to
      * @param stateName The name of the save state
      * @param saveEncrypted Whether to save the data encrypted or not
-     * @param fileExtension The file extension to save the file as (don't prefix this with a dot)
+     * @param fileExtension The file extension to save the file as (don't prefix this with a dot). Defaults to `tes`
      * @param initialData An optional initial value of the data
      */
     constructor(saveDirectory: string, stateName: string, saveEncrypted: boolean = false, fileExtension: string = tengSettings.game.saveStates.defaultFileExtension, initialData?: T_SaveData)
@@ -77,6 +82,9 @@ export default class SaveState<T_SaveData> extends TengObject
         this.saveEncrypted = saveEncrypted;
     }
 
+    /**
+     * Returns a string representation of this save state
+     */
     toString(): string
     {
         return `${this.objectName} '${this.stateName}' @ '${this.saveDirectory}'`;
@@ -87,7 +95,7 @@ export default class SaveState<T_SaveData> extends TengObject
     /**
      * Returns the absolute file path of this save state
      */
-    getAbsFilePath(): string
+    public getAbsFilePath(): string
     {
         return join(this.saveDirectory, `${this.stateName}.${this.fileExtension}`);
     }
@@ -95,26 +103,44 @@ export default class SaveState<T_SaveData> extends TengObject
     /**
      * Returns the data that has been set on this state as an object
      */
-    getData(): object
+    public getData(): object
     {
         return this.data;
     }
 
     /**
      * Returns the data that has been set on this state as a JSON-compatible string representation
+     * @param encrypted Set to `true` to encrypt the data prior to returning it. Defaults to `false`
      */
-    getStringData(): string
+    public getDataString(encrypted = false): string
     {
+        if(encrypted)
+            return Encryption.encrypt(this.stringData, this.getEncryptionKey()).toString();
+
         return this.stringData;
+    }
+
+    /**
+     * Returns the data that has been set on this state as a Buffer instance
+     * @param encrypted Set to `true` to encrypt the data prior to returning it. Defaults to `false`
+     */
+    public getDataBuffer(encrypted = false): Buffer
+    {
+        if(encrypted)
+            return Encryption.encrypt(this.getDataString(false), this.getEncryptionKey());
+
+        return Buffer.from(JSON.stringify(this.getDataString()));
     }
 
     //#MARKER other
 
     /**
-     * Sets the data for this save state
+     * Sets the data for this save state.  
+     *   
+     * **WARNING:** Only use JSON-compatible objects! Self-referencing (circular) objects and objects containing non-primitive types will cause unexpected behavior.
      * @param data JSON-compatible object to save to the save state file
      */
-    setData(data: T_SaveData): Promise<void>
+    public setData(data: T_SaveData): Promise<void>
     {
         return new Promise<void>((res, rej) => {
             try
@@ -130,7 +156,7 @@ export default class SaveState<T_SaveData> extends TengObject
                         stateName: this.stateName,
                         encrypted: this.saveEncrypted
                     },
-                    data: (this.saveEncrypted ? Encryption.encrypt(strData, encryptionKey) : strData)
+                    data: (this.saveEncrypted ? Encryption.encrypt(strData, this.getEncryptionKey()) : data)
                 };
 
                 this.data = sData;
@@ -148,7 +174,7 @@ export default class SaveState<T_SaveData> extends TengObject
     /**
      * Tries to save the previously set data to disk
      */
-    save(): Promise<void>
+    public save(): Promise<void>
     {
         return new Promise<void>(async (res, rej) => {
             //
@@ -167,7 +193,7 @@ export default class SaveState<T_SaveData> extends TengObject
      * Use `getData()` or `getStringData()` to read this data.  
      * **WARNING:** overrides previously set data so use carefully!
      */
-    load(): Promise<void>
+    public load(): Promise<void>
     {
         return new Promise<void>(async (res, rej) => {
             readFile(this.getAbsFilePath(), (err, buf) => {
@@ -192,6 +218,16 @@ export default class SaveState<T_SaveData> extends TengObject
         });
     }
 
+    //#MARKER private
+
+    /**
+     * Returns the encryption key
+     */
+    protected getEncryptionKey(): string
+    {
+        return encryptionKey;
+    }
+
     //#MARKER static
     /**
      * Sanitizes a file name so it can be used in file paths and names
@@ -206,19 +242,12 @@ export default class SaveState<T_SaveData> extends TengObject
      */
     static exists(path: string): Promise<boolean>
     {
-        path = resolve(path);
-
-        return new Promise<boolean>((pRes) => {
-            access(path).then(() => {
-                return pRes(true);
-            }).catch(() => {
-                return pRes(false);
-            });
-        });
+        return filesystem.exists(path);
     }
 
     /**
-     * Same as `exists()` but synchronous
+     * Same as `SaveState.exists()` but synchronous.  
+     * You should only use this method if you *really* can't use `exists()`
      */
     static existsSync(path: string): boolean
     {

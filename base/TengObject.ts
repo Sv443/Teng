@@ -56,19 +56,22 @@ export default abstract class TengObject extends EventEmitter
     //#MARKER abstract
 
     /**
-     * Returns a string representation of this TengObject.  
-     *   
-     * @abstract This is an abstract method that needs to be implemented in every extended class or in some common ancestor of an "inheritance chain"
+     * Returns a string representation of this TengObject
      */
     abstract toString(): string;
 
     //#MARKER static
 
     /**
-     * Limits the length of a passed teng object descriptor (or just a regular string)
+     * Limits the length of a passed teng object descriptor (or just a regular string)  
+     *   
+     * #### Example:
+     * maxLength = 4, suffix = default, descriptor = "Hello, World!"  
+     * Result: "Hel…"  
+     *   
      * @param descriptor A descriptor (string) to limit / truncate
      * @param maxLength The max length the `descriptor` should be
-     * @param suffix Suffix to add after the descriptor, if it was truncated - defaults to `…`
+     * @param suffix Suffix to add after the truncated descriptor. Defaults to `…`
      */
     static truncateDescriptor(descriptor: string, maxLength: number = tengSettings.objects.descriptorDefaultMaxLength, suffix: string = "…"): string
     {
