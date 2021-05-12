@@ -6,10 +6,18 @@ import { createCipheriv, createDecipheriv, createHash, randomBytes, CipherCCMTyp
 import { tengSettings } from "../settings";
 
 
+//#MARKER types & misc
+
+
 const algorithm: CipherCCMTypes | CipherGCMTypes = "aes-256-gcm";
 
+export type EncryptedData = Buffer | string;
+
+
+//#MARKER class
+
 /**
- * Handles the encrypting of stuff ¯\\\_(ツ)\_/¯
+ * Class that allows you to encrypt and decrypt data using AES
  */
 export default abstract class Encryption
 {
@@ -24,7 +32,7 @@ export default abstract class Encryption
     }
 
     /**
-     * Encrypts a raw data (a Buffer instance) with AES, using a provided encryption key.  
+     * Encrypts raw data (a Buffer instance) with AES, using a provided encryption key.  
      * To convert the returned Buffer to a string or JSON object, use `.toString()` or `.toJSON()`
      * @returns Returns a buffer containing the encrypted data
      */
@@ -44,7 +52,7 @@ export default abstract class Encryption
      * Supports raw data (as a Buffer instance) and string data.
      * @returns Returns the decrypted data as a string
      */
-    static decrypt(encryptedData: Buffer | string, key: string): string
+    static decrypt(encryptedData: EncryptedData, key: string): string
     {
         return Encryption.decryptRaw(encryptedData, key).toString();
     }
@@ -54,7 +62,7 @@ export default abstract class Encryption
      * Supports raw data (as a Buffer instance) and string data.
      * @returns Returns the raw decrypted data (as a Buffer instance)
      */
-    static decryptRaw(encryptedData: Buffer | string, key: string): Buffer
+    static decryptRaw(encryptedData: EncryptedData, key: string): Buffer
     {
         const keyHash = createHash("md5").update(key).digest("hex");
 
