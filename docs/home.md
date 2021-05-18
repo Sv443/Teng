@@ -4,11 +4,30 @@
 <br><br>
 
 ## Contents:
+- [Introduction](#introduction)
 - [General Information](#general-information)
     - [Knowledge Requirements](#knowledge-requirements)
     - [Recommendations](#recommendations)
     - [Versioning](#versioning)
 - [Code Overview [WIP]](./code-overview.md#readme)
+
+<br><br>
+
+## Introduction:
+[WIP]  
+  
+Still not impressed?  
+This list of pros and cons probably isn't gonna help that, but here it is anyway:  
+
+#### Pros:
+- No need to learn graphic design, 3D modeling or some other complicated bullshit, the only thing you need is a vivid imagination!
+- No complicated C++ pointer fuckery. Teng is written in TypeScript (and is JavaScript compatible), making it comparatively easy and quick to make your own games.
+- It's open source! Don't like something or want a new feature? Just open an issue or submit a pull request.
+
+#### Cons:
+- There's like no fucking graphics, like... what? Text based games? What is this, the 80s?
+- Performance isn't the best, I mean it's an interpreted language, what did you expect?
+- Compiled executable size also isn't great, starting at like 100MB for an empty app. But hey, at least it scales somewhat linearly.
 
 <br><br>
 
