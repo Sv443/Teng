@@ -7,7 +7,7 @@ import { Client, Presence } from "discord-rpc";
 
 
 
-//#MARKER class
+//#MARKER RPC
 
 export interface DiscordRPC
 {
@@ -53,7 +53,7 @@ export class DiscordRPC extends TengObject
         return `Discord RPC Integration with client ID "${this.clientID}"`;
     }
 
-    //#MARKER other
+    //#SECTION other
 
     /**
      * Log the client in to the Discord API

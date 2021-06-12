@@ -41,6 +41,8 @@ export type JustifyHorizontal = HorizontalAlign | PaddedJustifyTypes;
  */
 export type JustifyVertical = VerticalAlign | PaddedJustifyTypes;
 
+export type JustifyDirection = "horizontal" | "vertical";
+
 //#MARKER class
 
 /**
@@ -50,6 +52,8 @@ export default class Container extends GUIWidget
 {
     private justifyHor: JustifyHorizontal = "left";
     private justifyVer: JustifyVertical = "up";
+
+    private justifyDir: JustifyDirection = "horizontal";
 
 
     //#SECTION constructor
@@ -65,34 +69,56 @@ export default class Container extends GUIWidget
     //#SECTION justify
 
     /**
-     * Sets the vertical justify of this container
-     */
-    setJustifyVer(justify: JustifyVertical): void
-    {
-        this.justifyVer = justify;
-    }
-
-    /**
      * Sets the horizontal justify of this container
      */
-    setJustifyHor(justify: JustifyHorizontal): void
+    setJustify(direction: "horizontal", justify: JustifyHorizontal): void;
+
+    /**
+     * Sets the vertical justify of this container
+     */
+    setJustify(direction: "vertical", justify: JustifyVertical): void;
+
+    /**
+     * Sets the justify of this container
+     * @param direction
+     * @param justify
+     */
+    setJustify(direction: JustifyDirection, justify: (JustifyHorizontal | JustifyVertical)): void
     {
-        this.justifyHor = justify;
+        this.justifyDir = direction;
+
+        switch(direction)
+        {
+            case "vertical":
+                this.justifyVer = (justify as JustifyVertical);
+            break;
+            case "horizontal":
+                this.justifyHor = (justify as JustifyHorizontal);
+            break;
+        }
     }
 
     /**
-     * Returns the vertical justify of this container
+     * Returns the justify of this container
      */
-    getJustifyVer(): JustifyVertical
+    getJustify(): (JustifyHorizontal | JustifyVertical)
     {
-        return this.justifyVer;
+        switch(this.justifyDir)
+        {
+            case "vertical":
+                return this.justifyVer;
+            case "horizontal":
+                return this.justifyHor;
+        }
     }
 
     /**
-     * Returns the horizontal justify of this container
+     * Returns the direction of this container's justify
      */
-    getJustifyHor(): JustifyHorizontal
+    getJustifyDirection(): JustifyDirection
     {
-        return this.justifyHor;
+        return this.justifyDir;
     }
+
+    //#SECTION other
 }
