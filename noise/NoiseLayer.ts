@@ -7,8 +7,8 @@ import Simplex from "simplex-noise";
 import { seededRNG } from "svcorelib";
 import { DeepPartial } from "tsdef";
 
-import TengObject from "../base/TengObject";
-import { Size } from "../base/Base";
+import TengObject from "../core/TengObject";
+import { Size } from "../core/Base";
 
 import { tengSettings } from "../settings";
 

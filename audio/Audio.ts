@@ -6,7 +6,7 @@ import { resolve } from "path";
 import { statSync } from "fs-extra";
 import * as sound from "sound-play";
 
-import TengObject from "../base/TengObject";
+import TengObject from "../core/TengObject";
 import { IAudioMetadata, parseFile } from "music-metadata";
 import StatePromise from "../base/StatePromise";
 

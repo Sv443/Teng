@@ -2,8 +2,8 @@
 /* Teng - A single element of a graphical user interface */
 /*********************************************************/
 
-import TengObject from "../base/TengObject";
-import { Size } from "../base/Base";
+import TengObject from "../core/TengObject";
+import { Size } from "../core/Base";
 
 
 //#MARKER types

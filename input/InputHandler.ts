@@ -4,7 +4,7 @@
 
 import keypress from "keypress";
 
-import TengObject from "../base/TengObject";
+import TengObject from "../core/TengObject";
 
 
 //#MARKER types

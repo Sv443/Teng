@@ -10,7 +10,7 @@
 
 import { DeepPartial } from "tsdef";
 
-import TengObject from "../base/TengObject";
+import TengObject from "../core/TengObject";
 import { abbreviateNumber } from "../math/Numbers";
 
 

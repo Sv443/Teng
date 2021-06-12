@@ -2,8 +2,8 @@
 /* Teng - Handles rendering of GUI elements */
 /********************************************/
 
-import { Size } from "../base/Base";
-import TengObject from "../base/TengObject";
+import { Size } from "../core/Base";
+import TengObject from "../core/TengObject";
 import GUIWidget from "./GUIWidget";
 
 

@@ -2,7 +2,7 @@
 /* Teng - Engine Settings */
 /**************************/
 
-import { Color } from "./base/Base";
+import { Color } from "./core/Base";
 import * as packageJson from "./package.json";
 
 

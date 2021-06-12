@@ -5,8 +5,8 @@
 import { colors, unused } from "svcorelib";
 import { Diff, diff } from "deep-diff"; // why this shitty naming :angery:
 
-import TengObject from "../base/TengObject";
-import { Area, Index2, isColor, Position, resolveColor, Size } from "../base/Base";
+import TengObject from "../core/TengObject";
+import { Area, Index2, isColor, Position, resolveColor, Size } from "../core/Base";
 import Cell, { ICellColors } from "./Cell";
 import Grid from "./Grid";
 

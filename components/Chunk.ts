@@ -2,8 +2,8 @@
 /* Teng - Chunks contain cells. They are used to improve performance. */
 /**********************************************************************/
 
-import TengObject from "../base/TengObject";
-import { Area, Index2, Position, Size } from "../base/Base";
+import TengObject from "../core/TengObject";
+import { Area, Index2, Position, Size } from "../core/Base";
 import Cell from "./Cell";
 
 

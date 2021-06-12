@@ -4,7 +4,7 @@
 
 import { IAudioMetadata } from "music-metadata";
 import StatePromise, { PromiseState } from "../base/StatePromise";
-import TengObject from "../base/TengObject";
+import TengObject from "../core/TengObject";
 import { Track } from "./Audio";
 
 

@@ -2,8 +2,8 @@
 /* Teng - Cells are the smallest parts that make up the game */
 /*************************************************************/
 
-import { Position, Color, ColorType, Size, Index2 } from "../base/Base";
-import TengObject from "../base/TengObject";
+import { Position, Color, ColorType, Size, Index2 } from "../core/Base";
+import TengObject from "../core/TengObject";
 
 
 //#MARKER types

@@ -10,9 +10,9 @@ import { unused, filesystem } from "svcorelib";
 
 import { tengSettings } from "../settings";
 
-import { JSONCompatible } from "../base/Base";
+import { JSONCompatible } from "../core/Base";
 import Encryption from "../crypto/Encryption";
-import TengObject from "../base/TengObject";
+import TengObject from "../core/TengObject";
 
 
 //#MARKER other
