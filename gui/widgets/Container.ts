@@ -1,0 +1,98 @@
+/****************************************/
+/* Teng - UI element that contains text */
+/****************************************/
+
+import { Size } from "../../base/Base";
+import GUIWidget, { HorizontalAlign, VerticalAlign } from "../GUIWidget";
+
+
+//#MARKER types
+
+/**
+ * These types of justify have some kind of outer padding to them
+ */
+export type PaddedJustifyTypes = "space-between" | "space-around" | "space-evenly";
+
+/**
+ * Justify defines how space should be distributed between and around the container's items  
+ *   
+ * | Name | Layout |
+ * | :-- | :-- |
+ * | `left` | Pack items from the left |
+ * | `center` | Pack items around the center |
+ * | `right` | Pack items from the right |
+ * | `space-between` | Distribute items evenly. First is flush with the start, last is flush with the end |
+ * | `space-around` | Distribute items evenly. Items have a half-size space on either end |
+ * | `space-evenly` | Distribute items evenly. Items have equal space around them |
+ */
+export type JustifyHorizontal = HorizontalAlign | PaddedJustifyTypes;
+
+/**
+ * Justify defines how space should be distributed between and around the container's items  
+ *   
+ * | Name | Layout |
+ * | :-- | :-- |
+ * | `up` | Pack items from the top |
+ * | `center` | Pack items around the center |
+ * | `down` | Pack items from the bottom |
+ * | `space-between` | Distribute items evenly. First is flush with the start, last is flush with the end |
+ * | `space-around` | Distribute items evenly. Items have a half-size space on either end |
+ * | `space-evenly` | Distribute items evenly. Items have equal space around them |
+ */
+export type JustifyVertical = VerticalAlign | PaddedJustifyTypes;
+
+//#MARKER class
+
+/**
+ * GUI element that contains other GUI elements, that handles their layout and alignment
+ */
+export default class Container extends GUIWidget
+{
+    private justifyHor: JustifyHorizontal = "left";
+    private justifyVer: JustifyVertical = "up";
+
+
+    //#SECTION constructor
+
+    /**
+     * Creates an instance of the Container class
+     */
+    constructor(zIndex: number, size: Size)
+    {
+        super(zIndex, size, undefined, "Container");
+    }
+
+    //#SECTION justify
+
+    /**
+     * Sets the vertical justify of this container
+     */
+    setJustifyVer(justify: JustifyVertical): void
+    {
+        this.justifyVer = justify;
+    }
+
+    /**
+     * Sets the horizontal justify of this container
+     */
+    setJustifyHor(justify: JustifyHorizontal): void
+    {
+        this.justifyHor = justify;
+    }
+
+    /**
+     * Returns the vertical justify of this container
+     */
+    getJustifyVer(): JustifyVertical
+    {
+        return this.justifyVer;
+    }
+
+    /**
+     * Returns the horizontal justify of this container
+     */
+    getJustifyHor(): JustifyHorizontal
+    {
+        return this.justifyHor;
+    }
+}

@@ -3,35 +3,35 @@
 /****************************************/
 
 import { Size } from "../../base/Base";
-import GUIElement, { TextAlign } from "../GUIElement";
+import GUIWidget, { HorizontalAlign } from "../GUIWidget";
 
 
 /**
  * Describes the content of a text container
  */
-export interface ITextContainerContent
+export interface ILabelContent
 {
-    [index: string]: string | TextAlign;
+    [index: string]: string | HorizontalAlign;
 
     text: string;
-    alignment: TextAlign;
+    alignment: HorizontalAlign;
 }
 
 /**
  * UI element that contains text
  */
-export default class TextContainer extends GUIElement
+export default class Label extends GUIWidget
 {
-    private textContent: ITextContainerContent;
+    private textContent: ILabelContent;
 
 
     /**
      * Creates an instance of the TextContainer class
      * @param content The content of this container
      */
-    constructor(zIndex: number, size: Size, textContent: ITextContainerContent)
+    constructor(zIndex: number, size: Size, textContent: ILabelContent)
     {
-        super(zIndex, size, undefined, "Container");
+        super(zIndex, size);
 
 
         this.textContent = textContent;
