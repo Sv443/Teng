@@ -13,8 +13,8 @@ import { tengSettings } from "../settings";
  */
 export default abstract class TengObject extends EventEmitter
 {
-    /** 1000% unique identification of type `Symbol` that's assigned to each Teng object at instantiation - you literally can't get more unique than this */
-    readonly uid: Symbol;
+    /** 1000% unique identification of type `symbol` that's assigned to each Teng object at instantiation - you literally can't get more unique than this */
+    readonly uid: symbol;
     /** Unique index number that is assigned to each Teng object at instantiation. Note that as an index, this number increments with each instantiated object */
     readonly uniqueIdx: number;
     /** The name of this TengObject - assigned at instantiation */
@@ -56,7 +56,7 @@ export default abstract class TengObject extends EventEmitter
     //#MARKER abstract
 
     /**
-     * Returns a string representation of this TengObject
+     * Returns a string representation of this TengObject (or extended class) instance
      */
     abstract toString(): string;
 
