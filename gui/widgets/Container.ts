@@ -63,7 +63,7 @@ export default class Container extends GUIWidget
      */
     constructor(zIndex: number, size: Size)
     {
-        super(zIndex, size, undefined, "Container");
+        super(zIndex, size, "Container");
     }
 
     //#SECTION justify

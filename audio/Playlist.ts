@@ -3,7 +3,8 @@
 /**********************************************************************************/
 
 import { IAudioMetadata } from "music-metadata";
-import StatePromise, { PromiseState } from "../base/StatePromise";
+import { StatePromise } from "svcorelib";
+
 import TengObject from "../core/TengObject";
 import { Track } from "./Audio";
 
@@ -136,6 +137,8 @@ export class Playlist extends TengObject
 
 
                 const meta = await Promise.all(loadProms);
+
+                // TODO:
 
                 return res();
             }

@@ -44,7 +44,23 @@ export default class Renderer extends TengObject
         return `Renderer [${this.windowSize.toString()}] - UID: ${this.uid.toString()}`;
     }
 
-    //#SECTION public
+    //#SECTION render
+
+    render(): Promise<string[][] | undefined>
+    {
+        return new Promise(async (res, rej) => {
+            const content = this.getContentSorted();
+
+            if(content === undefined)
+                return res(undefined);
+
+            const chars: string[][] = [];
+
+            // TODO:
+        });
+    }
+
+    //#SECTION getters n setters
 
     /**
      * Returns the size of the set outStream
@@ -70,12 +86,45 @@ export default class Renderer extends TengObject
         return this.content;
     }
 
+    getContentSorted(): GUIWidget[] | undefined
+    {
+        const content = this.getContent();
+
+        if(!content)
+            return undefined;
+
+        return content.sort((a, b) => {
+            const aZ = a.getZIndex();
+            const bZ = b.getZIndex();
+
+            if(aZ === bZ)
+                return 0;
+            else if(aZ < bZ)
+                return -1;
+            else
+                return 1;
+        });
+    }
+
     /**
      * Overrides the currently set content
      */
     setContent(content: GUIWidget | GUIWidget[]): void
     {
         this.content = Array.isArray(content) ? content: [ content ];
+    }
+
+    /**
+     * Adds some content to this renderer
+     */
+    addContent(content: GUIWidget | GUIWidget[]): void
+    {
+        if(Array.isArray(content))
+            this.content = this.content ? this.content.concat(content) : content;
+        else if(Array.isArray(this.content))
+            this.content.push(content);
+        else
+            this.content = [ content ];
     }
 
     /**

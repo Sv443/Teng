@@ -8,7 +8,7 @@ import * as sound from "sound-play";
 
 import TengObject from "../core/TengObject";
 import { IAudioMetadata, parseFile } from "music-metadata";
-import StatePromise from "../base/StatePromise";
+// import { StatePromise } from "svcorelib";
 
 
 /**

@@ -3,7 +3,7 @@
 /*********************************************************/
 
 import TengObject from "../core/TengObject";
-import { Size } from "../core/Base";
+import { Color, ColorType, Index2, Size } from "../core/Base";
 
 
 //#MARKER types
@@ -23,16 +23,37 @@ export type HorizontalAlign = "left" | "center" | "right";
 export type VerticalAlign = "up" | "center" | "down";
 
 /**
- * Describes the content of a GUI element
+ * Sets the color at a given 2-dimensional char index
  */
-export type IGUIWidgetContent = GUIWidget[];
+export interface ISetColor
+{
+    [key: string]: any;
+
+    charIndex: Index2;
+    colorType: ColorType;
+    color: Color;
+}
+
+/**
+ * Describes how to render something
+ */
+export interface IRenderInfo
+{
+    [key: string]: Size | string[][];
+
+    size: Size;
+    chars: string[][];
+    // transparentChars: Index2[];
+}
+
+export type RequestRedrawType = "contentChanged" | "zIndexChanged";
 
 //#MARKER class
 
 export default interface GUIWidget
 {
-    /** Emitted whenever this GUIWidget requests to be redrawn. Whether this request is fulfilled or denied is not this class' concern. */
-    on(event: "requestRedraw", listener: () => void): this;
+    /** Emitted whenever this GUIWidget requests to be redrawn. Gets passed an event type. Whether this request is fulfilled or denied is not this class' concern. */
+    on(event: "requestRedraw", listener: (type: RequestRedrawType) => void): this;
 }
 
 /**
@@ -45,15 +66,14 @@ export default abstract class GUIWidget extends TengObject
     /** The size (in characters) of this UI element */
     protected size: Size;
 
-    /** The actual content of this UI element */
-    protected content?: IGUIWidgetContent;
+    protected renderInfo: IRenderInfo;
 
 
     /**
      * Creates an instance of the UIElement class
      * @param zIndex Controls how UI elements that overlap each other are rendered (this element is rendered on top of elements with a lower z-index)
      */
-    constructor(zIndex: number, size: Size, content?: IGUIWidgetContent, objectName?: string)
+    constructor(zIndex: number, size: Size, objectName?: string)
     {
         super(objectName || "GUI_Element", `z#${zIndex}/${size.toString()}`);
 
@@ -61,8 +81,10 @@ export default abstract class GUIWidget extends TengObject
         this.zIndex = zIndex;
         this.size = size;
 
-        if(this.content)
-            this.content = content;
+        this.renderInfo = {
+            size,
+            chars: []
+        };
     }
 
     toString(): string
@@ -71,18 +93,6 @@ export default abstract class GUIWidget extends TengObject
     }
 
     //#MARKER getters n setters
-
-    getContent(): IGUIWidgetContent | undefined
-    {
-        return this.content;
-    }
-
-    setContent(content: IGUIWidgetContent): void
-    {
-        this.content = content;
-
-        this.emit("requestRedraw");
-    }
 
     getSize(): Size
     {
@@ -104,6 +114,22 @@ export default abstract class GUIWidget extends TengObject
     {
         this.zIndex = zIndex;
 
-        this.emit("requestRedraw");
+        this.emit("requestRedraw", "zIndexChanged");
+    }
+
+    /**
+     * Returns the render info object of this GUI widget
+     */
+    getRenderInfo(): IRenderInfo
+    {
+        return this.renderInfo;
+    }
+
+    /**
+     * Sets the render info object of this GUI widget
+     */
+    setRenderInfo(renderInfo: IRenderInfo): void
+    {
+        this.renderInfo = renderInfo;
     }
 }
