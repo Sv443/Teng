@@ -9,7 +9,7 @@ import { DeepPartial } from "tsdef";
 import TengObject from "../../../core/TengObject";
 import Menu, { MenuOptionOrSpacer } from "./Menu";
 import InputHandler, { IKeypressObject } from "../../../input/InputHandler";
-import { Size } from "../../../core/Base";
+import { Size } from "../../../core/BaseTypes";
 
 const col = colors.fg;
 

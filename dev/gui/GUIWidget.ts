@@ -3,7 +3,7 @@
 /*********************************************************/
 
 import TengObject from "../../core/TengObject";
-import { Color, ColorType, Index2, Size } from "../../core/Base";
+import { Color, ColorType, Index2, Size } from "../../core/BaseTypes";
 
 
 //#MARKER types

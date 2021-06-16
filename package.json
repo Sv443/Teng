@@ -19,6 +19,7 @@
     "dep-graph": "depcruise --exclude \"node_modules\" --output-type dot . | dot -T svg | depcruise-wrap-stream-in-html > dependency_graph.html"
   },
   "dependencies": {
+    "appdata-path": "^1.0.0",
     "deep-diff": "^1.0.2",
     "discord-rpc": "^3.2.0",
     "figlet": "^1.5.0",

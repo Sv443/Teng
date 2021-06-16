@@ -2,13 +2,15 @@
 /* Teng - Engine Settings */
 /**************************/
 
-import { Color } from "./core/Base";
+import type { Color } from "./core/BaseTypes";
 import * as packageJson from "./package.json";
 
 
 /** Teng engine settings */
 const tengSettings = Object.freeze({
     info: {
+        /** Whether to log extra debug messages to the console */
+        debug: true,
         /** The full name of the engine */
         name: "Teng",
         /** Engine name abbreviation to use in object descriptors and more */
@@ -37,8 +39,8 @@ const tengSettings = Object.freeze({
         descriptorDefaultMaxLength: 16,
     },
     game: {
-        /** The color of the cursor - has to be a value in the Color enum from `Base.ts` */
-        cursorColor: Color.Magenta,
+        /** @type {Color} The color of the cursor - has to be a value in the Color enum from `Base.ts` */
+        cursorColor: 6,
         noise: {
             /** Default resolution value for layered noise generation */
             defaultResolution: 30,

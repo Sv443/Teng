@@ -3,7 +3,7 @@
 /*******************************/
 
 import { Fonts } from "figlet";
-import { Size } from "../../../core/Base";
+import { Size } from "../../../core/BaseTypes";
 
 import { MenuOptionOrSpacer } from "./Menu";
 import SelectionMenu, { ISelectionMenuResult } from "./SelectionMenu";

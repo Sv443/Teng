@@ -2,7 +2,7 @@
 /* Teng - Keeps track of a save state and is responsible for saving and loading from save state files */
 /******************************************************************************************************/
 
-import { readFile, writeFile } from "fs-extra";
+import { mkdirsSync, readFile, writeFile } from "fs-extra";
 import { statSync, accessSync } from "fs-extra";
 import { join, resolve } from "path";
 import sanitize from "sanitize-filename";
@@ -10,7 +10,7 @@ import { unused, filesystem } from "svcorelib";
 
 import { tengSettings } from "../settings";
 
-import { JSONCompatible } from "../core/Base";
+import { JSONCompatible } from "../core/BaseTypes";
 import Encryption from "../crypto/Encryption";
 import TengObject from "../core/TengObject";
 
@@ -31,7 +31,7 @@ const encryptionKey = "TODO: figure this out";
 export default class SaveState<T extends JSONCompatible> extends TengObject
 {
     /** The data that should be saved to disk or that was read from disk */
-    private data: JSONCompatible;
+    private data: T;
     /** String representation of the data to be saved */
     private stringData: string;
 
@@ -65,13 +65,13 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
         }
         else
         {
-            this.data = {};
+            this.data = ({} as T);
             this.stringData = "{}";
         }
 
         this.saveDirectory = resolve(saveDirectory);
         if(!SaveState.existsSync(this.saveDirectory))
-            throw new TypeError(`Provided save directory '${this.saveDirectory}' doesn't exist`);
+            mkdirsSync(this.saveDirectory);
         if(!statSync(this.saveDirectory).isDirectory())
             throw new TypeError(`Provided save directory '${this.saveDirectory}' doesn't point to a directory`);
 
@@ -102,7 +102,7 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
     /**
      * Returns the data that has been set on this state as an object
      */
-    public getData(): JSONCompatible
+    public getData(): T
     {
         return this.data;
     }
@@ -146,6 +146,7 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
             {
                 const strData = JSON.stringify(data);
 
+                // TODO: fix this
                 const sData = {
                     tengMeta: {
                         engine: {
@@ -158,8 +159,8 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
                     data: (this.saveEncrypted ? Encryption.encrypt(strData, this.getEncryptionKey()).toString() : data)
                 };
 
-                this.data = sData;
-                this.stringData = JSON.stringify(sData, undefined, 4);
+                this.data = data;
+                this.stringData = JSON.stringify(data, undefined, 4);
 
                 return res();
             }
@@ -264,5 +265,10 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
 
             return false;
         }
+    }
+
+    static fromFile<T extends JSONCompatible>(directory: string, stateName: string, encrypted: boolean): SaveState<T>
+    {
+        return new this<T>(directory, stateName, encrypted);
     }
 }

@@ -3,7 +3,7 @@
 /************************************************/
 
 import { DeepPartial } from "tsdef";
-import { Size } from "../../../core/Base";
+import { Size } from "../../../core/BaseTypes";
 import InputHandler, { IKeypressObject } from "../../../input/InputHandler";
 import Menu, { MenuOption } from "./Menu";
 import SelectionMenu, { ISelectionMenuResult } from "./SelectionMenu";

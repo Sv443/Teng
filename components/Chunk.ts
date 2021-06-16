@@ -3,7 +3,7 @@
 /**********************************************************************/
 
 import TengObject from "../core/TengObject";
-import { Area, Index2, Position, Size } from "../core/Base";
+import { Area, Index2, Position, Size } from "../core/BaseTypes";
 import Cell from "./Cell";
 
 

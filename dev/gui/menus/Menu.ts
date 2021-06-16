@@ -6,7 +6,7 @@ import { Nullable } from "tsdef";
 import { text, loadFont,  Fonts, Options, KerningMethods } from "figlet";
 
 import TengObject from "../../../core/TengObject";
-import { Size } from "../../../core/Base";
+import { Size } from "../../../core/BaseTypes";
 
 
 //#MARKER types

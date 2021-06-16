@@ -8,7 +8,7 @@
 import { diff } from "deep-diff";
 import { colors } from "svcorelib";
 
-import { generalSettings } from "../../settings";
+import { tengSettings } from "../settings";
 
 
 //#SECTION Custom Types
@@ -642,7 +642,7 @@ export type LogLevel = "success" | "info" | "warning" | "error" | "fatal";
  */
 export function dbg(section: string, message: string, level: LogLevel = "info")
 {
-    if(generalSettings.debug.verboseLogging)
+    if(tengSettings.info.debug)
     {
         let consoleCol = "";
         let logType = "";

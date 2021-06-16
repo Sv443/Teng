@@ -2,7 +2,7 @@
 /* Teng - UI element that contains text */
 /****************************************/
 
-import { Size } from "../../../core/Base";
+import { Size } from "../../../core/BaseTypes";
 import GUIWidget, { HorizontalAlign } from "../GUIWidget";
 import { JustifyDirection, JustifyHorizontal, JustifyVertical } from "./Container";
 
