@@ -30,9 +30,9 @@ const encryptionKey = "TODO: figure this out";
  */
 export default class SaveState<T extends JSONCompatible> extends TengObject
 {
-    /** The data that should be saved to disk or that was read from disk */
-    private data: T;
-    /** String representation of the data to be saved */
+    /** The raw save data of generic type `T` */
+    private data?: T;
+    /** String representation of the data to be saved to the disk */
     private stringData: string;
 
 
@@ -51,23 +51,15 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
      * @param fileExtension The file extension to save the file as (don't prefix this with a dot). Defaults to `tes`
      * @param initialData An optional initial value of the data
      */
-    constructor(saveDirectory: string, stateName: string, saveEncrypted: boolean = false, fileExtension: string = tengSettings.game.saveStates.defaultFileExtension, initialData?: T)
+    constructor(saveDirectory: string, stateName: string, saveEncrypted: boolean = false, fileExtension: string = tengSettings.game.saveStates.defaultFileExtension)
     {
         const sanitizedStateName = SaveState.sanitizeFileName(stateName);
 
         super("SaveState", `${sanitizedStateName}${saveEncrypted ? "/encrypted" : ""}`);
 
+        this.data = {} as T;
+        this.stringData = "";
 
-        if(initialData)
-        {
-            this.data = initialData;
-            this.stringData = JSON.stringify(initialData);
-        }
-        else
-        {
-            this.data = ({} as T);
-            this.stringData = "{}";
-        }
 
         this.saveDirectory = resolve(saveDirectory);
         if(!SaveState.existsSync(this.saveDirectory))
@@ -102,21 +94,9 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
     /**
      * Returns the data that has been set on this state as an object
      */
-    public getData(): T
+    public getData(): T | undefined
     {
         return this.data;
-    }
-
-    /**
-     * Returns the data that has been set on this state as a JSON-compatible string representation
-     * @param encrypted Set to `true` to encrypt the data prior to returning it. Defaults to `false`
-     */
-    public getDataString(encrypted = false): string
-    {
-        if(encrypted)
-            return Encryption.encrypt(this.stringData, this.getEncryptionKey()).toString();
-
-        return this.stringData;
     }
 
     /**
@@ -146,7 +126,6 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
             {
                 const strData = JSON.stringify(data);
 
-                // TODO: fix this
                 const sData = {
                     tengMeta: {
                         engine: {
@@ -160,7 +139,7 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
                 };
 
                 this.data = data;
-                this.stringData = JSON.stringify(data, undefined, 4);
+                this.stringData = JSON.stringify(sData, undefined, 4);
 
                 return res();
             }
@@ -171,14 +150,14 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
         });
     }
 
+    //#MARKER IO
+
     /**
      * Tries to save the previously set data to disk
      */
     public save(): Promise<void>
     {
         return new Promise<void>(async (res, rej) => {
-            //
-
             writeFile(this.getAbsFilePath(), this.stringData, (err) => {
                 if(err)
                     return rej(err);
@@ -190,7 +169,7 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
 
     /**
      * Loads a save state from disk.  
-     * Use `getData()` or `getStringData()` to read this data.  
+     * Use `getData()` to read this data.  
      * **WARNING:** overrides previously set data so use carefully!
      */
     public load(): Promise<void>
@@ -226,6 +205,18 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
     protected getEncryptionKey(): string
     {
         return encryptionKey;
+    }
+
+    /**
+     * Returns the data that has been set on this state as a JSON-compatible string representation
+     * @param encrypted Set to `true` to encrypt the data prior to returning it. Defaults to `false`
+     */
+    private getDataString(encrypted = false): string
+    {
+        if(encrypted)
+            return Encryption.encrypt(this.stringData, this.getEncryptionKey()).toString();
+
+        return this.stringData;
     }
 
     //#MARKER static
@@ -267,7 +258,10 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
         }
     }
 
-    static fromFile<T extends JSONCompatible>(directory: string, stateName: string, encrypted: boolean): SaveState<T>
+    /**
+     * Creates an instance of the SaveState class by passing a file to be read
+     */
+    static fromFile<T extends JSONCompatible>(directory: string, stateName: string, encrypted: boolean = false): SaveState<T>
     {
         return new this<T>(directory, stateName, encrypted);
     }
