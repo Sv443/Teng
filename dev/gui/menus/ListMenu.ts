@@ -3,8 +3,8 @@
 /************************************************/
 
 import { DeepPartial } from "tsdef";
-import { Size } from "../../core/Base";
-import InputHandler, { IKeypressObject } from "../../input/InputHandler";
+import { Size } from "../../../core/Base";
+import InputHandler, { IKeypressObject } from "../../../input/InputHandler";
 import Menu, { MenuOption } from "./Menu";
 import SelectionMenu, { ISelectionMenuResult } from "./SelectionMenu";
 
