@@ -55,8 +55,7 @@ export abstract class Convertable
 //#SECTION Size
 
 /**
- * Describes a rectangular size in 2D space.  
- * Note: width and height cannot be modified after instantiation.
+ * Describes a rectangular size in 2D space
  */
 export interface ISizeObject
 {
@@ -138,14 +137,11 @@ export class Size extends Convertable
     }
 
     /**
-     * Checks if this size is a multiple of the passed size
+     * Checks if this size is a multiple of the passed Size instance `comparand`
      */
     isMultipleOf(comparand: Size): boolean
     {
-        if(this.width % comparand.width === 0 && this.height % comparand.height === 0)
-            return true;
-
-        return false;
+        return (this.width % comparand.width === 0 && this.height % comparand.height === 0);
     }
 
     /**

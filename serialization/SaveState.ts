@@ -44,10 +44,10 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
 
 
     /**
-     * Creates an instance of the SaveState class - has to be created using a type generic (see docs)!
+     * Creates an instance of the SaveState class - has to be created using a JSON-compatible interface type generic (see docs)!
      * @param saveDirectory The directory to save the save state file to
      * @param stateName The name of the save state
-     * @param saveEncrypted Whether to save the data encrypted or not
+     * @param saveEncrypted Whether to save the data encrypted or not (defaults to `false`)
      * @param fileExtension The file extension to save the file as (don't prefix this with a dot). Defaults to `tes`
      * @param initialData An optional initial value of the data
      */
@@ -261,8 +261,10 @@ export default class SaveState<T extends JSONCompatible> extends TengObject
     /**
      * Creates an instance of the SaveState class by passing a file to be read
      */
-    static fromFile<T extends JSONCompatible>(directory: string, stateName: string, encrypted: boolean = false): SaveState<T>
+    static fromFile<T extends JSONCompatible>(path: string): SaveState<T>
     {
-        return new this<T>(directory, stateName, encrypted);
+        // TODO:
+        // return new this<T>(directory, stateName, encrypted, fileExtension);
+        return new this<T>("", "");
     }
 }
