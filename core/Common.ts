@@ -23,6 +23,7 @@ export function dbg(section: string, message: string, level: LogLevel = "info")
     {
         let consoleCol = "";
         let logType = "";
+        let exit = false;
 
         switch(level)
         {
@@ -45,10 +46,13 @@ export function dbg(section: string, message: string, level: LogLevel = "info")
             case "fatal":
                 consoleCol = colors.fg.magenta;
                 logType = "FATAL";
+                exit = true;
             break;
         }
 
         console.log(`${consoleCol}[${logType}/${colors.fg.blue}${section}${consoleCol}]: ${colors.rst}${message}${colors.rst}`);
+
+        exit && process.exit(1);
     }
 }
 
