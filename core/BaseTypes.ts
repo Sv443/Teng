@@ -24,8 +24,8 @@ export type NonAbstract<T> = Newable<T>;
  * [Source](https://github.com/microsoft/TypeScript/issues/1897#issuecomment-338650717)
  */
 export type JSONCompatible =  boolean | number | string | null | JSONArray | JSONMap;
-interface JSONMap {  [key: string]: JSONCompatible; }
-interface JSONArray extends Array<JSONCompatible> {}
+interface JSONMap { [key: string]: JSONCompatible; }
+interface JSONArray extends Array<JSONCompatible> { }
 
 
 //#SECTION Base Class

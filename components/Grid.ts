@@ -214,7 +214,7 @@ export default class Grid extends TengObject
 
     /**
      * Developer method: Fills the grid with empty cells
-     * @param CellClass A non-abstract class that inherits from Cell
+     * @param CellClass A non-abstract class that inherits from `Cell`
      */
     devFill(CellClass: Newable<Cell>): void
     {
