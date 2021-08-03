@@ -35,9 +35,7 @@ interface JSONArray extends Array<JSONCompatible> {}
 
 //#SECTION Base Class
 /**
- * Extended (derived) classes need to have certain methods to convert their data.  
- *   
- * ![Convertible](https://cdn.sv443.net/teng/dababy.png)
+ * Extended (derived) classes need to have certain methods to convert their data
  */
 export abstract class Convertable
 {
