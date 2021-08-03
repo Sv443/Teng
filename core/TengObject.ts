@@ -15,13 +15,16 @@ export default abstract class TengObject extends EventEmitter
 {
     /** 1000% unique identification of type `symbol` that's assigned to each Teng object at instantiation - you literally can't get more unique than this */
     readonly uid: symbol;
-    /** Unique index number that is assigned to each Teng object at instantiation. Note that as an index, this number increments with each instantiated object */
+    /**
+     * Unique index number that is assigned to each Teng object at instantiation.  
+     * Note that as an index, this number increments with each instantiated object and doesn't take into account possibly deleted objects.
+     */
     readonly uniqueIdx: number;
     /** The name of this TengObject - assigned at instantiation */
     readonly objectName: string;
     /** Timestamp at which this object was created (with millisecond accuracy) - assigned at instantiation */
     readonly creationTime: number;
-    /** The descriptor of this TengObject - assigned at instantiation but doesn't have to have a value */
+    /** The descriptor of this TengObject - assigned at instantiation but can also be an empty string */
     readonly descriptor: string;
 
     /**

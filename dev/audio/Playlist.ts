@@ -5,7 +5,7 @@
 import { IAudioMetadata } from "music-metadata";
 import { StatePromise } from "svcorelib";
 
-import TengObject from "../core/TengObject";
+import TengObject from "../../core/TengObject";
 import { Track } from "./Audio";
 
 
