@@ -16,7 +16,8 @@
   },
   "license": "UNLICENSED",
   "scripts": {
-    "dep-graph": "depcruise --exclude \"node_modules\" --output-type dot . | dot -T svg | depcruise-wrap-stream-in-html > dependency_graph.html"
+    "dep-graph": "depcruise --exclude \"node_modules\" --output-type dot . | dot -T svg | depcruise-wrap-stream-in-html > dependency_graph.html",
+    "link": "npm link"
   },
   "dependencies": {
     "appdata-path": "^1.0.0",
@@ -46,5 +47,8 @@
     "@types/node": "^14.14.32",
     "@types/prompts": "^2.0.10",
     "dependency-cruiser": "^9.24.0"
+  },
+  "bin": {
+    "teng": "bin/cli.js"
   }
 }
